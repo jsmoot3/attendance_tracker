@@ -1,57 +1,128 @@
 //event model class event container
-class Session {
-  int id;
-  int EventSessionID;
-  int EventID_fk;
-  String CampusLocation;
-  String StartDate;
-  String TimeOfDay;
-  String Day;
-  String Divison;
-  String WaverName;
+// To parse this JSON data, do
+//
+//     final sessionDart = sessionDartFromJson(jsonString);
 
-  Session(this.EventSessionID, this.EventID_fk, this.CampusLocation,
-      this.StartDate, this.TimeOfDay, this.Day, this.Divison, this.WaverName);
+import 'dart:convert';
 
-  Session.withId(
-      this.id,
-      this.EventSessionID,
-      this.EventID_fk,
-      this.CampusLocation,
-      this.StartDate,
-      this.TimeOfDay,
-      this.Day,
-      this.Divison,
-      this.WaverName);
+SessionDart sessionDartFromJson(String str) =>
+    SessionDart.fromJson(json.decode(str));
 
-  Map<String, dynamic> toMap() {
-    var map = Map<String, dynamic>();
-    map["EventSessionID"] = this.EventSessionID;
-    map["EventID_fk"] = this.EventID_fk;
-    map["CampusLocation"] = this.CampusLocation;
-    map["StartDate"] = this.StartDate;
-    map["TimeOfDay"] = this.TimeOfDay;
-    map["Day"] = this.Day;
-    map["Divison"] = this.Divison;
-    map["WaverName"] = this.WaverName;
+String sessionDartToJson(SessionDart data) => json.encode(data.toJson());
 
-    if (id != null) {
-      map["id"] = id;
-    }
-    return map;
-  }
+class SessionDart {
+  DateTime from;
+  DateTime to;
+  int rcount;
+  String month;
+  List<CurrentSession> currentSessions;
+  List<String> departments;
 
-  Session.fromOject(dynamic input) {
-    this.id = input["id"];
-    this.EventSessionID = input["EventSessionID"];
-    this.EventID_fk = input["EventID_fk"];
-    this.CampusLocation = input["CampusLocation"];
-    this.StartDate = input["StartDate"];
-    this.TimeOfDay = input["TimeOfDay"];
-    this.Day = input["Day"];
-    this.Divison = input["Divison"];
-    this.WaverName = input["WaverName"];
-  }
+  SessionDart({
+    this.from,
+    this.to,
+    this.rcount,
+    this.month,
+    this.currentSessions,
+    this.departments,
+  });
+
+  factory SessionDart.fromJson(Map<String, dynamic> json) => SessionDart(
+        from: json["From"] == null ? null : DateTime.parse(json["From"]),
+        to: json["To"] == null ? null : DateTime.parse(json["To"]),
+        rcount: json["Rcount"] == null ? null : json["Rcount"],
+        month: json["Month"] == null ? null : json["Month"],
+        currentSessions: json["CurrentSessions"] == null
+            ? null
+            : List<CurrentSession>.from(
+                json["CurrentSessions"].map((x) => CurrentSession.fromJson(x))),
+        departments: json["Departments"] == null
+            ? null
+            : List<String>.from(json["Departments"].map((x) => x)),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "From": from == null ? null : from.toIso8601String(),
+        "To": to == null ? null : to.toIso8601String(),
+        "Rcount": rcount == null ? null : rcount,
+        "Month": month == null ? null : month,
+        "CurrentSessions": currentSessions == null
+            ? null
+            : List<dynamic>.from(currentSessions.map((x) => x.toJson())),
+        "Departments": departments == null
+            ? null
+            : List<dynamic>.from(departments.map((x) => x)),
+      };
+}
+
+class CurrentSession {
+  int flEventSessionId;
+  int fLeventIDfk;
+  String campusLocation;
+  String trainer;
+  String timeOfDay;
+  String day;
+  String department;
+  String trainingGroup;
+  int weekofClass;
+  String divison;
+  bool requireWaiver;
+  String waiverName;
+  DateTime startDate;
+
+  CurrentSession({
+    this.flEventSessionId,
+    this.fLeventIDfk,
+    this.campusLocation,
+    this.trainer,
+    this.timeOfDay,
+    this.day,
+    this.department,
+    this.trainingGroup,
+    this.weekofClass,
+    this.divison,
+    this.requireWaiver,
+    this.waiverName,
+    this.startDate,
+  });
+
+  factory CurrentSession.fromJson(Map<String, dynamic> json) => CurrentSession(
+        flEventSessionId:
+            json["FLEventSessionID"] == null ? null : json["FLEventSessionID"],
+        fLeventIDfk: json["FLeventIDfk"] == null ? null : json["FLeventIDfk"],
+        campusLocation:
+            json["CampusLocation"] == null ? null : json["CampusLocation"],
+        trainer: json["Trainer"] == null ? null : json["Trainer"],
+        timeOfDay: json["TimeOfDay"] == null ? null : json["TimeOfDay"],
+        day: json["Day"] == null ? null : json["Day"],
+        department: json["Department"] == null ? null : json["Department"],
+        trainingGroup:
+            json["TrainingGroup"] == null ? null : json["TrainingGroup"],
+        weekofClass: json["WeekofClass"] == null ? null : json["WeekofClass"],
+        divison: json["Divison"] == null ? null : json["Divison"],
+        requireWaiver:
+            json["RequireWaiver"] == null ? null : json["RequireWaiver"],
+        waiverName: json["WaiverName"] == null ? null : json["WaiverName"],
+        startDate: json["StartDate"] == null
+            ? null
+            : DateTime.parse(json["StartDate"]),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "FLEventSessionID": flEventSessionId == null ? null : flEventSessionId,
+        "FLeventIDfk": fLeventIDfk == null ? null : fLeventIDfk,
+        "CampusLocation": campusLocation == null ? null : campusLocation,
+        "Trainer": trainer == null ? null : trainer,
+        "TimeOfDay": timeOfDay == null ? null : timeOfDay,
+        "Day": day == null ? null : day,
+        "Department": department == null ? null : department,
+        "TrainingGroup": trainingGroup == null ? null : trainingGroup,
+        "WeekofClass": weekofClass == null ? null : weekofClass,
+        "Divison": divison == null ? null : divison,
+        "RequireWaiver": requireWaiver == null ? null : requireWaiver,
+        "WaiverName": waiverName == null ? null : waiverName,
+        "StartDate": startDate == null ? null : startDate.toIso8601String(),
+      };
 }
 
 //record of student that attend event.
@@ -70,7 +141,7 @@ class Attendie {
     var map = Map<String, dynamic>();
     map["StudentId"] = this.StudentId;
     map["EventSessionId_fk"] = this.EventSessionId_fk;
-    map["FLEventId_FK"] = this.FLEventId_FK;
+    map["FLEventIdFK"] = this.FLEventId_FK;
     map["Date"] = this.Date;
     map["SignedInBy"] = this.SignedInBy;
     map["OtherAttLocation"] = this.OtherAttLocation;
@@ -80,7 +151,7 @@ class Attendie {
   Attendie.fromOject(dynamic input) {
     this.StudentId = input["StudentId"];
     this.EventSessionId_fk = input["EventSessionId_fk"];
-    this.FLEventId_FK = input["FLEventId_FK"];
+    this.FLEventId_FK = input["FLEventIdFK"];
     this.Date = input["Date"];
     this.SignedInBy = input["SignedInBy"];
     this.OtherAttLocation = input["OtherAttLocation"];

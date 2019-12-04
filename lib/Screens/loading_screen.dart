@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'Sessions_screen.dart';
+import '../Util/Data.dart';
 
 class LoadingScreen extends StatefulWidget {
   @override
@@ -7,14 +9,14 @@ class LoadingScreen extends StatefulWidget {
 }
 
 class _LoadingScreenState extends State<LoadingScreen> {
-  final myController = TextEditingController();
+  // final myController = TextEditingController();
   TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 10.0);
   TextEditingController _textFieldController = TextEditingController();
 
   @override
   void dispose() {
     // Clean up the controller when the widget is disposed.
-    myController.dispose();
+    _textFieldController.dispose();
     super.dispose();
   }
 
@@ -39,7 +41,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
       controller: _textFieldController,
       decoration: InputDecoration(
         //Add th Hint text here.
-        hintText: "Login number",
+        hintText: "Group Number",
         border: OutlineInputBorder(),
       ),
       style: TextStyle(
@@ -86,14 +88,47 @@ class _LoadingScreenState extends State<LoadingScreen> {
         ));
   }
 
+  // handle the button click event
   _changeText() {
-    setState(() {
-      if (_textFieldController.text != null) {
-        print('Your number was $_textFieldController.text ');
-      } else {
-        print('there is no letter ');
-      }
-      _textFieldController.text = "Login number";
-    });
+    //  setState(() {
+    // print('Your number was => $_textFieldController.text ');
+    // _noTextAlert();
+    String text1 = _textFieldController.text;
+    if (text1 != '') {
+      // print('Your number was =>$text1');
+
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => SessionsScreen(
+              text: '$text1',
+            ),
+          ));
+    } else {
+      print('there is no letter ');
+      _noTextAlert();
+    }
+    // _textFieldController.text = "Login number";
+    // });
+  }
+
+  _noTextAlert() {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Not in stock'),
+          content: const Text('This item is no longer available'),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Ok'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }

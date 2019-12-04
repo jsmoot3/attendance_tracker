@@ -3,16 +3,17 @@ import 'package:http/http.dart' as http;
 import 'package:sqflite/sqflite.dart';
 import '../Util/dbHelper.dart';
 import '../Models/Session.dart';
+import '../Models/App_Models.dart';
 
 class getData {
 //CUID
 ////////////////////////////////////////////////////////////
 //insert sessions
-  Future<int> insertSession(Session _Session) async {
+  Future<int> insertSession(SessionDart) async {
     var r;
     Database db = getDatabase();
     try {
-      r = await db.insert("tblSessions", _Session.toMap());
+      r = await db.insert("tblSessions", SessionDart.toMap());
     } catch (e) {
       debugPrint("insertDoc:" + e.toString());
     }
@@ -73,6 +74,7 @@ class getData {
     final db = await inDb.db;
     return db;
   }
+
 /////////////////////////////////////////////////////////////////////////
   //////////  eND cuid  ///////////////////////
 
