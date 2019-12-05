@@ -1,7 +1,12 @@
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import '../Util/Data.dart';
 import '../Models/API.dart';
 import '../Models/Session.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import '../constants.dart' as Constants;
+import '../Models/App_Models.dart';
 
 class SessionsScreen extends StatelessWidget {
   final String text;
@@ -39,19 +44,64 @@ class getCurrentSessions extends StatefulWidget {
 }
 
 class getCurrentSessionsState extends State<getCurrentSessions> {
-  static var sessInfo = getApi.fetchSessions();
-  static var CSession = sessInfo.CurrentSessions;
-  // final _suggestions = CSession;
+  List csessions;
   final _biggerFont = const TextStyle(fontSize: 18.0);
+  Future<String> fetchSessions() async {
+    debugger();
+    var response =
+    await http.get(Constants.MONTH_SESSIONS, headers: {"Accept": "application/json"});
+
+    if (response.statusCode == 200) {
+      print("==> 55  This is a test");// + response.body);
+      setState(() {
+        var sessionDart = sessionDartFromJson(response.body);
+        var resBody = json.decode(response.body);
+        csessions = resBody["currentSessions"];
+      });
+      print("%%%%%%> " + response.body.toString());
+      return "success";
+    } else {
+      throw Exception('Failed to load post');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text('Startup Name Generator'),
-        ),
-        // body: _buildSuggestions(),
-        //body: _myListView(context));
-        body: _myListViewDy(context));
+      appBar: AppBar(
+        title: Text('Startup Name Generator'),
+
+      ),
+      // body: _buildSuggestions(),
+      //body: _myListView(context));
+      //body: _myListViewDy(context));
+      body: ListView.builder(
+        itemCount: 10,// csessions == null ? 0 : csessions.length,
+        itemBuilder: (BuildContext context, int index) {
+          return new Container(
+            child: Center(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  Card(
+                    child: Container(
+                       //child: Text(csessions[index]["department"]),
+                      child: Text("Test-------->100 -- $index"),
+                    /*   style: TextStyle(
+                  fontSize: 18.0,
+                  color: Colors.black54
+                ),*/
+                    ),
+                  ),
+
+                ],
+              ),
+            ),
+
+          );
+        }
+      ),
+    );
   }
 
 /*
@@ -94,11 +144,11 @@ class getCurrentSessionsState extends State<getCurrentSessions> {
 */
   Widget _myListViewDy(BuildContext context) {
     return ListView.builder(
-      itemCount: CSession.length,
+      itemCount: 10, //csessions.length,
       itemBuilder: (context, index) {
         return ListTile(
-          title: Text(CSession[index].Department),
-          //title: Text("Test-------->100 -- $index"),
+          //title: Text(csessions[index].Department),
+          title: Text("Test-------->100 -- $index"),
         );
       },
     );

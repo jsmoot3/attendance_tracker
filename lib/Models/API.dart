@@ -6,8 +6,10 @@ import '../Models/App_Models.dart';
 import '../Models/Session.dart';
 
 class getApi {
-  static fetchSessions() async {
-    final response = await http.get(Constants.MONTH_SESSIONS);
+  SessionDart sessionDart;
+
+  Future<String> fetchSessions() async {
+    var response = await http.get(Constants.MONTH_SESSIONS);
     if (response.statusCode == 200) {
       // print("==> " + response.body);
       // return Session.fromJson(json.decode(response.body));
@@ -20,10 +22,13 @@ class getApi {
       var _sessList = createSessionList(_CurrentSessions);
       // print("==> " + responseJson.CurrentSessions);
       */
-      print("==> " + response.body);
-      final sessionDart = sessionDartFromJson(response.body);
-      print("%%%%%%> " + sessionDart.month);
-      return sessionDart;
+
+        print("==> " + response.body);
+        sessionDart = sessionDartFromJson(response.body.toString());
+        print("%%%%%%> " + sessionDart.currentSessions.toString());
+
+
+      return "success";
     } else {
       throw Exception('Failed to load post');
     }
