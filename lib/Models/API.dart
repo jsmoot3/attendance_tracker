@@ -23,11 +23,11 @@ class getApi {
       // print("==> " + responseJson.CurrentSessions);
       */
 
-      print("api ==> 26" + response.body);
+      // print("api ==> 26" + response.body);
       String sesDat = response.body;
       //String sesDat = json.decode(response.body);
-      //sessionDart = sessionDartFromJson(response.body.toString());
-      //print("%%%%%%> " + sessionDart.currentSessions.toString());
+      var sessionDart = sessionDartFromJson(response.body.toString());
+      print("%%%%%%> " + sessionDart.currentSessions[1].toString());
 
       return sesDat;
     } else {

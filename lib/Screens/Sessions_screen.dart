@@ -75,6 +75,7 @@ class getCurrentSessionsState extends State<getCurrentSessions> {
     String responseSess = _responseSess;
     print("sess==> 76  " + responseSess.toString());
     var sesDat = json.decode(responseSess);
+    List<CurrentSession> csessions = sesDat["CurrentSessions"];
     print("sessDat==> 78  " + sesDat["CurrentSessions"].toString());
     return Scaffold(
       appBar: AppBar(
@@ -84,7 +85,8 @@ class getCurrentSessionsState extends State<getCurrentSessions> {
       //body: _myListView(context));
       //body: _myListViewDy(context));
       body: ListView.builder(
-          itemCount: 10, // csessions == null ? 0 : csessions.length,
+          padding: const EdgeInsets.all(10.0),
+          itemCount: csessions == null ? 0 : csessions.length,
           itemBuilder: (BuildContext context, int index) {
             return new Container(
               child: Center(
@@ -93,8 +95,8 @@ class getCurrentSessionsState extends State<getCurrentSessions> {
                   children: <Widget>[
                     Card(
                       child: Container(
-                        //child: Text(csessions[index]["department"]),
-                        child: Text("Test-------->100 -- $index"),
+                        child: Text(csessions[index].department.toString()),
+                        //child: Text("Test-------->100 -- $index"),
                         /*   style: TextStyle(
                   fontSize: 18.0,
                   color: Colors.black54
