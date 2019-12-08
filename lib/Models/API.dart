@@ -8,7 +8,7 @@ import '../Models/Session.dart';
 class getApi {
   SessionDart sessionDart;
 
-  Future<String> fetchSessions() async {
+  static Future<String> fetchSessions() async {
     var response = await http.get(Constants.MONTH_SESSIONS);
     if (response.statusCode == 200) {
       // print("==> " + response.body);
@@ -23,12 +23,13 @@ class getApi {
       // print("==> " + responseJson.CurrentSessions);
       */
 
-        print("==> " + response.body);
-        sessionDart = sessionDartFromJson(response.body.toString());
-        print("%%%%%%> " + sessionDart.currentSessions.toString());
+      print("api ==> 26" + response.body);
+      String sesDat = response.body;
+      //String sesDat = json.decode(response.body);
+      //sessionDart = sessionDartFromJson(response.body.toString());
+      //print("%%%%%%> " + sessionDart.currentSessions.toString());
 
-
-      return "success";
+      return sesDat;
     } else {
       throw Exception('Failed to load post');
     }

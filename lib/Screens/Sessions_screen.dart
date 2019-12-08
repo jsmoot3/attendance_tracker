@@ -45,62 +45,67 @@ class getCurrentSessions extends StatefulWidget {
 
 class getCurrentSessionsState extends State<getCurrentSessions> {
   List csessions;
+  String _responseSess = null;
   final _biggerFont = const TextStyle(fontSize: 18.0);
-  Future<String> fetchSessions() async {
-    debugger();
-    var response =
-    await http.get(Constants.MONTH_SESSIONS, headers: {"Accept": "application/json"});
+  void initState() {
+    super.initState();
+    if (_responseSess == null) {
+      getApi.fetchSessions().then((String s) => setState(() {
+            _responseSess = s;
+          }));
+    }
+  }
 
-    if (response.statusCode == 200) {
-      print("==> 55  This is a test");// + response.body);
+  //getApi _getApi = new getApi();
+
+  //String response = getApi.fetchSessions().toString();
+  //await http.get(Constants.MONTH_SESSIONS, headers: {"Accept": "application/json"});
+
+  //print("==> 55  " + response.toString()); // + response.body);
+  /*
       setState(() {
         var sessionDart = sessionDartFromJson(response.body);
         var resBody = json.decode(response.body);
         csessions = resBody["currentSessions"];
       });
-      print("%%%%%%> " + response.body.toString());
-      return "success";
-    } else {
-      throw Exception('Failed to load post');
-    }
-  }
+      */
 
   @override
   Widget build(BuildContext context) {
+    String responseSess = _responseSess;
+    print("sess==> 76  " + responseSess.toString());
+    var sesDat = json.decode(responseSess);
+    print("sessDat==> 78  " + sesDat["CurrentSessions"].toString());
     return Scaffold(
       appBar: AppBar(
         title: Text('Startup Name Generator'),
-
       ),
       // body: _buildSuggestions(),
       //body: _myListView(context));
       //body: _myListViewDy(context));
       body: ListView.builder(
-        itemCount: 10,// csessions == null ? 0 : csessions.length,
-        itemBuilder: (BuildContext context, int index) {
-          return new Container(
-            child: Center(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  Card(
-                    child: Container(
-                       //child: Text(csessions[index]["department"]),
-                      child: Text("Test-------->100 -- $index"),
-                    /*   style: TextStyle(
+          itemCount: 10, // csessions == null ? 0 : csessions.length,
+          itemBuilder: (BuildContext context, int index) {
+            return new Container(
+              child: Center(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    Card(
+                      child: Container(
+                        //child: Text(csessions[index]["department"]),
+                        child: Text("Test-------->100 -- $index"),
+                        /*   style: TextStyle(
                   fontSize: 18.0,
                   color: Colors.black54
                 ),*/
+                      ),
                     ),
-                  ),
-
-                ],
+                  ],
+                ),
               ),
-            ),
-
-          );
-        }
-      ),
+            );
+          }),
     );
   }
 
