@@ -11,23 +11,10 @@ class getApi {
   static Future<String> fetchSessions() async {
     var response = await http.get(Constants.MONTH_SESSIONS);
     if (response.statusCode == 200) {
-      // print("==> " + response.body);
-      // return Session.fromJson(json.decode(response.body));
-/*
-      String testt = response.body;
-      print("===> " + testt);
-      var responseJson = json.decode(response.body.toString());
-      String _CurrentSessions = responseJson['CurrentSessions'].toString();
-      print("%%%%% 20> " + _CurrentSessions);
-      var _sessList = createSessionList(_CurrentSessions);
-      // print("==> " + responseJson.CurrentSessions);
-      */
-
-      // print("api ==> 26" + response.body);
       String sesDat = response.body;
       //String sesDat = json.decode(response.body);
-      var sessionDart = sessionDartFromJson(response.body.toString());
-      print("%%%%%%> " + sessionDart.currentSessions[1].toString());
+      //var sessionDart = sessionDartFromJson(response.body.toString());
+      // print("%%%%%%> " + sessionDart.currentSessions[1].toString());
 
       return sesDat;
     } else {

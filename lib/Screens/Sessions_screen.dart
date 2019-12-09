@@ -44,7 +44,7 @@ class getCurrentSessions extends StatefulWidget {
 }
 
 class getCurrentSessionsState extends State<getCurrentSessions> {
-  List csessions;
+  List csessions = new List<CurrentSession>();
   String _responseSess = null;
   final _biggerFont = const TextStyle(fontSize: 18.0);
   void initState() {
@@ -52,31 +52,22 @@ class getCurrentSessionsState extends State<getCurrentSessions> {
     if (_responseSess == null) {
       getApi.fetchSessions().then((String s) => setState(() {
             _responseSess = s;
+
+            var sesDat = json.decode(_responseSess);
+            Iterable list = sesDat["CurrentSessions"];
+            csessions =
+                list.map((model) => CurrentSession.fromJson(model)).toList();
           }));
     }
   }
-
-  //getApi _getApi = new getApi();
-
-  //String response = getApi.fetchSessions().toString();
-  //await http.get(Constants.MONTH_SESSIONS, headers: {"Accept": "application/json"});
-
-  //print("==> 55  " + response.toString()); // + response.body);
-  /*
-      setState(() {
-        var sessionDart = sessionDartFromJson(response.body);
-        var resBody = json.decode(response.body);
-        csessions = resBody["currentSessions"];
-      });
-      */
 
   @override
   Widget build(BuildContext context) {
     String responseSess = _responseSess;
     print("sess==> 76  " + responseSess.toString());
-    var sesDat = json.decode(responseSess);
-    List<CurrentSession> csessions = sesDat["CurrentSessions"];
-    print("sessDat==> 78  " + sesDat["CurrentSessions"].toString());
+    //  var sesDat = json.decode(responseSess);
+    // List<CurrentSession> csessions = sesDat["CurrentSessions"];
+    //   print("sessDat==> 78  " + sesDat["CurrentSessions"].toString());
     return Scaffold(
       appBar: AppBar(
         title: Text('Startup Name Generator'),
@@ -88,6 +79,7 @@ class getCurrentSessionsState extends State<getCurrentSessions> {
           padding: const EdgeInsets.all(10.0),
           itemCount: csessions == null ? 0 : csessions.length,
           itemBuilder: (BuildContext context, int index) {
+            /*
             return new Container(
               child: Center(
                 child: Column(
@@ -95,7 +87,14 @@ class getCurrentSessionsState extends State<getCurrentSessions> {
                   children: <Widget>[
                     Card(
                       child: Container(
-                        child: Text(csessions[index].department.toString()),
+                        child: Text(
+                          csessions[index].department.toString(),
+                          style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+
                         //child: Text("Test-------->100 -- $index"),
                         /*   style: TextStyle(
                   fontSize: 18.0,
@@ -104,6 +103,29 @@ class getCurrentSessionsState extends State<getCurrentSessions> {
                       ),
                     ),
                   ],
+                ),
+              ),
+            );
+            */
+            return Card(
+              child: ListTile(
+                leading: CircleAvatar(
+                  radius: 10,
+                  backgroundImage: AssetImage('assets/images/cc4.jpg'),
+                ),
+                title: Text(
+                  csessions[index].department,
+                  style: TextStyle(
+                    fontSize: 62,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                subtitle: Text(
+                  csessions[index].day,
+                  style: TextStyle(
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             );

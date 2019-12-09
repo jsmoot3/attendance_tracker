@@ -66,7 +66,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Image(
-                    image: AssetImage('images/TrackerLogo.png'),
+                    image: AssetImage('asset/images/TrackerLogo.png'),
                   ),
                 ),
               ),
