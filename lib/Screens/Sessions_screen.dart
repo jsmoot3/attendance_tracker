@@ -147,7 +147,7 @@ class getCurrentSessionsState extends State<getCurrentSessions> {
 
   //geting the title text
   String getHeadtext(CurrentSession _dession) {
-    return _dession.trainingGroup;
+    return _dession.department + " " + _dession.trainingGroup;
   }
 
   //geting the subtitle text
@@ -198,17 +198,10 @@ class getCurrentSessionsState extends State<getCurrentSessions> {
                                     width: 1.0, color: Colors.white24))),
                         child: getImage(csessions[index]),
                       ),
-
-                      //   Image.asset('asset/images/cc4.png', fit: BoxFit.cover),
-                      //),
-                      //   leading: CircleAvatar(
-                      //    radius: 80.0,
-                      //    backgroundImage: AssetImage('asset/images/cc4.png'),
-                      //   ),
                       title: Text(
                         getHeadtext(csessions[index]),
                         style: TextStyle(
-                          fontSize: 40,
+                          fontSize: 35,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -222,7 +215,7 @@ class getCurrentSessionsState extends State<getCurrentSessions> {
                                 Text(
                                   csessions[index].campusLocation,
                                   style: TextStyle(
-                                    fontSize: 35,
+                                    fontSize: 30,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
