@@ -1,28 +1,50 @@
 //application Models used
+import 'dart:convert';
+
+//List<Role> roleFromJson(String str) =>
+ //   List<Role>.from(json.decode(str).map((x) => Role.fromJson(x)));
+
+String roleToJson(List<Role> data) =>
+    json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class Role {
-  int id;
-  String RName;
-  String User;
-  Role(this.RName, this.User);
-  Role.withId(this.id, this.RName, this.User);
+  //int id;
+  String rName;
+  String user;
+  String empLid;
+  Role(this.rName, this.user, this.empLid);
+  //Role.withId(this.id, this.rName, this.User,this.EmpId);
 
   Map<String, dynamic> toMap() {
     var map = Map<String, dynamic>();
-    map["RName"] = this.RName;
-    map["User"] = this.User;
+    map["RName"] = this.rName;
+    map["User"] = this.user;
+    map["Emplid"] = this.empLid;
 
-    if (id != null) {
-      map["id"] = id;
-    }
+    //if (id != null) {
+    //  map["id"] = id;
+    // }
     return map;
   }
 
+  /*
+  factory Role.fromJson(Map<String, dynamic> json) => Role(
+        rName: json["RName"] == null ? null : json["RName"],
+        user: json["User"] == null ? null : json["User"],
+    empLid: json["Emplid"] == null ? null : json["Emplid"],
+  );
+*/
   Role.fromOject(dynamic input) {
-    this.id = input["id"];
-    this.RName = input["RName"];
-    this.User = input["User"];
+    this.rName = input["RName"];
+    this.user = input["User"];
+    this.empLid = input["Emplid"];
   }
+
+  Map<String, dynamic> toJson() => {
+        "RName": rName == null ? null : rName,
+        "User": user == null ? null : user,
+        "Emplid": empLid == null ? null : empLid,
+      };
 }
 
 class ValidUser {

@@ -123,6 +123,43 @@ class CurrentSession {
         "WaiverName": waiverName == null ? null : waiverName,
         "StartDate": startDate == null ? null : startDate.toIso8601String(),
       };
+
+  //write to the DB
+  Map<String, dynamic> toMap() {
+    var map = Map<String, dynamic>();
+    map["FLEventSessionID"] =
+        flEventSessionId == null ? null : flEventSessionId;
+    map["FLeventIDfk"] = fLeventIDfk == null ? null : fLeventIDfk;
+    map["CampusLocation"] = campusLocation == null ? null : campusLocation;
+    map["Trainer"] = trainer == null ? null : trainer;
+    map["TimeOfDay"] = timeOfDay == null ? null : timeOfDay;
+    map["Day"] = day == null ? null : day;
+    map["Department"] = department == null ? null : department;
+    map["TrainingGroup"] = trainingGroup == null ? null : trainingGroup;
+    map["WeekofClass"] = weekofClass == null ? null : weekofClass;
+    map["Divison"] = divison == null ? null : divison;
+    map["RequireWaiver"] = requireWaiver == null ? null : requireWaiver;
+    map["WaiverName"] = waiverName == null ? null : waiverName;
+    map["StartDate"] = startDate == null ? null : startDate.toIso8601String();
+    return map;
+  }
+
+  //from the DB
+  CurrentSession.fromDb(dynamic o) {
+    this.flEventSessionId = o["FLEventSessionID"];
+    this.fLeventIDfk = o["FLeventIDfk"];
+    this.campusLocation = o["CampusLocation"];
+    this.trainer = o["Trainer"];
+    this.trainer = o["TimeOfDay"];
+    this.day = o["Day"];
+    this.department = o["Department"];
+    this.trainingGroup = o["TrainingGroup"];
+    this.weekofClass = o["WeekofClass"];
+    this.divison = o["Divison"];
+    this.requireWaiver = o["RequireWaiver"];
+    this.waiverName = o["WaiverName"];
+    this.startDate = o["StartDate"];
+  }
 }
 
 //record of student that attend event.

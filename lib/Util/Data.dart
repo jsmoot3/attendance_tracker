@@ -9,11 +9,11 @@ class getData {
 //CUID
 ////////////////////////////////////////////////////////////
 //insert sessions
-  Future<int> insertSession(SessionDart) async {
+  Future<int> insertSession(CurrentSession inPut) async {
     var r;
     Database db = getDatabase();
     try {
-      r = await db.insert("tblSessions", SessionDart.toMap());
+      r = await db.insert("tblSessions", inPut.toMap());
     } catch (e) {
       debugPrint("insertDoc:" + e.toString());
     }
@@ -68,9 +68,35 @@ class getData {
     return r;
   }
 
+  //get sessions based on department
+  Future<List> getSessionsByDeptDb(String query) async {
+    String dept = query;
+    String sql = "Select * from tblSessions where department = " + query;
+    if (query.length < 1) {
+      Database db = getDatabase();
+      var out = await db.rawQuery(sql);
+      return out;
+    } else {
+      return null;
+    }
+  }
+
+  Future<List> getRolesFromIdDb(String query) async {
+    String dept = query;
+    String sql = "Select * from TblRoles where User = " + query + " || EmpId ==" + query;
+    if (query.length < 1) {
+      Database db = getDatabase();
+      var out = await db.rawQuery(sql);
+      return out;
+    } else {
+      return null;
+    }
+  }
+
+
+
   getDatabase() async {
     var inDb = DbHelper();
-
     final db = await inDb.db;
     return db;
   }

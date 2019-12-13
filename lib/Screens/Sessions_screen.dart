@@ -1,7 +1,7 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import '../Util/Data.dart';
-import '../Models/API.dart';
+import '../Models/GetApi.dart';
 import '../Models/Session.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -12,13 +12,7 @@ class SessionsScreen extends StatelessWidget {
   final String text;
 
   SessionsScreen({Key key, @required this.text}) : super(key: key);
-//  static var sessInfo = getApi.fetchSessions();
-  // static var CSession = sessInfo.CurrentSessions;
 
-  //print("===> " + CSessions[1].Department);
-
-  // List<Session> montSes = sessInfo.CurrentSessions;
-  // var _sess = getApi.fetchSessions();
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
@@ -49,8 +43,18 @@ class getCurrentSessionsState extends State<getCurrentSessions> {
   final _biggerFont = const TextStyle(fontSize: 18.0);
   void initState() {
     super.initState();
+
+
+
+
+
+
+    //TODO:read session from DB
+
+
+    //get/write to Db
     if (_responseSess == null) {
-      getApi.fetchSessions().then((String s) => setState(() {
+      GetApi.fetchSessions().then((String s) => setState(() {
             _responseSess = s;
 
             var sesDat = json.decode(_responseSess);
@@ -60,6 +64,8 @@ class getCurrentSessionsState extends State<getCurrentSessions> {
           }));
     }
   }
+
+
 
   // get image info
   Image getImage(CurrentSession _dession) {
@@ -189,7 +195,7 @@ class getCurrentSessionsState extends State<getCurrentSessions> {
                       // isThreeLine: true,
                       onLongPress: () {
                         //TODO: do something else
-                        _noTextAlert(csessions[index]);
+                        _noTextAlert("test");
                       },
                       leading: Container(
                         decoration: new BoxDecoration(
@@ -304,14 +310,13 @@ class getCurrentSessionsState extends State<getCurrentSessions> {
     );
   }
 
-  _noTextAlert(CurrentSession _csess) {
-    String temp = _csess.trainingGroup + _csess.campusLocation;
+  _noTextAlert(String mess) {
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Not in stock'),
-          content: new Text(temp),
+          content: const Text('This item is no longer available'),
           actions: <Widget>[
             FlatButton(
               child: Text('Ok'),
@@ -324,4 +329,5 @@ class getCurrentSessionsState extends State<getCurrentSessions> {
       },
     );
   }
+
 } //End of class

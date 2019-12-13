@@ -81,6 +81,7 @@ class DbHelper {
     await db.execute("CREATE TABLE TblRoles(" +
         "id INTEGER PRIMARY KEY," +
         "RName TEXT," +
+        "Emplid TEXT," +
         "User TEXT");
   }
 

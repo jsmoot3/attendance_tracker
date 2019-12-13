@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'Sessions_screen.dart';
 import '../Util/Data.dart';
+import '../Models/GetApi.dart';
+
+
 
 class LoadingScreen extends StatefulWidget {
   @override
@@ -13,6 +16,10 @@ class _LoadingScreenState extends State<LoadingScreen> {
   TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 10.0);
   TextEditingController _textFieldController = TextEditingController();
 
+
+
+
+
   @override
   void dispose() {
     // Clean up the controller when the widget is disposed.
@@ -22,6 +29,13 @@ class _LoadingScreenState extends State<LoadingScreen> {
 
   Widget build(BuildContext context) {
     imageCache.clear();
+
+  //  print('checking for connection 33 load scre');
+    // check if there is a internet connection
+    var isConnectedNow = GetApi.checkIfHaveConnection();
+//TODO:if have a connection update DB
+
+
 
     final logButton = RaisedButton(
       child: Text(
@@ -106,19 +120,19 @@ class _LoadingScreenState extends State<LoadingScreen> {
           ));
     } else {
       print('there is no letter ');
-      _noTextAlert();
+      _noTextAlert('there is no letter ');
     }
     // _textFieldController.text = "Login number";
     // });
   }
 
-  _noTextAlert() {
+  _noTextAlert(String _mess) {
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Not in stock'),
-          content: const Text('This item is no longer available'),
+          content: const Text("ewewe"),
           actions: <Widget>[
             FlatButton(
               child: Text('Ok'),
