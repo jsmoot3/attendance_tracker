@@ -1,12 +1,8 @@
-import 'dart:developer';
 import 'package:flutter/material.dart';
-import '../Util/Data.dart';
 import '../Models/GetApi.dart';
 import '../Models/Session.dart';
-import 'package:http/http.dart' as http;
 import 'dart:convert';
-import '../constants.dart' as Constants;
-import '../Models/App_Models.dart';
+import '../Models/AppData.dart';
 
 class SessionsScreen extends StatelessWidget {
   final String text;
@@ -39,33 +35,28 @@ class getCurrentSessions extends StatefulWidget {
 
 class getCurrentSessionsState extends State<getCurrentSessions> {
   List csessions = new List<CurrentSession>();
-  String _responseSess = null;
+  AppData _responseSess = null;
   final _biggerFont = const TextStyle(fontSize: 18.0);
   void initState() {
     super.initState();
-
-
-
-
-
-
     //TODO:read session from DB
 
-
-    //get/write to Db
+    //get info from Db
+    /*
     if (_responseSess == null) {
-      GetApi.fetchSessions().then((String s) => setState(() {
+      GetApi.fetchSessions().then((AppData s) => setState(() {
             _responseSess = s;
 
-            var sesDat = json.decode(_responseSess);
-            Iterable list = sesDat["CurrentSessions"];
-            csessions =
-                list.map((model) => CurrentSession.fromJson(model)).toList();
+            // var sesDat = json.decode(_responseSess);
+            // Iterable list = sesDat["CurrentSessions"];
+            // csessions =
+            //     list.map((model) => CurrentSession.fromJson(model)).toList();
           }));
     }
+
+     */
+    //TODO: read sessions from DB
   }
-
-
 
   // get image info
   Image getImage(CurrentSession _dession) {
@@ -163,8 +154,8 @@ class getCurrentSessionsState extends State<getCurrentSessions> {
 
   @override
   Widget build(BuildContext context) {
-    String responseSess = _responseSess;
-    print("sess==> 76  " + responseSess.toString());
+    // String responseSess = _responseSess.appDataSessions;
+    // print("sess==> 76  " + responseSess.toString());
     //  var sesDat = json.decode(responseSess);
     // List<CurrentSession> csessions = sesDat["CurrentSessions"];
     //   print("sessDat==> 78  " + sesDat["CurrentSessions"].toString());
@@ -329,5 +320,4 @@ class getCurrentSessionsState extends State<getCurrentSessions> {
       },
     );
   }
-
 } //End of class

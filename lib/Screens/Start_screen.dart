@@ -3,22 +3,47 @@ import 'package:flutter/foundation.dart';
 import 'Sessions_screen.dart';
 import '../Util/Data.dart';
 import '../Models/GetApi.dart';
+import '../Models/AppData.dart';
+import '../Models/Session.dart';
+import '../Util/Data.dart';
 
-
-
-class LoadingScreen extends StatefulWidget {
+class StartScreen extends StatefulWidget {
   @override
-  _LoadingScreenState createState() => _LoadingScreenState();
+  _StartScreenState createState() => _StartScreenState();
 }
 
-class _LoadingScreenState extends State<LoadingScreen> {
+class _StartScreenState extends State<StartScreen> {
   // final myController = TextEditingController();
   TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 10.0);
   TextEditingController _textFieldController = TextEditingController();
+  List<CurrentSession> csessions = new List<CurrentSession>();
+  AppData _AppData = null;
+  void initState() {
+    super.initState();
 
+    GetApi.checkIfHaveConnectionUpdateDB().then((AppData d) => setState(() {
+          _AppData = d;
 
+          //.then((AppData s) => setState(() {
+          // _responseSess = s;
+          print("+++++++++++++++");
+          // print(_AppData.runtimeType);
+          print("+++++++++++++++");
+          //TODO:add information to db
 
-
+          if (_AppData != null) {
+            //  _noTextAlert("got information from api");
+            // var sesDat = json.decode(_responseSess);
+            // Iterable list = sesDat["CurrentSessions"];
+            //csessions = _responseSess.appDataSessions;
+            //list.map((model) => CurrentSession.fromJson(model)).toList();
+            //  print("I am in start ===>43" +
+            //     _AppData.appDataSessions[0].department);
+          } else {
+            CircularProgressIndicator();
+          }
+        }));
+  }
 
   @override
   void dispose() {
@@ -30,43 +55,44 @@ class _LoadingScreenState extends State<LoadingScreen> {
   Widget build(BuildContext context) {
     imageCache.clear();
 
-  //  print('checking for connection 33 load scre');
+    //  print('checking for connection 33 load scre');
     // check if there is a internet connection
-    var isConnectedNow = GetApi.checkIfHaveConnection();
+    //var isConnectedNow = GetApi.checkIfHaveConnectionUpdateDB();
+    //get/write to Db
+    //if (_responseSess == null) {
+
 //TODO:if have a connection update DB
-
-
-
-    final logButton = RaisedButton(
-      child: Text(
-        "Submit",
-        style: TextStyle(
-          fontSize: 42.0,
+    if (_AppData != null) {
+      final logButton = RaisedButton(
+        child: Text(
+          "Submit",
+          style: TextStyle(
+            fontSize: 42.0,
+          ),
         ),
-      ),
-      onPressed: _changeText,
-      color: Colors.green,
-      textColor: Colors.white,
-      padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-      splashColor: Colors.grey,
-    );
+        onPressed: _changeText,
+        color: Colors.green,
+        textColor: Colors.white,
+        padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+        splashColor: Colors.grey,
+      );
 
-    final nTextField = TextField(
-      controller: _textFieldController,
-      decoration: InputDecoration(
-        //Add th Hint text here.
-        hintText: "Group Number",
-        border: OutlineInputBorder(),
-      ),
-      style: TextStyle(
-        fontSize: 40.0,
-        fontStyle: FontStyle.italic,
-      ),
-    );
+      final nTextField = TextField(
+        controller: _textFieldController,
+        decoration: InputDecoration(
+          //Add th Hint text here.
+          hintText: "Group Number" + _AppData.appDataSessions[0].department,
+          border: OutlineInputBorder(),
+        ),
+        style: TextStyle(
+          fontSize: 40.0,
+          fontStyle: FontStyle.italic,
+        ),
+      );
 
-    return Scaffold(
+      return Scaffold(
         appBar: AppBar(
-          title: Text('Tracker'),
+          title: Text('Attrndance Tracker'),
         ),
         resizeToAvoidBottomInset: false,
         body: Padding(
@@ -99,7 +125,12 @@ class _LoadingScreenState extends State<LoadingScreen> {
               SizedBox(height: 150.0),
             ],
           ),
-        ));
+        ),
+      );
+    } else {
+      // By default, show a loading spinner.
+      return _loadingView;
+    }
   }
 
   // handle the button click event
@@ -124,6 +155,12 @@ class _LoadingScreenState extends State<LoadingScreen> {
     }
     // _textFieldController.text = "Login number";
     // });
+  }
+
+  Widget get _loadingView {
+    return new Center(
+      child: new CircularProgressIndicator(),
+    );
   }
 
   _noTextAlert(String _mess) {

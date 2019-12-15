@@ -164,33 +164,33 @@ class CurrentSession {
 
 //record of student that attend event.
 class Attendie {
-  String StudentId;
-  String EventSessionId_fk;
-  String FLEventId_FK;
-  String Date;
-  String SignedInBy;
-  String OtherAttLocation;
+  String studentId;
+  String eventSessionId_fk;
+  String fLEventId_FK;
+  String date;
+  String signedInBy;
+  String otherAttLocation;
 
-  Attendie(this.StudentId, this.EventSessionId_fk, this.FLEventId_FK, this.Date,
-      this.SignedInBy, this.OtherAttLocation);
+  Attendie(this.studentId, this.eventSessionId_fk, this.fLEventId_FK, this.date,
+      this.signedInBy, this.otherAttLocation);
 
   Map<String, dynamic> toMap() {
     var map = Map<String, dynamic>();
-    map["StudentId"] = this.StudentId;
-    map["EventSessionId_fk"] = this.EventSessionId_fk;
-    map["FLEventIdFK"] = this.FLEventId_FK;
-    map["Date"] = this.Date;
-    map["SignedInBy"] = this.SignedInBy;
-    map["OtherAttLocation"] = this.OtherAttLocation;
+    map["StudentId"] = this.studentId;
+    map["EventSessionId_fk"] = this.eventSessionId_fk;
+    map["FLEventIdFK"] = this.fLEventId_FK;
+    map["Date"] = this.date;
+    map["SignedInBy"] = this.signedInBy;
+    map["OtherAttLocation"] = this.otherAttLocation;
     return map;
   }
 
   Attendie.fromOject(dynamic input) {
-    this.StudentId = input["StudentId"];
-    this.EventSessionId_fk = input["EventSessionId_fk"];
-    this.FLEventId_FK = input["FLEventIdFK"];
-    this.Date = input["Date"];
-    this.SignedInBy = input["SignedInBy"];
-    this.OtherAttLocation = input["OtherAttLocation"];
+    this.studentId = input["StudentId"];
+    this.eventSessionId_fk = input["EventSessionId_fk"];
+    this.fLEventId_FK = input["FLEventIdFK"];
+    this.date = input["Date"];
+    this.signedInBy = input["SignedInBy"];
+    this.otherAttLocation = input["OtherAttLocation"];
   }
 }

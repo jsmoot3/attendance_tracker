@@ -2,7 +2,7 @@
 import 'dart:convert';
 
 //List<Role> roleFromJson(String str) =>
- //   List<Role>.from(json.decode(str).map((x) => Role.fromJson(x)));
+//   List<Role>.from(json.decode(str).map((x) => Role.fromJson(x)));
 
 String roleToJson(List<Role> data) =>
     json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
@@ -12,7 +12,7 @@ class Role {
   String rName;
   String user;
   String empLid;
-  Role(this.rName, this.user, this.empLid);
+  Role({this.rName, this.user, this.empLid});
   //Role.withId(this.id, this.rName, this.User,this.EmpId);
 
   Map<String, dynamic> toMap() {
@@ -27,13 +27,12 @@ class Role {
     return map;
   }
 
-  /*
   factory Role.fromJson(Map<String, dynamic> json) => Role(
         rName: json["RName"] == null ? null : json["RName"],
         user: json["User"] == null ? null : json["User"],
-    empLid: json["Emplid"] == null ? null : json["Emplid"],
-  );
-*/
+        empLid: json["Emplid"] == null ? null : json["Emplid"],
+      );
+
   Role.fromOject(dynamic input) {
     this.rName = input["RName"];
     this.user = input["User"];
@@ -48,40 +47,41 @@ class Role {
 }
 
 class ValidUser {
-  int id;
-  String CardId;
-  String Barcode;
-  ValidUser(this.CardId, this.Barcode);
-  ValidUser.withId(this.id, this.CardId, this.Barcode);
+  String cardId;
+  String barcode;
+  String empLid;
+  ValidUser({this.cardId, this.barcode, this.empLid});
 
   Map<String, dynamic> toMap() {
     var map = Map<String, dynamic>();
-    map["CardId"] = this.CardId;
-    map["Barcode"] = this.Barcode;
-
-    if (id != null) {
-      map["id"] = id;
-    }
+    map["CardId"] = this.cardId;
+    map["Barcode"] = this.barcode;
+    map["EmpLid"] = this.empLid;
     return map;
   }
 
   ValidUser.fromOject(dynamic input) {
-    this.id = input["id"];
-    this.CardId = input["CardId"];
-    this.Barcode = input["Barcode"];
+    this.cardId = input["CardId"];
+    this.barcode = input["Barcode"];
+    this.empLid = input["EmpLid"];
   }
+  factory ValidUser.fromJson(Map<String, dynamic> json) => ValidUser(
+        cardId: json["RName"] == null ? null : json["RName"],
+        barcode: json["User"] == null ? null : json["User"],
+        empLid: json["EmpLid"] == null ? null : json["EmpLid"],
+      );
 }
 
 class Department {
   int id;
-  String Name;
-  Department(this.Name);
+  String name;
+  Department(this.name);
 
-  Department.withId(this.id, this.Name);
+  Department.withId(this.id, this.name);
 
   Map<String, dynamic> toMap() {
     var map = Map<String, dynamic>();
-    map["Name"] = this.Name;
+    map["Name"] = this.name;
 
     if (id != null) {
       map["id"] = id;
@@ -91,6 +91,6 @@ class Department {
 
   Department.fromOject(dynamic input) {
     this.id = input["id"];
-    this.Name = input["Name"];
+    this.name = input["Name"];
   }
 }

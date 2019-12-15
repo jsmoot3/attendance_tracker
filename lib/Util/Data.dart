@@ -4,14 +4,16 @@ import 'package:sqflite/sqflite.dart';
 import '../Util/dbHelper.dart';
 import '../Models/Session.dart';
 import '../Models/App_Models.dart';
+import '../Models/AppData.dart';
 
 class getData {
+  Future<AppData> GetDbItems() async {}
 //CUID
 ////////////////////////////////////////////////////////////
 //insert sessions
   Future<int> insertSession(CurrentSession inPut) async {
     var r;
-    Database db = getDatabase();
+    Database db = await getDatabase();
     try {
       r = await db.insert("tblSessions", inPut.toMap());
     } catch (e) {
@@ -83,7 +85,8 @@ class getData {
 
   Future<List> getRolesFromIdDb(String query) async {
     String dept = query;
-    String sql = "Select * from TblRoles where User = " + query + " || EmpId ==" + query;
+    String sql =
+        "Select * from TblRoles where User = " + query + " || EmpId ==" + query;
     if (query.length < 1) {
       Database db = getDatabase();
       var out = await db.rawQuery(sql);
@@ -92,8 +95,6 @@ class getData {
       return null;
     }
   }
-
-
 
   getDatabase() async {
     var inDb = DbHelper();
