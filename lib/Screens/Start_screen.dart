@@ -6,6 +6,9 @@ import '../Models/GetApi.dart';
 import '../Models/AppData.dart';
 import '../Models/Session.dart';
 import '../Util/Data.dart';
+import '../Util/dbHelper.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:path_provider/path_provider.dart';
 
 class StartScreen extends StatefulWidget {
   @override
@@ -32,13 +35,28 @@ class _StartScreenState extends State<StartScreen> {
           //TODO:add information to db
 
           if (_AppData != null) {
-            //  _noTextAlert("got information from api");
-            // var sesDat = json.decode(_responseSess);
-            // Iterable list = sesDat["CurrentSessions"];
-            //csessions = _responseSess.appDataSessions;
-            //list.map((model) => CurrentSession.fromJson(model)).toList();
-            //  print("I am in start ===>43" +
-            //     _AppData.appDataSessions[0].department);
+            //insert into DB
+            // int ses = 0;
+            int rol = 0;
+            int usr = 0;
+            //TODO: insert into current session DB
+            final DbHelper _getData = DbHelper();
+            Future<Database> trackerDb = _getData.initializeDb();
+            // _getData.initializeDb();
+            for (var i = 0; i < 2; i++) {
+              //var ses = _getData.insertSession(_AppData.appDataSessions[i]);
+              _getData.insertSession(_AppData.appDataSessions[i]);
+              // print("*****-->43 " + _AppData.appDataSessions[i].department);
+            }
+
+            //var tNames = _getData.GetTableNames();
+            //  for (var i = 0; i < 2; i++) {
+            //var ses = tNames.toString();
+            //print("*****-->49 " + ses);
+            //  }
+
+            //TODO: insert into insertRoles DB
+            //TODO: insert into valid users DB
           } else {
             CircularProgressIndicator();
           }
@@ -54,12 +72,6 @@ class _StartScreenState extends State<StartScreen> {
 
   Widget build(BuildContext context) {
     imageCache.clear();
-
-    //  print('checking for connection 33 load scre');
-    // check if there is a internet connection
-    //var isConnectedNow = GetApi.checkIfHaveConnectionUpdateDB();
-    //get/write to Db
-    //if (_responseSess == null) {
 
 //TODO:if have a connection update DB
     if (_AppData != null) {

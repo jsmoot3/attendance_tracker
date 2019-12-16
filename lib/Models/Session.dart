@@ -127,20 +127,20 @@ class CurrentSession {
   //write to the DB
   Map<String, dynamic> toMap() {
     var map = Map<String, dynamic>();
-    map["FLEventSessionID"] =
-        flEventSessionId == null ? null : flEventSessionId;
-    map["FLeventIDfk"] = fLeventIDfk == null ? null : fLeventIDfk;
+    map["EventSessionID"] = flEventSessionId == null ? null : flEventSessionId;
+    map["EventIDfk"] = fLeventIDfk == null ? null : fLeventIDfk;
     map["CampusLocation"] = campusLocation == null ? null : campusLocation;
     map["Trainer"] = trainer == null ? null : trainer;
+    map["StartDate"] = startDate == null ? null : startDate.toIso8601String();
     map["TimeOfDay"] = timeOfDay == null ? null : timeOfDay;
     map["Day"] = day == null ? null : day;
     map["Department"] = department == null ? null : department;
     map["TrainingGroup"] = trainingGroup == null ? null : trainingGroup;
-    map["WeekofClass"] = weekofClass == null ? null : weekofClass;
-    map["Divison"] = divison == null ? null : divison;
-    map["RequireWaiver"] = requireWaiver == null ? null : requireWaiver;
+    // map["WeekofClass"] = weekofClass == null ? null : weekofClass;
+    // map["Divison"] = divison == null ? null : divison;
+    // map["RequireWaiver"] = requireWaiver == null ? null : requireWaiver;
     map["WaiverName"] = waiverName == null ? null : waiverName;
-    map["StartDate"] = startDate == null ? null : startDate.toIso8601String();
+
     return map;
   }
 

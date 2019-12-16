@@ -7,7 +7,23 @@ import '../Models/App_Models.dart';
 import '../Models/AppData.dart';
 
 class getData {
-  Future<AppData> GetDbItems() async {}
+  /*
+  Future<List<String>> GetTableNames() async {
+    var r;
+    List<Map<String, dynamic>> tables = await getDatabase();
+    try {
+      List<String> list = List();
+
+      for (var i = 1; i < tables.length; i++) {
+        list.add(tables[i]['name']);
+      }
+      return list;
+    } catch (e) {
+      debugPrint("insertDoc:" + e.toString());
+    }
+    return null;
+  }
+
 //CUID
 ////////////////////////////////////////////////////////////
 //insert sessions
@@ -15,6 +31,11 @@ class getData {
     var r;
     Database db = await getDatabase();
     try {
+      if (db != null) {
+        print("able to create db");
+      } else {
+        print("No db created");
+      }
       r = await db.insert("tblSessions", inPut.toMap());
     } catch (e) {
       debugPrint("insertDoc:" + e.toString());
@@ -95,18 +116,18 @@ class getData {
       return null;
     }
   }
-
+/*
   getDatabase() async {
     var inDb = DbHelper();
-    final db = await inDb.db;
+    final db = await inDb.getDatabase();
     return db;
   }
-
+*/
 /////////////////////////////////////////////////////////////////////////
   //////////  eND cuid  ///////////////////////
 
   /////////////////////////////////////////////////////////////////////
   ////////////  api calls
   //////////////////////////////////////////////////////////////
-
+*/
 }

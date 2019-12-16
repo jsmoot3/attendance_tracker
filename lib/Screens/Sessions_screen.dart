@@ -3,6 +3,8 @@ import '../Models/GetApi.dart';
 import '../Models/Session.dart';
 import 'dart:convert';
 import '../Models/AppData.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import '../store/actions.dart';
 
 class SessionsScreen extends StatelessWidget {
   final String text;
@@ -159,6 +161,7 @@ class getCurrentSessionsState extends State<getCurrentSessions> {
     //  var sesDat = json.decode(responseSess);
     // List<CurrentSession> csessions = sesDat["CurrentSessions"];
     //   print("sessDat==> 78  " + sesDat["CurrentSessions"].toString());
+    StoreConnector<int, String>(converter: (store) => store.state.toString());
     return Scaffold(
       appBar: AppBar(
         title: Text('Startup Name Generator'),
@@ -166,6 +169,7 @@ class getCurrentSessionsState extends State<getCurrentSessions> {
       // body: _buildSuggestions(),
       //body: _myListView(context));
       //body: _myListViewDy(context));
+
       body: ListView.builder(
           padding: const EdgeInsets.all(10.0),
           itemCount: csessions == null ? 0 : csessions.length,
