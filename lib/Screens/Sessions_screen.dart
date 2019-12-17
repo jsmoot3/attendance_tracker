@@ -1,3 +1,4 @@
+import 'package:attendance_tracker/Screens/Start_screen.dart';
 import 'package:flutter/material.dart';
 import '../Models/GetApi.dart';
 import '../Models/Session.dart';
@@ -8,7 +9,7 @@ import '../store/actions.dart';
 
 class SessionsScreen extends StatelessWidget {
   final String text;
-
+  AppData newdata;
   SessionsScreen({Key key, @required this.text}) : super(key: key);
 
   @override
@@ -29,6 +30,7 @@ class SessionsScreen extends StatelessWidget {
 }
 
 class getCurrentSessions extends StatefulWidget {
+  
   @override
   State<StatefulWidget> createState() {
     return new getCurrentSessionsState();
@@ -43,6 +45,12 @@ class getCurrentSessionsState extends State<getCurrentSessions> {
     super.initState();
     //TODO:read session from DB
 
+   // csessions = _responseSess.map((model) => CurrentSession.fromJson(model)).toList();;
+
+// Iterable list = newdata["CurrentSessions"];
+ //            csessions =
+ //                list.map((model) => CurrentSession.fromJson(model)).toList();
+
     //get info from Db
     /*
     if (_responseSess == null) {
@@ -50,9 +58,9 @@ class getCurrentSessionsState extends State<getCurrentSessions> {
             _responseSess = s;
 
             // var sesDat = json.decode(_responseSess);
-            // Iterable list = sesDat["CurrentSessions"];
-            // csessions =
-            //     list.map((model) => CurrentSession.fromJson(model)).toList();
+             Iterable list = sesDat["CurrentSessions"];
+             csessions =
+                 list.map((model) => CurrentSession.fromJson(model)).toList();
           }));
     }
 

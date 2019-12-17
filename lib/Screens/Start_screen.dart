@@ -11,16 +11,21 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
 
 class StartScreen extends StatefulWidget {
+StartScreen({this.appDataSession});
+final appDataSession;
+
   @override
   _StartScreenState createState() => _StartScreenState();
 }
 
 class _StartScreenState extends State<StartScreen> {
+
   // final myController = TextEditingController();
   TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 10.0);
   TextEditingController _textFieldController = TextEditingController();
   List<CurrentSession> csessions = new List<CurrentSession>();
   AppData _AppData = null;
+
   void initState() {
     super.initState();
 
@@ -29,9 +34,10 @@ class _StartScreenState extends State<StartScreen> {
 
           //.then((AppData s) => setState(() {
           // _responseSess = s;
-          print("+++++++++++++++");
+          print("+++++++++++++++32");
+         
           // print(_AppData.runtimeType);
-          print("+++++++++++++++");
+          // print("+++++++++++++++");
           //TODO:add information to db
 
           if (_AppData != null) {
@@ -39,21 +45,21 @@ class _StartScreenState extends State<StartScreen> {
             // int ses = 0;
             int rol = 0;
             int usr = 0;
+           
             //TODO: insert into current session DB
             final DbHelper _getData = DbHelper();
-            Future<Database> trackerDb = _getData.initializeDb();
-            // _getData.initializeDb();
-            for (var i = 0; i < 2; i++) {
-              //var ses = _getData.insertSession(_AppData.appDataSessions[i]);
-              _getData.insertSession(_AppData.appDataSessions[i]);
-              // print("*****-->43 " + _AppData.appDataSessions[i].department);
-            }
 
-            //var tNames = _getData.GetTableNames();
-            //  for (var i = 0; i < 2; i++) {
-            //var ses = tNames.toString();
-            //print("*****-->49 " + ses);
-            //  }
+            _getData.dropTables();
+            //   Future<Database> trackerDb = _getData.initializeDb();
+            // _getData.initializeDb();
+            // for (var i = 0; i < 2; i++) {
+            //   _getData.insertSession(_AppData.appDataSessions[i]);
+            // print("*****-->43 " + _AppData.appDataSessions[i].department);
+            // }
+
+print(widget.appDataSession);
+
+            _getData.insertSession(_AppData.appDataSessions[1]);
 
             //TODO: insert into insertRoles DB
             //TODO: insert into valid users DB
@@ -74,7 +80,9 @@ class _StartScreenState extends State<StartScreen> {
     imageCache.clear();
 
 //TODO:if have a connection update DB
+
     if (_AppData != null) {
+      AppData appdata = _AppData;
       final logButton = RaisedButton(
         child: Text(
           "Submit",
@@ -150,6 +158,7 @@ class _StartScreenState extends State<StartScreen> {
     //  setState(() {
     // print('Your number was => $_textFieldController.text ');
     // _noTextAlert();
+    // AppData appdata = _AppData;
     String text1 = _textFieldController.text;
     if (text1 != '') {
       // print('Your number was =>$text1');
@@ -158,7 +167,7 @@ class _StartScreenState extends State<StartScreen> {
           context,
           MaterialPageRoute(
             builder: (context) => SessionsScreen(
-              text: '$text1',
+              text: '$text1',              
             ),
           ));
     } else {

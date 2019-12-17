@@ -22,7 +22,7 @@ class GetApi {
       final result = //await checkForconnection();
           await InternetAddress.lookup("google.com"); //Constants.MONTH_SESSIONS
       if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-        print(await '----- 21 Api connected');
+        print(await '----- 25 Api connected');
         isConnected = true;
         _AppData.appDataSessions = await fetchSessions();
         _AppData.appDataroles = await fetchRoles();

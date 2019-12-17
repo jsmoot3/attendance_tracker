@@ -24,6 +24,7 @@ class DbHelper {
   }
 
   Future<Database> get database async {
+
     if (_database == null) {
       _database = await initializeDb();
     }
@@ -41,7 +42,7 @@ class DbHelper {
     // print("----->38 In the initializedDB ");
     Directory dir = await getApplicationDocumentsDirectory();
     String p = dir.path + "trackerDb.db";
-    print("----->41 In the initializedDB the db --> " + p);
+    print("----->45 In the initializedDB the db --> " + p);
     var db = await openDatabase(p, version: 2, onCreate: _createDbs);
     return db;
   }
@@ -195,6 +196,16 @@ class DbHelper {
       return null;
     }
   }
+
+//Drop table
+dropTables() async {
+     Database db = await this.database;
+    var res =await  db.execute("DROP TABLE IF EXISTS trackerDb.db");
+    print("droped table trackerDb.db");
+   // return res ;
+  }
+
+
 
 /*
   Future<List<String>> tableList() async {
