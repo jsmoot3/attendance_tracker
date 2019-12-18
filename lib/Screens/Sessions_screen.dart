@@ -6,11 +6,14 @@ import 'dart:convert';
 import '../Models/AppData.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import '../store/actions.dart';
+import 'Start_screen.dart';
+
+
 
 class SessionsScreen extends StatelessWidget {
   final String text;
-  AppData newdata;
-  SessionsScreen({Key key, @required this.text}) : super(key: key);
+  final newdata;
+  SessionsScreen({Key key, @required this.text, this.newdata}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +33,9 @@ class SessionsScreen extends StatelessWidget {
 }
 
 class getCurrentSessions extends StatefulWidget {
-  
+ // StartScreen({this.appDataSession});
+//final appDataSession;
+
   @override
   State<StatefulWidget> createState() {
     return new getCurrentSessionsState();

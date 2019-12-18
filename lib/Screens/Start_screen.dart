@@ -11,20 +11,16 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
 
 class StartScreen extends StatefulWidget {
-StartScreen({this.appDataSession});
-final appDataSession;
-
   @override
   _StartScreenState createState() => _StartScreenState();
 }
 
 class _StartScreenState extends State<StartScreen> {
-
   // final myController = TextEditingController();
   TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 10.0);
   TextEditingController _textFieldController = TextEditingController();
   List<CurrentSession> csessions = new List<CurrentSession>();
-  AppData _AppData = null;
+  AppData _AppData;
 
   void initState() {
     super.initState();
@@ -35,7 +31,7 @@ class _StartScreenState extends State<StartScreen> {
           //.then((AppData s) => setState(() {
           // _responseSess = s;
           print("+++++++++++++++32");
-         
+
           // print(_AppData.runtimeType);
           // print("+++++++++++++++");
           //TODO:add information to db
@@ -45,21 +41,24 @@ class _StartScreenState extends State<StartScreen> {
             // int ses = 0;
             int rol = 0;
             int usr = 0;
-           
+
             //TODO: insert into current session DB
             final DbHelper _getData = DbHelper();
 
-            _getData.dropTables();
+            // _getData.dropTables();
+
             //   Future<Database> trackerDb = _getData.initializeDb();
             // _getData.initializeDb();
             // for (var i = 0; i < 2; i++) {
             //   _getData.insertSession(_AppData.appDataSessions[i]);
-            // print("*****-->43 " + _AppData.appDataSessions[i].department);
+            print("*****-->43 " + _AppData.appDataSessions[0].toString());
             // }
 
-print(widget.appDataSession);
+//print(widget.appDataSession);
 
-            _getData.insertSession(_AppData.appDataSessions[1]);
+            _getData.insertSessionRaw(_AppData.appDataSessions[0]);
+
+            // List<CurrentSession> output =  _getData.getAlltblSessions();
 
             //TODO: insert into insertRoles DB
             //TODO: insert into valid users DB
@@ -167,7 +166,7 @@ print(widget.appDataSession);
           context,
           MaterialPageRoute(
             builder: (context) => SessionsScreen(
-              text: '$text1',              
+              text: '$text1',
             ),
           ));
     } else {

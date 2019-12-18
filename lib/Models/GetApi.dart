@@ -54,8 +54,7 @@ class GetApi {
       Iterable list = sesDate["CurrentSessions"];
       csessions = list.map((model) => CurrentSession.fromJson(model)).toList();
 
-      // Set<CurrentSession> set = Set.from(csessions);
-
+    // print("#########-->" + sesDate);
       //print(await "GetApi length sess==> 50  " + csessions.length.toString());
       // print("//////////////////////////////////////////////////////////");
       // csessions.forEach((sess) => print(sess.department));

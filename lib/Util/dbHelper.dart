@@ -12,6 +12,8 @@ class DbHelper {
   static DbHelper _dbHelper;
 //Database entry point
   static Database _database;
+  //database path
+  String dbpath;
 
   DbHelper._createInstance();
 
@@ -24,7 +26,6 @@ class DbHelper {
   }
 
   Future<Database> get database async {
-
     if (_database == null) {
       _database = await initializeDb();
     }
@@ -41,9 +42,10 @@ class DbHelper {
   Future<Database> initializeDb() async {
     // print("----->38 In the initializedDB ");
     Directory dir = await getApplicationDocumentsDirectory();
-    String p = dir.path + "trackerDb.db";
-    print("----->45 In the initializedDB the db --> " + p);
-    var db = await openDatabase(p, version: 2, onCreate: _createDbs);
+    dbpath = dir.path + "/trackerDb.db";
+    print("--DBhelp--->45 In the initializedDB the db --> " + dbpath);
+    dropTables(dbpath);
+    var db = await openDatabase(dbpath, version: 2, onCreate: _createDbs);
     return db;
   }
 
@@ -58,20 +60,31 @@ class DbHelper {
   }
 
   //Create the TblSessionsDB.db database
-  void _createTblSessionsDB(Database db, int version) async {
+  Future<void> _createTblSessionsDB(Database db, int version) async {
+    dropTables("tblSessions");
     print("----->57 creatingDB tblSessions ");
-    await db.execute("CREATE TABLE tblSessions(" +
-        "EventSessionID TEXT," +
-        "EventIDfk TEXT," +
-        "CampusLocation TEXT," +
-        "Trainer TEXT" +
-        "StartDate TEXT," +
-        "TimeOfDay TEXT," +
-        "Day TEXT," +
-        "Department TEXT," +
-        "TrainingGroup TEXT," +
-        "Divison TEXT," +
-        "WaverName TEXT)");
+    try {
+      final sTableSessions = '''CREATE TABLE tblSessions
+      (
+        FLEventSessionID INT,
+        FLeventIDfk INT,
+        CampusLocation STRING,
+        Trainer STRING,
+        StartDate DATETIME,
+        TimeOfDay TIME,
+        Day STRING,
+        Department STRING,
+        TrainingGroup STRING,
+        WeekofClass STRING,
+        Divison STRING,
+        RequireWaver BOOL,
+        WaverName STRING,
+      )''';
+      await db.execute(sTableSessions);
+    } catch (e) {
+      debugPrint("insertDoc: " + e.toString());
+      print("There is a problem " + e.toString());
+    }
   }
 
   //Create the TblAttendieDB.db database
@@ -129,7 +142,55 @@ class DbHelper {
       } else {
         // print("No db created");
       }
-      r = await db.insert("tblSessions", inPut.toMap());
+      r = await db.insert("tblSessions", inPut.toJson());
+    } catch (e) {
+      debugPrint("insertDoc: " + e.toString());
+    }
+    return r;
+  }
+
+  Future<int> insertSessionRaw(CurrentSession inPut) async {
+    var r;
+    Database db = await this.database;
+    try {
+      if (db != null) {
+        // print("able to create db");
+      } else {
+        // print("No db created");
+      }
+      final isql = '''INSERT INTO tblSessions
+      (
+       FLEventSessionID,
+        FLeventIDfk,
+        CampusLocation,
+        Trainer,
+        StartDate,
+        TimeOfDay,
+        Day,
+        Department,
+        TrainingGroup,
+        WeekofClass,
+        Divison,
+        RequireWaver,
+        WaverName
+      )
+      VALUES
+      (
+        ${inPut.flEventSessionId},
+        ${inPut.fLeventIDfk},
+        ${inPut.campusLocation},
+        ${inPut.trainer},
+        '${inPut.startDate}',
+        '${inPut.timeOfDay}',
+        ${inPut.day},
+        ${inPut.department},
+        ${inPut.trainingGroup},
+        ${inPut.weekofClass},
+        ${inPut.divison},
+        ${inPut.requireWaiver},
+        ${inPut.waiverName}
+      )''';
+      final output = await db.rawInsert(isql);
     } catch (e) {
       debugPrint("insertDoc: " + e.toString());
     }
@@ -198,15 +259,34 @@ class DbHelper {
   }
 
 //Drop table
-dropTables() async {
-     Database db = await this.database;
-    var res =await  db.execute("DROP TABLE IF EXISTS trackerDb.db");
-    print("droped table trackerDb.db");
-   // return res ;
+  dropTables(String tName) async {
+    if (await Directory(dbpath).exists()) {
+      Database db = await this.database;
+      var res = await db.execute("DROP TABLE IF EXISTS " + tName);
+      print("droped table --211 " + tName);
+    }
+    // return res ;
   }
 
+  //show data in table
 
-
+  Future<List<CurrentSession>> getAlltblSessions() async {
+    Database db = await this.database;
+    try {
+      final sql = '''SELECT * FROM tblSessions}''';
+      final data = await db.rawQuery(sql);
+      List<CurrentSession> todos = List();
+      for (final node in data) {
+        final todo = CurrentSession.fromJson(node);
+        todos.add(todo);
+      }
+      return todos;
+    } catch (e) {
+      debugPrint("TblValidUser:" + e.toString());
+    }
+    // return r;
+    return null;
+  }
 /*
   Future<List<String>> tableList() async {
     List<Map<String, dynamic>> tables = await this.db;

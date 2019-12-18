@@ -137,7 +137,7 @@ class CurrentSession {
     map["Department"] = department == null ? null : department;
     map["TrainingGroup"] = trainingGroup == null ? null : trainingGroup;
     // map["WeekofClass"] = weekofClass == null ? null : weekofClass;
-    // map["Divison"] = divison == null ? null : divison;
+     map["Divison"] = divison == null ? null : divison;
     // map["RequireWaiver"] = requireWaiver == null ? null : requireWaiver;
     map["WaiverName"] = waiverName == null ? null : waiverName;
 
