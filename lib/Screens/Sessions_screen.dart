@@ -4,16 +4,16 @@ import '../Models/GetApi.dart';
 import '../Models/Session.dart';
 import 'dart:convert';
 import '../Models/AppData.dart';
-import 'package:flutter_redux/flutter_redux.dart';
+//import 'package:flutter_redux/flutter_redux.dart';
 import '../store/actions.dart';
 import 'Start_screen.dart';
-
-
+import 'package:attendance_tracker/Util/dbHelper.dart';
 
 class SessionsScreen extends StatelessWidget {
   final String text;
   final newdata;
-  SessionsScreen({Key key, @required this.text, this.newdata}) : super(key: key);
+  SessionsScreen({Key key, @required this.text, this.newdata})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +33,7 @@ class SessionsScreen extends StatelessWidget {
 }
 
 class getCurrentSessions extends StatefulWidget {
- // StartScreen({this.appDataSession});
+  // StartScreen({this.appDataSession});
 //final appDataSession;
 
   @override
@@ -50,11 +50,12 @@ class getCurrentSessionsState extends State<getCurrentSessions> {
     super.initState();
     //TODO:read session from DB
 
-   // csessions = _responseSess.map((model) => CurrentSession.fromJson(model)).toList();;
+//csessions =
+    // csessions = _responseSess.map((model) => CurrentSession.fromJson(model)).toList();;
 
 // Iterable list = newdata["CurrentSessions"];
- //            csessions =
- //                list.map((model) => CurrentSession.fromJson(model)).toList();
+    //            csessions =
+    //                list.map((model) => CurrentSession.fromJson(model)).toList();
 
     //get info from Db
     /*
@@ -71,6 +72,12 @@ class getCurrentSessionsState extends State<getCurrentSessions> {
 
      */
     //TODO: read sessions from DB
+  }
+
+  Future<List<CurrentSession>> getAllSessions() async {
+    var dbHelper = DbHelper();
+    Future<List<CurrentSession>> dishes = dbHelper.readAllSessions();
+    return dishes;
   }
 
   // get image info
@@ -174,7 +181,7 @@ class getCurrentSessionsState extends State<getCurrentSessions> {
     //  var sesDat = json.decode(responseSess);
     // List<CurrentSession> csessions = sesDat["CurrentSessions"];
     //   print("sessDat==> 78  " + sesDat["CurrentSessions"].toString());
-    StoreConnector<int, String>(converter: (store) => store.state.toString());
+    // StoreConnector<int, String>(converter: (store) => store.state.toString());
     return Scaffold(
       appBar: AppBar(
         title: Text('Startup Name Generator'),
@@ -183,87 +190,100 @@ class getCurrentSessionsState extends State<getCurrentSessions> {
       //body: _myListView(context));
       //body: _myListViewDy(context));
 
-      body: ListView.builder(
-          padding: const EdgeInsets.all(10.0),
-          itemCount: csessions == null ? 0 : csessions.length,
-          itemBuilder: (BuildContext context, int index) {
-            return Container(
-              height: 150,
-              // padding: const EdgeInsets..all(10.0),
-              child: Card(
-                elevation: 8.0,
-                margin:
-                    new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
-                child: Container(
-                  //decoration:
-                  // BoxDecoration(color: Color.fromRGBO(64, 75, 96, .9)),
-                  child: ListTile(
-                      contentPadding: EdgeInsets.symmetric(
-                          horizontal: 20.0, vertical: 10.0),
-                      // isThreeLine: true,
-                      onLongPress: () {
-                        //TODO: do something else
-                        _noTextAlert("test");
-                      },
-                      leading: Container(
-                        decoration: new BoxDecoration(
-                            border: new Border(
-                                right: new BorderSide(
-                                    width: 1.0, color: Colors.white24))),
-                        child: getImage(csessions[index]),
-                      ),
-                      title: Text(
-                        getHeadtext(csessions[index]),
+      body: FutureBuilder<List<CurrentSession>>(
+          future: getAllSessions(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState != ConnectionState.done) {
+              // return: show loading widget
+              print("snapshot has nothing");
+            }
+            if (snapshot.hasError) {
+              print("There was an error");
+            }
+            List<CurrentSession> csessions = snapshot.data ?? [];
+            return ListView.builder(
+                padding: const EdgeInsets.all(10.0),
+                itemCount: csessions == null ? 0 : csessions.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Container(
+                    height: 150,
+                    // padding: const EdgeInsets..all(10.0),
+                    child: Card(
+                      elevation: 8.0,
+                      margin: new EdgeInsets.symmetric(
+                          horizontal: 10.0, vertical: 6.0),
+                      child: Container(
+                        //decoration:
+                        // BoxDecoration(color: Color.fromRGBO(64, 75, 96, .9)),
+                        child: ListTile(
+                            contentPadding: EdgeInsets.symmetric(
+                                horizontal: 20.0, vertical: 10.0),
+                            // isThreeLine: true,
+                            onLongPress: () {
+                              //TODO: do something else
+                              _noTextAlert("test");
+                            },
+                            leading: Container(
+                              decoration: new BoxDecoration(
+                                  border: new Border(
+                                      right: new BorderSide(
+                                          width: 1.0, color: Colors.white24))),
+                              child: getImage(csessions[index]),
+                            ),
+                            title: Text(
+                              getHeadtext(csessions[index]),
+                              style: TextStyle(
+                                fontSize: 35,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            subtitle: Container(
+                              child: Row(children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    //  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                    children: [
+                                      Text(
+                                        csessions[index].campusLocation,
+                                        style: TextStyle(
+                                          fontSize: 30,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Column(
+                                  children: [
+                                    Text(
+                                      getSubtext(csessions[index]),
+                                      style: TextStyle(
+                                        fontSize: 28,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ]),
+                            )
+
+                            /* subtitle: Text(
+                        getSubtext(csessions[index]),
                         style: TextStyle(
-                          fontSize: 35,
+                          fontSize: 28,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      subtitle: Container(
-                        child: Row(children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              //  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                Text(
-                                  csessions[index].campusLocation,
-                                  style: TextStyle(
-                                    fontSize: 30,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Column(
-                            children: [
-                              Text(
-                                getSubtext(csessions[index]),
-                                style: TextStyle(
-                                  fontSize: 28,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ]),
-                      )
+                      */
 
-                      /* subtitle: Text(
-                      getSubtext(csessions[index]),
-                      style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
+                            //  trailing: Icon(Icons.keyboard_arrow_right),
+                            ),
                       ),
                     ),
-                    */
-
-                      //  trailing: Icon(Icons.keyboard_arrow_right),
-                      ),
-                ),
-              ),
-            );
+                  );
+                });
           }),
     );
   }

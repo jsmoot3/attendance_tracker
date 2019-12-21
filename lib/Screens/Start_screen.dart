@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
 import 'Sessions_screen.dart';
-import '../Util/Data.dart';
 import '../Models/GetApi.dart';
 import '../Models/AppData.dart';
 import '../Models/Session.dart';
-import '../Util/Data.dart';
-import '../Util/dbHelper.dart';
-import 'package:sqflite/sqflite.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:attendance_tracker/Util/dbHelper.dart';
+//import 'package:sqflite/sqflite.dart';
+//import 'package:path_provider/path_provider.dart';
 
 class StartScreen extends StatefulWidget {
   @override
@@ -20,13 +17,13 @@ class _StartScreenState extends State<StartScreen> {
   TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 10.0);
   TextEditingController _textFieldController = TextEditingController();
   List<CurrentSession> csessions = new List<CurrentSession>();
-  AppData _AppData;
+  AppData _appData;
 
   void initState() {
     super.initState();
 
     GetApi.checkIfHaveConnectionUpdateDB().then((AppData d) => setState(() {
-          _AppData = d;
+          _appData = d;
 
           //.then((AppData s) => setState(() {
           // _responseSess = s;
@@ -36,11 +33,11 @@ class _StartScreenState extends State<StartScreen> {
           // print("+++++++++++++++");
           //TODO:add information to db
 
-          if (_AppData != null) {
+          if (_appData != null) {
             //insert into DB
             // int ses = 0;
-            int rol = 0;
-            int usr = 0;
+            //int rol = 0;
+            // int usr = 0;
 
             //TODO: insert into current session DB
             final DbHelper _getData = DbHelper();
@@ -51,12 +48,13 @@ class _StartScreenState extends State<StartScreen> {
             // _getData.initializeDb();
             // for (var i = 0; i < 2; i++) {
             //   _getData.insertSession(_AppData.appDataSessions[i]);
-            print("*****-->43 " + _AppData.appDataSessions[0].toString());
+            print("*****-->43 " + _appData.appDataSessions[0].toString());
             // }
 
 //print(widget.appDataSession);
-
-            _getData.insertSessionRaw(_AppData.appDataSessions[0]);
+            for (var i = 0; i < _appData.appDataSessions.length; i++) {
+              _getData.insertSessionRaw(_appData.appDataSessions[i]);
+            }
 
             // List<CurrentSession> output =  _getData.getAlltblSessions();
 
@@ -66,6 +64,20 @@ class _StartScreenState extends State<StartScreen> {
             CircularProgressIndicator();
           }
         }));
+  }
+
+  Future<List<CurrentSession>> getAllSessions() async {
+    var dbHelper = DbHelper();
+    Future<List<CurrentSession>> dishes =
+        dbHelper.readAllSessions();
+    return dishes;
+  }
+
+   clearTable() {
+    setState(() {
+      var dbHelper = DbHelper();
+      dbHelper.dropTables("tblSessions");
+    });
   }
 
   @override
@@ -80,8 +92,8 @@ class _StartScreenState extends State<StartScreen> {
 
 //TODO:if have a connection update DB
 
-    if (_AppData != null) {
-      AppData appdata = _AppData;
+    if (_appData != null) {
+      // AppData appdata = _appData;
       final logButton = RaisedButton(
         child: Text(
           "Submit",
@@ -100,7 +112,7 @@ class _StartScreenState extends State<StartScreen> {
         controller: _textFieldController,
         decoration: InputDecoration(
           //Add th Hint text here.
-          hintText: "Group Number" + _AppData.appDataSessions[0].department,
+          hintText: "Group Number" + _appData.appDataSessions[0].department,
           border: OutlineInputBorder(),
         ),
         style: TextStyle(
@@ -141,7 +153,68 @@ class _StartScreenState extends State<StartScreen> {
                   child: logButton,
                 ),
               ),
-              SizedBox(height: 150.0),
+              SizedBox(height: 5.0),
+
+              Row(
+                textDirection: TextDirection.ltr,
+                children: <Widget>[
+                  Expanded(
+                    child: Text("SessionID"),
+                  ),
+                  Expanded(
+                    child: Text("Department"),
+                  ),
+                  Expanded(
+                    child: Text("Day"),
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.only(right: 8.0),
+                      child: RaisedButton(
+                        color: Colors.red,
+                        child: Text("ClearDB"),
+                        onPressed: () {
+                          clearTable();
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              FutureBuilder<List<CurrentSession>>(
+                future: getAllSessions(),
+                builder: (context, snapshot) {
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: snapshot.data.length,
+                    itemBuilder: (context, index) {
+                      return Row(
+                        textDirection: TextDirection.ltr,
+                        children: <Widget>[
+                          Expanded(
+                            child: Text(
+                              snapshot.data[index].flEventSessionId.toString(),
+                              style: TextStyle(fontSize: 16.0),
+                            ),
+                          ),
+                          Expanded(
+                            child: Text(
+                              snapshot.data[index].department,
+                              style: TextStyle(fontSize: 12.0),
+                            ),
+                          ),
+                          Expanded(
+                            child: Text(
+                              snapshot.data[index].day,
+                              style: TextStyle(fontSize: 12.0),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
+              ),
             ],
           ),
         ),

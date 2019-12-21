@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
-
 import 'dart:async';
 import 'dart:io';
 import '../Models/App_Models.dart';
 import '../Models/Session.dart';
+import 'dart:convert';
 
 class DbHelper {
   //Singleton
@@ -64,22 +64,22 @@ class DbHelper {
     dropTables("tblSessions");
     print("----->57 creatingDB tblSessions ");
     try {
-      final sTableSessions = '''CREATE TABLE tblSessions
-      (
-        FLEventSessionID INT,
-        FLeventIDfk INT,
-        CampusLocation STRING,
-        Trainer STRING,
-        StartDate DATETIME,
-        TimeOfDay TIME,
-        Day STRING,
-        Department STRING,
-        TrainingGroup STRING,
-        WeekofClass STRING,
-        Divison STRING,
-        RequireWaver BOOL,
-        WaverName STRING,
-      )''';
+      final sTableSessions = "CREATE TABLE tblSessions" +
+          " ( " +
+          " FLEventSessionID INT," +
+          " FLeventIDfk INT," +
+          " CampusLocation STRING," +
+          " Trainer STRING," +
+          " StartDate DATETIME," +
+          " TimeOfDay TIME," +
+          " Day STRING," +
+          " Department STRING," +
+          " TrainingGroup STRING," +
+          " WeekofClass STRING," +
+          " Divison STRING," +
+          " RequireWaver BOOL," +
+          " WaverName TEXT " +
+          " )";
       await db.execute(sTableSessions);
     } catch (e) {
       debugPrint("insertDoc: " + e.toString());
@@ -154,55 +154,88 @@ class DbHelper {
     Database db = await this.database;
     try {
       if (db != null) {
-        // print("able to create db");
+        print("trying to insert into db");
+
+        final isql = "INSERT INTO tblSessions" +
+            "( " +
+            " FLEventSessionID," +
+            " FLeventIDfk," +
+            " CampusLocation," +
+            " Trainer," +
+            " StartDate," +
+            " TimeOfDay," +
+            " Day," +
+            " Department," +
+            " TrainingGroup," +
+            " WeekofClass," +
+            " Divison," +
+            " RequireWaver," +
+            "  WaverName" +
+            " )" +
+            " VALUES( " +
+            " '${inPut.flEventSessionId}'," +
+            " '${inPut.fLeventIDfk}'," +
+            " '${inPut.campusLocation}'," +
+            " '${inPut.trainer}'," +
+            " '${inPut.startDate}'," +
+            " '${inPut.timeOfDay}'," +
+            " '${inPut.day}'," +
+            " '${inPut.department}'," +
+            " '${inPut.trainingGroup}'," +
+            " '${inPut.weekofClass}'," +
+            " '${inPut.divison}'," +
+            " '${inPut.requireWaiver}'," +
+            " '${inPut.waiverName}'" +
+            " )";
+        r = await db.rawInsert(isql);
       } else {
         // print("No db created");
       }
-      final isql = '''INSERT INTO tblSessions
-      (
-       FLEventSessionID,
-        FLeventIDfk,
-        CampusLocation,
-        Trainer,
-        StartDate,
-        TimeOfDay,
-        Day,
-        Department,
-        TrainingGroup,
-        WeekofClass,
-        Divison,
-        RequireWaver,
-        WaverName
-      )
-      VALUES
-      (
-        ${inPut.flEventSessionId},
-        ${inPut.fLeventIDfk},
-        ${inPut.campusLocation},
-        ${inPut.trainer},
-        '${inPut.startDate}',
-        '${inPut.timeOfDay}',
-        ${inPut.day},
-        ${inPut.department},
-        ${inPut.trainingGroup},
-        ${inPut.weekofClass},
-        ${inPut.divison},
-        ${inPut.requireWaiver},
-        ${inPut.waiverName}
-      )''';
-      final output = await db.rawInsert(isql);
     } catch (e) {
       debugPrint("insertDoc: " + e.toString());
     }
     return r;
   }
 
+  //read all sessions
+  //read all
+  Future<List<CurrentSession>> readAllSessions() async {
+    Database dbReady = await this.database;
+    List<Map> list = await dbReady.rawQuery("SELECT * FROM tblSessions ");
+    List<CurrentSession> dishes = List();
+
+    for (int i = 0; i < list.length; i++) {
+      CurrentSession csess = new CurrentSession();
+      csess.flEventSessionId = list[i]["FLEventSessionID"].toString();
+      csess.fLeventIDfk = list[i]["FLeventIDfk"].toString();
+      csess.campusLocation = list[i]["CampusLocation"].toString();
+      csess.trainer = list[i]["Trainer"];
+      csess.timeOfDay = list[i]["TimeOfDay"];
+      csess.day = list[i]["Day"];
+      csess.department = list[i]["Department"];
+      csess.trainingGroup = list[i]["TrainingGroup"];
+      csess.weekofClass = list[i]["WeekofClass"].toString();
+      csess.divison = list[i]["Divison"];
+      csess.requireWaiver = list[i]["RequireWaver"];
+      csess.waiverName = list[i]["WaverName"];
+      csess.startDate = list[i]["StartDate"] == null
+          ? null
+          : DateTime.parse(list[i]["StartDate"]);
+      if (list.length < 10) {
+        dishes.add(csess);
+      }
+    }
+
+    return dishes;
+    //dishes;
+  }
+
 //insert roles
-  Future<int> insertRoles(Role _Roles) async {
+  Future<int> insertRoles(Role _roles) async {
     var r;
     Database db = await this.database;
     try {
-      r = await db.insert("TblRoles", _Roles.toMap());
+      r = await db.insert("TblRoles", _roles.toMap());
     } catch (e) {
       debugPrint("insertDoc:" + e.toString());
     }
@@ -210,11 +243,11 @@ class DbHelper {
   }
 
 //insert Attendie
-  Future<int> insertAttendie(Attendie _Attendie) async {
+  Future<int> insertAttendie(Attendie _attendie) async {
     var r;
     Database db = await this.database;
     try {
-      r = await db.insert("tblAttendie", _Attendie.toMap());
+      r = await db.insert("tblAttendie", _attendie.toMap());
     } catch (e) {
       debugPrint("insertDoc:" + e.toString());
     }
@@ -222,11 +255,11 @@ class DbHelper {
   }
 
 //insert Department
-  Future<int> insertTblDept(Attendie _Attendie) async {
+  Future<int> insertTblDept(Attendie _attendie) async {
     var r;
     Database db = await this.database;
     try {
-      r = await db.insert("tblAttendie", _Attendie.toMap());
+      r = await db.insert("tblAttendie", _attendie.toMap());
     } catch (e) {
       debugPrint("insertDoc:" + e.toString());
     }
@@ -234,11 +267,11 @@ class DbHelper {
   }
 
 //ValidUser
-  Future<int> insertTblValidUser(ValidUser _ValidUser) async {
+  Future<int> insertTblValidUser(ValidUser _validUser) async {
     var r;
     Database db = await this.database;
     try {
-      r = await db.insert("TblValidUser", _ValidUser.toMap());
+      r = await db.insert("TblValidUser", _validUser.toMap());
     } catch (e) {
       debugPrint("TblValidUser:" + e.toString());
     }
@@ -247,7 +280,7 @@ class DbHelper {
 
   //get sessions based on department
   Future<List> getSessionsByDeptDb(String query) async {
-    String dept = query;
+    //String dept = query;
     String sql = "Select * from tblSessions where department = " + query;
     if (query.length < 1) {
       Database db = await this.database;
@@ -267,6 +300,18 @@ class DbHelper {
     }
     // return res ;
   }
+
+  //Delete DB
+  /*
+  deleteDB() async {
+    if (await Directory(dbpath).exists()) {
+      Database db = await this.database;
+      var res = await db.execute("DROP TABLE IF EXISTS " + tName);
+      print("droped table --211 " + tName);
+    }
+    // return res ;
+  }
+*/
 
   //show data in table
 
