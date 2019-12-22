@@ -45,39 +45,31 @@ class getCurrentSessions extends StatefulWidget {
 class getCurrentSessionsState extends State<getCurrentSessions> {
   List csessions = new List<CurrentSession>();
   AppData _responseSess = null;
+  int count = 0;
   final _biggerFont = const TextStyle(fontSize: 18.0);
   void initState() {
     super.initState();
-    //TODO:read session from DB
-
-//csessions =
-    // csessions = _responseSess.map((model) => CurrentSession.fromJson(model)).toList();;
-
-// Iterable list = newdata["CurrentSessions"];
-    //            csessions =
-    //                list.map((model) => CurrentSession.fromJson(model)).toList();
-
-    //get info from Db
-    /*
-    if (_responseSess == null) {
-      GetApi.fetchSessions().then((AppData s) => setState(() {
-            _responseSess = s;
-
-            // var sesDat = json.decode(_responseSess);
-             Iterable list = sesDat["CurrentSessions"];
-             csessions =
-                 list.map((model) => CurrentSession.fromJson(model)).toList();
-          }));
-    }
-
-     */
-    //TODO: read sessions from DB
   }
 
   Future<List<CurrentSession>> getAllSessions() async {
-    var dbHelper = DbHelper();
-    Future<List<CurrentSession>> dishes = dbHelper.readAllSessions();
-    return dishes;
+    DbHelper helper = DbHelper();
+    final dbFuture = helper.initializeDb();
+    dbFuture.then((result) {
+      final cSessTuture = helper.readAllSessions();
+      cSessTuture.then((result) {
+        List<CurrentSession> oSessions = List<CurrentSession>();
+        count = result.length;
+        for (int i = 0; i < count; i++) {
+          oSessions.add(result[i]); //(CurrentSession.fromDb(result[i]));
+          //debugPrint(oSessions[i].department);
+        }
+        setState(() {
+          csessions = oSessions;
+          count = count;
+        });
+      });
+    });
+    return csessions;
   }
 
   // get image info
@@ -195,15 +187,21 @@ class getCurrentSessionsState extends State<getCurrentSessions> {
           builder: (context, snapshot) {
             if (snapshot.connectionState != ConnectionState.done) {
               // return: show loading widget
-              print("snapshot has nothing");
+              print("snapshot has nothing 190");
+              //return new Center(
+             //   child: new CircularProgressIndicator(),
+              //);
             }
             if (snapshot.hasError) {
               print("There was an error");
+              //return new Center(
+              //  child: new CircularProgressIndicator(),
+              //);
             }
-            List<CurrentSession> csessions = snapshot.data ?? [];
+            List<CurrentSession> sessData = snapshot.data ?? [];
             return ListView.builder(
                 padding: const EdgeInsets.all(10.0),
-                itemCount: csessions == null ? 0 : csessions.length,
+                itemCount: count, //csessions == null ? 0 : csessions.length,
                 itemBuilder: (BuildContext context, int index) {
                   return Container(
                     height: 150,
@@ -228,10 +226,10 @@ class getCurrentSessionsState extends State<getCurrentSessions> {
                                   border: new Border(
                                       right: new BorderSide(
                                           width: 1.0, color: Colors.white24))),
-                              child: getImage(csessions[index]),
+                              child: getImage(sessData[index]),
                             ),
                             title: Text(
-                              getHeadtext(csessions[index]),
+                              getHeadtext(sessData[index]),
                               style: TextStyle(
                                 fontSize: 35,
                                 fontWeight: FontWeight.bold,
@@ -246,7 +244,7 @@ class getCurrentSessionsState extends State<getCurrentSessions> {
                                     //  mainAxisAlignment: MainAxisAlignment.spaceAround,
                                     children: [
                                       Text(
-                                        csessions[index].campusLocation,
+                                        sessData[index].campusLocation,
                                         style: TextStyle(
                                           fontSize: 30,
                                           fontWeight: FontWeight.bold,
@@ -258,7 +256,7 @@ class getCurrentSessionsState extends State<getCurrentSessions> {
                                 Column(
                                   children: [
                                     Text(
-                                      getSubtext(csessions[index]),
+                                      getSubtext(sessData[index]),
                                       style: TextStyle(
                                         fontSize: 28,
                                         fontWeight: FontWeight.bold,
@@ -326,6 +324,13 @@ class getCurrentSessionsState extends State<getCurrentSessions> {
     );
   }
 */
+
+  Widget get _loadingView {
+    return new Center(
+      child: new CircularProgressIndicator(),
+    );
+  }
+
   Widget _myListViewDy(BuildContext context) {
     return ListView.builder(
       itemCount: 10, //csessions.length,

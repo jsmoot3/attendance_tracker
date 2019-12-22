@@ -42,7 +42,7 @@ class _StartScreenState extends State<StartScreen> {
             //TODO: insert into current session DB
             final DbHelper _getData = DbHelper();
 
-            // _getData.dropTables();
+             _getData.clearTable("tblSessions");
 
             //   Future<Database> trackerDb = _getData.initializeDb();
             // _getData.initializeDb();
@@ -53,7 +53,7 @@ class _StartScreenState extends State<StartScreen> {
 
 //print(widget.appDataSession);
             for (var i = 0; i < _appData.appDataSessions.length; i++) {
-              _getData.insertSessionRaw(_appData.appDataSessions[i]);
+         //     _getData.insertSessionRaw(_appData.appDataSessions[i]);
             }
 
             // List<CurrentSession> output =  _getData.getAlltblSessions();
@@ -69,14 +69,14 @@ class _StartScreenState extends State<StartScreen> {
   Future<List<CurrentSession>> getAllSessions() async {
     var dbHelper = DbHelper();
     Future<List<CurrentSession>> dishes =
-        dbHelper.readAllSessions();
+        dbHelper.readAllSessions();       
     return dishes;
   }
 
    clearTable() {
     setState(() {
       var dbHelper = DbHelper();
-      dbHelper.dropTables("tblSessions");
+      dbHelper.clearTable("tblSessions");
     });
   }
 
@@ -153,13 +153,13 @@ class _StartScreenState extends State<StartScreen> {
                   child: logButton,
                 ),
               ),
-              SizedBox(height: 5.0),
+            //  SizedBox(height: 5.0),
 
               Row(
                 textDirection: TextDirection.ltr,
                 children: <Widget>[
                   Expanded(
-                    child: Text("SessionID"),
+                    child: Text("SessionID" ),
                   ),
                   Expanded(
                     child: Text("Department"),
@@ -173,8 +173,8 @@ class _StartScreenState extends State<StartScreen> {
                       child: RaisedButton(
                         color: Colors.red,
                         child: Text("ClearDB"),
-                        onPressed: () {
-                          clearTable();
+                        onPressed: () {                         
+                             clearTable();  
                         },
                       ),
                     ),

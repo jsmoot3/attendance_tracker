@@ -44,7 +44,7 @@ class DbHelper {
     Directory dir = await getApplicationDocumentsDirectory();
     dbpath = dir.path + "/trackerDb.db";
     print("--DBhelp--->45 In the initializedDB the db --> " + dbpath);
-    dropTables(dbpath);
+    clearTable("tblSessions");
     var db = await openDatabase(dbpath, version: 2, onCreate: _createDbs);
     return db;
   }
@@ -61,7 +61,7 @@ class DbHelper {
 
   //Create the TblSessionsDB.db database
   Future<void> _createTblSessionsDB(Database db, int version) async {
-    dropTables("tblSessions");
+    clearTable("tblSessions");
     print("----->57 creatingDB tblSessions ");
     try {
       final sTableSessions = "CREATE TABLE tblSessions" +
@@ -221,13 +221,14 @@ class DbHelper {
       csess.startDate = list[i]["StartDate"] == null
           ? null
           : DateTime.parse(list[i]["StartDate"]);
-      if (list.length < 10) {
+      if (i < 20) {
         dishes.add(csess);
-      }
+     }
     }
 
     return dishes;
     //dishes;
+  
   }
 
 //insert roles
@@ -292,26 +293,27 @@ class DbHelper {
   }
 
 //Drop table
-  dropTables(String tName) async {
+  clearTable(String tName) async {
     if (await Directory(dbpath).exists()) {
       Database db = await this.database;
-      var res = await db.execute("DROP TABLE IF EXISTS " + tName);
+      var res = await db.execute("DELETE FROM " + tName);
       print("droped table --211 " + tName);
     }
     // return res ;
   }
 
-  //Delete DB
-  /*
-  deleteDB() async {
-    if (await Directory(dbpath).exists()) {
-      Database db = await this.database;
-      var res = await db.execute("DROP TABLE IF EXISTS " + tName);
+  //countDB
+  Future<int> getCount(String tName) async{
+    Database db = await this.database;
+      var result = Sqflite.firstIntValue(
+         await db.rawQuery("SELECT COUNT (*) FROM " + tName)
+      );     
       print("droped table --211 " + tName);
-    }
-    // return res ;
+      return result;
   }
-*/
+  
+  
+
 
   //show data in table
 
