@@ -24,31 +24,19 @@ class _StartScreenState extends State<StartScreen> {
 
     GetApi.checkIfHaveConnectionUpdateDB().then((AppData d) => setState(() {
           _appData = d;
-
-          //.then((AppData s) => setState(() {
-          // _responseSess = s;
           print("+++++++++++++++32");
-
-          // print(_AppData.runtimeType);
-          // print("+++++++++++++++");
-          //TODO:add information to db
-
           if (_appData != null) {
-            //insert into DB
-            // int ses = 0;
-            //int rol = 0;
-            // int usr = 0;
-
+         
             //TODO: insert into current session DB
             final DbHelper _getData = DbHelper();
 
-             _getData.clearTable("tblSessions");
+            //clear db of data    
+             var output = _getData.clearTable("tblSessions");
+             if( output == 0)
+             {
 
-            //   Future<Database> trackerDb = _getData.initializeDb();
-            // _getData.initializeDb();
-            // for (var i = 0; i < 2; i++) {
-            //   _getData.insertSession(_AppData.appDataSessions[i]);
-            print("*****-->43 " + _appData.appDataSessions[0].toString());
+             }
+           // print("*****-->43 " + _appData.appDataSessions[0].toString());
             // }
 
 //print(widget.appDataSession);

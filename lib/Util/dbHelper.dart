@@ -293,13 +293,14 @@ class DbHelper {
   }
 
 //Drop table
-  clearTable(String tName) async {
+  Future<int> clearTable(String tName) async {
     if (await Directory(dbpath).exists()) {
       Database db = await this.database;
       var res = await db.execute("DELETE FROM " + tName);
       print("droped table --211 " + tName);
+      return res ;
     }
-    // return res ;
+     return 0;
   }
 
   //countDB
