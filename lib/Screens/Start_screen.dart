@@ -8,6 +8,11 @@ import 'package:attendance_tracker/Util/dbHelper.dart';
 //import 'package:path_provider/path_provider.dart';
 
 class StartScreen extends StatefulWidget {
+  // final String text;
+  // final newdata;
+  StartScreen({this.trackerData});
+
+  final trackerData;
   @override
   _StartScreenState createState() => _StartScreenState();
 }
@@ -21,7 +26,19 @@ class _StartScreenState extends State<StartScreen> {
 
   void initState() {
     super.initState();
+    updateUI(widget.trackerData);
+  }
 
+  void updateUI(dynamic tData) {
+    setState(() {
+      if (tData == null) {
+        return;
+      }
+      _appData = tData;
+    });
+  }
+
+/*
     GetApi.checkIfHaveConnectionUpdateDB().then((AppData d) => setState(() {
           _appData = d;
           print("+++++++++++++++32");
@@ -52,16 +69,15 @@ class _StartScreenState extends State<StartScreen> {
             CircularProgressIndicator();
           }
         }));
-  }
+ */
 
   Future<List<CurrentSession>> getAllSessions() async {
     var dbHelper = DbHelper();
-    Future<List<CurrentSession>> dishes =
-        dbHelper.readAllSessions();       
+    Future<List<CurrentSession>> dishes = dbHelper.readAllSessions();
     return dishes;
   }
 
-   clearTable() {
+  clearTable() {
     setState(() {
       var dbHelper = DbHelper();
       dbHelper.clearTable("tblSessions");
@@ -141,13 +157,13 @@ class _StartScreenState extends State<StartScreen> {
                   child: logButton,
                 ),
               ),
-            //  SizedBox(height: 5.0),
+              //  SizedBox(height: 5.0),
 
               Row(
                 textDirection: TextDirection.ltr,
                 children: <Widget>[
                   Expanded(
-                    child: Text("SessionID" ),
+                    child: Text("SessionID"),
                   ),
                   Expanded(
                     child: Text("Department"),
@@ -161,8 +177,8 @@ class _StartScreenState extends State<StartScreen> {
                       child: RaisedButton(
                         color: Colors.red,
                         child: Text("ClearDB"),
-                        onPressed: () {                         
-                             clearTable();  
+                        onPressed: () {
+                          clearTable();
                         },
                       ),
                     ),

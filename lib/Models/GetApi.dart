@@ -14,25 +14,25 @@ class GetApi {
   //check if there is a connection
 
   static Future<AppData> checkIfHaveConnectionUpdateDB() async {
-    bool isConnected = false;
-    AppData checkIfHaveConnectionUpdateDB;
+    //bool isConnected = false;
+    //AppData checkIfHaveConnectionUpdateDB;
     AppData _AppData = new AppData();
     // print("----> " + Constants.MONTH_SESSIONS);
     try {
       final result = //await checkForconnection();
           await InternetAddress.lookup("google.com"); //Constants.MONTH_SESSIONS
       if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-        print(await '----- 25 Api connected');
-        isConnected = true;
+        print('----- 25 Api connected');
+        //isConnected = true;
         _AppData.appDataSessions = await fetchSessions();
         _AppData.appDataroles = await fetchRoles();
         _AppData.appDataallUsers = await fetchValidUsers();
 
-        print(await "GetApi length sesData==> 27  " +
+        print( "GetApi length sesData==> 27  " +
             _AppData.appDataSessions.length.toString());
-        print(await "GetApi length roleData==> 28  " +
+        print( "GetApi length roleData==> 28  " +
             _AppData.appDataroles.length.toString());
-        print(await "GetApi length valusrData==> 29  " +
+        print( "GetApi length valusrData==> 29  " +
             _AppData.appDataallUsers.length.toString());
         //return _AppData;
       }
@@ -43,7 +43,7 @@ class GetApi {
     return _AppData;
   }
 
-  Future<AppData> GetAllData() async {}
+  
 
   static Future<List<CurrentSession>> fetchSessions() async {
     List<CurrentSession> csessions = new List<CurrentSession>();

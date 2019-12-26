@@ -7,6 +7,7 @@ import 'Models/AppData.dart';
 import 'package:loading/loading.dart';
 import 'package:loading/indicator/ball_pulse_indicator.dart';
 import 'package:async_loader/async_loader.dart';
+import 'Models/GetApi.dart';
 
 
 
@@ -26,7 +27,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
      var _asyncLoader = new AsyncLoader(
       key: _asyncLoaderState,
-      initState: () async => await getMessage(),
+      initState: () async => await getMessage(context),
       renderLoad: () => SplashScreen(),
       renderError: ([error]) =>
           new Text('Sorry, there was an error loading your joke'),
@@ -47,6 +48,22 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+    @override
+  void initState() {
+    super.initState();
+    getAttendenceData();
+  }
+
+  void getAttendenceData() async {
+    var tData = await GetApi.checkIfHaveConnectionUpdateDB();
+
+    Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return StartScreen(
+        trackerData: tData,
+      );
+    }));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -110,6 +127,53 @@ class _SplashScreenState extends State<SplashScreen> {
 
 //remove after prof of concept
 const TIMEOUT = const Duration(seconds: 15);
-getMessage() async {
-  return new Future.delayed(TIMEOUT, () => 'Welcome to your async screen');
-}
+getMessage(BuildContext context) async {
+GetApi _GetApi = new GetApi();
+
+ 
+GetApi.checkIfHaveConnectionUpdateDB().then((AppData d) => setState(() {
+          _appData = d;
+          print("+++++++++++++++32");
+          if (_appData != null) {
+         
+            //TODO: insert into current session DB
+            final DbHelper _getData = DbHelper();
+
+            //clear db of data    
+             var output = _getData.clearTable("tblSessions");
+             if( output == 0)
+             {
+
+             }
+           // print("*****-->43 " + _appData.appDataSessions[0].toString());
+            // }
+
+//print(widget.appDataSession);
+            for (var i = 0; i < _appData.appDataSessions.length; i++) {
+         //     _getData.insertSessionRaw(_appData.appDataSessions[i]);
+            }
+
+            // List<CurrentSession> output =  _getData.getAlltblSessions();
+
+            //TODO: insert into insertRoles DB
+            //TODO: insert into valid users DB
+          } else {
+            CircularProgressIndicator();
+          }
+        }));
+
+
+
+/*
+    Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => StartScreen(
+              text: 'test',
+            ),
+          ));
+  });*/
+
+
+
+  return new Future.delayed(TIMEOUT, () => //'Welcome to your async screen');
