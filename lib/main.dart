@@ -9,8 +9,6 @@ import 'package:loading/indicator/ball_pulse_indicator.dart';
 import 'package:async_loader/async_loader.dart';
 import 'Models/GetApi.dart';
 
-
-
 void main() {
   final Store<AppData> store = Store<AppData>(appDataStore, initialState: null);
   runApp(MyApp(store));
@@ -25,6 +23,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    /*
      var _asyncLoader = new AsyncLoader(
       key: _asyncLoaderState,
       initState: () async => await getMessage(context),
@@ -33,11 +32,12 @@ class MyApp extends StatelessWidget {
           new Text('Sorry, there was an error loading your joke'),
       renderSuccess: ({data}) => new Text(data),
     );
+*/
     return StoreProvider(
         store: store,
         child: MaterialApp(
           title: 'Attendence TrackerV2',
-          home: _asyncLoader, //SplashScreen(), // StartScreen(),
+          home: SplashScreen(), // StartScreen(),
         ));
   }
 }
@@ -48,15 +48,16 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-    @override
+  AppData tData;
+  @override
   void initState() {
     super.initState();
     getAttendenceData();
   }
 
   void getAttendenceData() async {
-    var tData = await GetApi.checkIfHaveConnectionUpdateDB();
-
+    
+    tData = await GetApi.checkIfHaveConnectionUpdateDB();
     Navigator.push(context, MaterialPageRoute(builder: (context) {
       return StartScreen(
         trackerData: tData,
@@ -125,6 +126,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 }
 
+/*
 //remove after prof of concept
 const TIMEOUT = const Duration(seconds: 15);
 getMessage(BuildContext context) async {
@@ -177,3 +179,4 @@ GetApi.checkIfHaveConnectionUpdateDB().then((AppData d) => setState(() {
 
 
   return new Future.delayed(TIMEOUT, () => //'Welcome to your async screen');
+*/

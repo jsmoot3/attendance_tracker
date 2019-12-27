@@ -13,7 +13,7 @@ class DbHelper {
 //Database entry point
   static Database _database;
   //database path
-  String dbpath;
+  static String dbpath;
 
   DbHelper._createInstance();
 
@@ -36,6 +36,7 @@ class DbHelper {
   //  return this.db;
   //}
 
+  
   /////////////////////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////
@@ -223,12 +224,11 @@ class DbHelper {
           : DateTime.parse(list[i]["StartDate"]);
       if (i < 20) {
         dishes.add(csess);
-     }
+      }
     }
 
-    return dishes;
+    return dishes.toList();
     //dishes;
-  
   }
 
 //insert roles
@@ -256,11 +256,12 @@ class DbHelper {
   }
 
 //insert Department
-  Future<int> insertTblDept(Attendie _attendie) async {
+  Future<int> insertTblDept(String _dept) async {
     var r;
     Database db = await this.database;
     try {
-      r = await db.insert("tblAttendie", _attendie.toMap());
+      // r = await db.insert("TblDept", _dept.toMap());
+      r = await db.rawInsert("INSERT INTO TblDept (Name) Values ($_dept)");
     } catch (e) {
       debugPrint("insertDoc:" + e.toString());
     }
@@ -294,27 +295,25 @@ class DbHelper {
 
 //Drop table
   Future<int> clearTable(String tName) async {
-    if (await Directory(dbpath).exists()) {
+     try {
       Database db = await this.database;
-      var res = await db.execute("DELETE FROM " + tName);
+      var res = db.execute("DELETE FROM " + tName);
       print("droped table --211 " + tName);
-      return res ;
+      return res;
+      } catch (e) {
+      debugPrint("TblValidUser:" + e.toString());
     }
-     return 0;
+    return 0;
   }
 
   //countDB
-  Future<int> getCount(String tName) async{
+  Future<int> getCount(String tName) async {
     Database db = await this.database;
-      var result = Sqflite.firstIntValue(
-         await db.rawQuery("SELECT COUNT (*) FROM " + tName)
-      );     
-      print("droped table --211 " + tName);
-      return result;
+    var result = Sqflite.firstIntValue(
+        await db.rawQuery("SELECT COUNT (*) FROM " + tName));
+    print("droped table --211 " + tName);
+    return result;
   }
-  
-  
-
 
   //show data in table
 
@@ -335,17 +334,21 @@ class DbHelper {
     // return r;
     return null;
   }
-/*
-  Future<List<String>> tableList() async {
-    List<Map<String, dynamic>> tables = await this.db;
 
-    List<String> list = List();
-
-    for (var i = 1; i < tables.length; i++) {
-      list.add(tables[i]['name']);
+  Future<List<String>> getAllDepartments() async {
+    Database db = await this.database;
+    try {
+      final sql = '''SELECT * FROM TblDept ''';
+      final data = await db.rawQuery(sql);
+      List<String> todos = List();
+      for (final node in data) {
+        todos.add(node.toString());
+      }
+      return todos;
+    } catch (e) {
+      debugPrint("TblValidUser:" + e.toString());
     }
-    return list;
+    // return r;
+    return null;
   }
-  */
-
 }

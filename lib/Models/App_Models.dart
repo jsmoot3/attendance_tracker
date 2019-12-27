@@ -73,11 +73,11 @@ class ValidUser {
 }
 
 class Department {
-  int id;
   String name;
-  Department(this.name);
+  int id;
+  List<String> departments;
 
-  Department.withId(this.id, this.name);
+  Department({this.name});
 
   Map<String, dynamic> toMap() {
     var map = Map<String, dynamic>();
@@ -90,7 +90,10 @@ class Department {
   }
 
   Department.fromOject(dynamic input) {
-    this.id = input["id"];
+    // this.id = input["id"];
     this.name = input["Name"];
   }
+   //factory Department.fromJson( dynamic input> json) (
+   //    departments: json["Departments"] == null ? null : List<String>.from(json["Departments"].map((x) => x)),
+  // );
 }

@@ -15,16 +15,16 @@ class SessionDart {
   DateTime to;
   int rcount;
   String month;
-  List<CurrentSession> currentSessions;
-  List<String> departments;
+  // List<CurrentSession> currentSessions;
+  // List<String> departments;
 
   SessionDart({
     this.from,
     this.to,
     this.rcount,
     this.month,
-    this.currentSessions,
-    this.departments,
+    // this.currentSessions,
+    //  this.departments,
   });
 
   factory SessionDart.fromJson(Map<String, dynamic> json) => SessionDart(
@@ -48,12 +48,14 @@ class SessionDart {
         "To": to == null ? null : to.toIso8601String(),
         "Rcount": rcount == null ? null : rcount,
         "Month": month == null ? null : month,
+        /*
         "CurrentSessions": currentSessions == null
             ? null
             : List<dynamic>.from(currentSessions.map((x) => x.toJson())),
         "Departments": departments == null
             ? null
             : List<dynamic>.from(departments.map((x) => x)),
+            */
       };
 }
 
@@ -89,9 +91,11 @@ class CurrentSession {
   });
 
   factory CurrentSession.fromJson(Map<String, dynamic> json) => CurrentSession(
-        flEventSessionId:
-            json["FLEventSessionID"] == null ? null : json["FLEventSessionID"].toString(),
-        fLeventIDfk: json["FLeventIDfk"] == null ? null : json["FLeventIDfk"].toString(),
+        flEventSessionId: json["FLEventSessionID"] == null
+            ? null
+            : json["FLEventSessionID"].toString(),
+        fLeventIDfk:
+            json["FLeventIDfk"] == null ? null : json["FLeventIDfk"].toString(),
         campusLocation:
             json["CampusLocation"] == null ? null : json["CampusLocation"],
         trainer: json["Trainer"] == null ? null : json["Trainer"],
@@ -100,10 +104,12 @@ class CurrentSession {
         department: json["Department"] == null ? null : json["Department"],
         trainingGroup:
             json["TrainingGroup"] == null ? null : json["TrainingGroup"],
-        weekofClass: json["WeekofClass"] == null ? null : json["WeekofClass"].toString(),
+        weekofClass:
+            json["WeekofClass"] == null ? null : json["WeekofClass"].toString(),
         divison: json["Divison"] == null ? null : json["Divison"],
-        requireWaiver:
-            json["RequireWaiver"] == null ? "false" : json["RequireWaiver"] == false ? "false" :"true",
+        requireWaiver: json["RequireWaiver"] == null
+            ? "false"
+            : json["RequireWaiver"] == false ? "false" : "true",
         waiverName: json["WaiverName"] == null ? null : json["WaiverName"],
         startDate: json["StartDate"] == null
             ? null
@@ -163,6 +169,8 @@ class CurrentSession {
     this.startDate = o["StartDate"];
   }
 }
+
+
 
 //record of student that attend event.
 class Attendie {

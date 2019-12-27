@@ -4,6 +4,7 @@ import '../Models/GetApi.dart';
 import '../Models/AppData.dart';
 import '../Models/Session.dart';
 import 'package:attendance_tracker/Util/dbHelper.dart';
+
 //import 'package:sqflite/sqflite.dart';
 //import 'package:path_provider/path_provider.dart';
 
@@ -35,41 +36,11 @@ class _StartScreenState extends State<StartScreen> {
         return;
       }
       _appData = tData;
+//if(_appData.appDataSessions == null){
+      // _appData.appDataSessions = new
+//}
     });
   }
-
-/*
-    GetApi.checkIfHaveConnectionUpdateDB().then((AppData d) => setState(() {
-          _appData = d;
-          print("+++++++++++++++32");
-          if (_appData != null) {
-         
-            //TODO: insert into current session DB
-            final DbHelper _getData = DbHelper();
-
-            //clear db of data    
-             var output = _getData.clearTable("tblSessions");
-             if( output == 0)
-             {
-
-             }
-           // print("*****-->43 " + _appData.appDataSessions[0].toString());
-            // }
-
-//print(widget.appDataSession);
-            for (var i = 0; i < _appData.appDataSessions.length; i++) {
-         //     _getData.insertSessionRaw(_appData.appDataSessions[i]);
-            }
-
-            // List<CurrentSession> output =  _getData.getAlltblSessions();
-
-            //TODO: insert into insertRoles DB
-            //TODO: insert into valid users DB
-          } else {
-            CircularProgressIndicator();
-          }
-        }));
- */
 
   Future<List<CurrentSession>> getAllSessions() async {
     var dbHelper = DbHelper();
@@ -80,7 +51,7 @@ class _StartScreenState extends State<StartScreen> {
   clearTable() {
     setState(() {
       var dbHelper = DbHelper();
-      dbHelper.clearTable("tblSessions");
+      //    dbHelper.clearTable("tblSessions");
     });
   }
 
@@ -163,61 +134,22 @@ class _StartScreenState extends State<StartScreen> {
                 textDirection: TextDirection.ltr,
                 children: <Widget>[
                   Expanded(
-                    child: Text("SessionID"),
+                    child: Text("Sessions " +
+                        _appData.appDataSessions.length.toString()),
                   ),
                   Expanded(
-                    child: Text("Department"),
+                    child: Text(
+                        "Roles " + _appData.appDataroles.length.toString()),
                   ),
                   Expanded(
-                    child: Text("Day"),
+                    child: Text(
+                        "Users " + _appData.appDataallUsers.length.toString()),
                   ),
                   Expanded(
-                    child: Padding(
-                      padding: EdgeInsets.only(right: 8.0),
-                      child: RaisedButton(
-                        color: Colors.red,
-                        child: Text("ClearDB"),
-                        onPressed: () {
-                          clearTable();
-                        },
-                      ),
-                    ),
+                    child: Text("Departments " +
+                        _appData.appDepartments.length.toString()),
                   ),
                 ],
-              ),
-              FutureBuilder<List<CurrentSession>>(
-                future: getAllSessions(),
-                builder: (context, snapshot) {
-                  return ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: snapshot.data.length,
-                    itemBuilder: (context, index) {
-                      return Row(
-                        textDirection: TextDirection.ltr,
-                        children: <Widget>[
-                          Expanded(
-                            child: Text(
-                              snapshot.data[index].flEventSessionId.toString(),
-                              style: TextStyle(fontSize: 16.0),
-                            ),
-                          ),
-                          Expanded(
-                            child: Text(
-                              snapshot.data[index].department,
-                              style: TextStyle(fontSize: 12.0),
-                            ),
-                          ),
-                          Expanded(
-                            child: Text(
-                              snapshot.data[index].day,
-                              style: TextStyle(fontSize: 12.0),
-                            ),
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                },
               ),
             ],
           ),
@@ -230,20 +162,16 @@ class _StartScreenState extends State<StartScreen> {
   }
 
   // handle the button click event
-  _changeText() {
-    //  setState(() {
-    // print('Your number was => $_textFieldController.text ');
-    // _noTextAlert();
-    // AppData appdata = _AppData;
+  _changeText() {  
     String text1 = _textFieldController.text;
     if (text1 != '') {
       // print('Your number was =>$text1');
-
+      _appData.groupNum = text1;
       Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => SessionsScreen(
-              text: '$text1',
+              trackerData: _appData,
             ),
           ));
     } else {

@@ -9,12 +9,16 @@ import '../store/actions.dart';
 import 'Start_screen.dart';
 import 'package:attendance_tracker/Util/dbHelper.dart';
 
-class SessionsScreen extends StatelessWidget {
-  final String text;
-  final newdata;
-  SessionsScreen({Key key, @required this.text, this.newdata})
-      : super(key: key);
 
+
+/*
+class SessionsScreen extends StatelessWidget {
+  final String text = "";
+
+  AppData trackerData; 
+  SessionsScreen({this.trackerData});
+  
+  
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
@@ -31,26 +35,41 @@ class SessionsScreen extends StatelessWidget {
     );
   }
 }
+*/
 
-class getCurrentSessions extends StatefulWidget {
-  // StartScreen({this.appDataSession});
-//final appDataSession;
+class SessionsScreen extends StatefulWidget {
+   AppData trackerData; 
+  SessionsScreen({this.trackerData});
 
   @override
-  State<StatefulWidget> createState() {
-    return new getCurrentSessionsState();
-  }
+  //State<StatefulWidget> createState() {
+  //  return _SessionsScreen();
+ // }
+   _SessionsScreenState createState() => _SessionsScreenState();
 }
 
-class getCurrentSessionsState extends State<getCurrentSessions> {
+class _SessionsScreenState extends State<SessionsScreen> {
   List csessions = new List<CurrentSession>();
   AppData _responseSess = null;
   int count = 0;
   final _biggerFont = const TextStyle(fontSize: 18.0);
   void initState() {
     super.initState();
+    updateUI(widget.trackerData);   
   }
 
+ void updateUI(dynamic tData) {
+    setState(() {
+      if (tData == null) {
+        return;
+      }
+      csessions = tData.appDataSessions;
+//if(_appData.appDataSessions == null){
+      // _appData.appDataSessions = new
+//}
+    });
+  }
+/*
   Future<List<CurrentSession>> getAllSessions() async {
     DbHelper helper = DbHelper();
     final dbFuture = helper.initializeDb();
@@ -71,7 +90,7 @@ class getCurrentSessionsState extends State<getCurrentSessions> {
     });
     return csessions;
   }
-
+*/
   // get image info
   Image getImage(CurrentSession _dession) {
     var assetImage = AssetImage("asset/images/cc4.png");
@@ -182,6 +201,7 @@ class getCurrentSessionsState extends State<getCurrentSessions> {
       //body: _myListView(context));
       //body: _myListViewDy(context));
 
+/*
       body: FutureBuilder<List<CurrentSession>>(
           future: getAllSessions(),
           builder: (context, snapshot) {
@@ -199,9 +219,11 @@ class getCurrentSessionsState extends State<getCurrentSessions> {
               //);
             }
             List<CurrentSession> sessData = snapshot.data ?? [];
-            return ListView.builder(
+*/
+
+            body: ListView.builder(
                 padding: const EdgeInsets.all(10.0),
-                itemCount: count, //csessions == null ? 0 : csessions.length,
+                itemCount: csessions == null ? 0 : csessions.length,
                 itemBuilder: (BuildContext context, int index) {
                   return Container(
                     height: 150,
@@ -226,10 +248,10 @@ class getCurrentSessionsState extends State<getCurrentSessions> {
                                   border: new Border(
                                       right: new BorderSide(
                                           width: 1.0, color: Colors.white24))),
-                              child: getImage(sessData[index]),
+                              child: getImage(csessions[index]),
                             ),
                             title: Text(
-                              getHeadtext(sessData[index]),
+                              getHeadtext(csessions[index]),
                               style: TextStyle(
                                 fontSize: 35,
                                 fontWeight: FontWeight.bold,
@@ -244,7 +266,7 @@ class getCurrentSessionsState extends State<getCurrentSessions> {
                                     //  mainAxisAlignment: MainAxisAlignment.spaceAround,
                                     children: [
                                       Text(
-                                        sessData[index].campusLocation,
+                                        csessions[index].campusLocation,
                                         style: TextStyle(
                                           fontSize: 30,
                                           fontWeight: FontWeight.bold,
@@ -256,7 +278,7 @@ class getCurrentSessionsState extends State<getCurrentSessions> {
                                 Column(
                                   children: [
                                     Text(
-                                      getSubtext(sessData[index]),
+                                      getSubtext(csessions[index]),
                                       style: TextStyle(
                                         fontSize: 28,
                                         fontWeight: FontWeight.bold,
@@ -267,22 +289,12 @@ class getCurrentSessionsState extends State<getCurrentSessions> {
                               ]),
                             )
 
-                            /* subtitle: Text(
-                        getSubtext(csessions[index]),
-                        style: TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      */
-
-                            //  trailing: Icon(Icons.keyboard_arrow_right),
                             ),
                       ),
                     ),
                   );
-                });
-          }),
+                })
+ //         }),
     );
   }
 
