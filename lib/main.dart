@@ -6,7 +6,7 @@ import 'Store/AppDataStore.dart';
 import 'Models/AppData.dart';
 import 'package:loading/loading.dart';
 import 'package:loading/indicator/ball_pulse_indicator.dart';
-import 'package:async_loader/async_loader.dart';
+
 import 'Models/GetApi.dart';
 
 void main() {
@@ -16,8 +16,7 @@ void main() {
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
-  final GlobalKey<AsyncLoaderState> _asyncLoaderState =
-      new GlobalKey<AsyncLoaderState>();
+ 
   final Store<AppData> store;
   MyApp(this.store);
 

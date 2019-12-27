@@ -222,11 +222,11 @@ class _SessionsScreenState extends State<SessionsScreen> {
 */
 
             body: ListView.builder(
-                padding: const EdgeInsets.all(10.0),
+              //  padding: const EdgeInsets.all(10.0),
                 itemCount: csessions == null ? 0 : csessions.length,
                 itemBuilder: (BuildContext context, int index) {
                   return Container(
-                    height: 150,
+                    height: 180,
                     // padding: const EdgeInsets..all(10.0),
                     child: Card(
                       elevation: 8.0,
@@ -236,18 +236,18 @@ class _SessionsScreenState extends State<SessionsScreen> {
                         //decoration:
                         // BoxDecoration(color: Color.fromRGBO(64, 75, 96, .9)),
                         child: ListTile(
-                            contentPadding: EdgeInsets.symmetric(
-                                horizontal: 20.0, vertical: 10.0),
+                          //  contentPadding: EdgeInsets.symmetric(
+                          //      horizontal: 20.0, vertical: 10.0),
                             // isThreeLine: true,
                             onLongPress: () {
                               //TODO: do something else
                               _noTextAlert("test");
                             },
                             leading: Container(
-                              decoration: new BoxDecoration(
-                                  border: new Border(
-                                      right: new BorderSide(
-                                          width: 1.0, color: Colors.white24))),
+                           //   decoration: new BoxDecoration(
+                            //      border: new Border(
+                           //           right: new BorderSide(
+                           //               width: 1.0, color: Colors.white24))),
                               child: getImage(csessions[index]),
                             ),
                             title: Text(

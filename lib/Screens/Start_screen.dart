@@ -93,6 +93,7 @@ class _StartScreenState extends State<StartScreen> {
         style: TextStyle(
           fontSize: 40.0,
           fontStyle: FontStyle.italic,
+          height: 1.5,
         ),
       );
 
@@ -100,7 +101,7 @@ class _StartScreenState extends State<StartScreen> {
         appBar: AppBar(
           title: Text('Attrndance Tracker'),
         ),
-        resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         body: Padding(
           padding: const EdgeInsets.all(30.0),
           child: Column(
@@ -118,13 +119,13 @@ class _StartScreenState extends State<StartScreen> {
               ),
               Expanded(
                 child: Padding(
-                  padding: EdgeInsets.all(15.0),
+                  padding: EdgeInsets.symmetric(vertical: 2.0,horizontal: 5),
                   child: nTextField,
                 ),
               ),
               Expanded(
                 child: Padding(
-                  padding: EdgeInsets.all(15.0),
+                  padding: EdgeInsets.symmetric(vertical: 3.0,horizontal: 5),
                   child: logButton,
                 ),
               ),
