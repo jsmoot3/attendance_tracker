@@ -167,7 +167,7 @@ class _StartScreenState extends State<StartScreen> {
     String text1 = _textFieldController.text;
     if (text1 != '') {
       // print('Your number was =>$text1');
-      _appData.groupNum = text1;
+      _appData.groupId = text1;
       Navigator.push(
           context,
           MaterialPageRoute(

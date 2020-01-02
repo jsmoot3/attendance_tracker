@@ -8,6 +8,8 @@ import '../Models/AppData.dart';
 import '../store/actions.dart';
 import 'Start_screen.dart';
 import 'package:attendance_tracker/Util/dbHelper.dart';
+import 'dart:convert';
+import '../Models/App_Models.dart';
 
 
 
@@ -50,7 +52,9 @@ class SessionsScreen extends StatefulWidget {
 
 class _SessionsScreenState extends State<SessionsScreen> {
   List csessions = new List<CurrentSession>();
-  AppData _responseSess = null;
+  List roles = new List<Role>();
+  List valStudents = new List<ValidUser>();
+  AppData applicationData;
   int count = 0;
   final _biggerFont = const TextStyle(fontSize: 18.0);
   void initState() {
@@ -63,34 +67,30 @@ class _SessionsScreenState extends State<SessionsScreen> {
       if (tData == null) {
         return;
       }
+      applicationData = tData;
       csessions = tData.appDataSessions;
+      roles = tData.appDataroles;
+      valStudents = tData.appDataallUsers;
 //if(_appData.appDataSessions == null){
       // _appData.appDataSessions = new
 //}
     });
   }
-/*
-  Future<List<CurrentSession>> getAllSessions() async {
-    DbHelper helper = DbHelper();
-    final dbFuture = helper.initializeDb();
-    dbFuture.then((result) {
-      final cSessTuture = helper.readAllSessions();
-      cSessTuture.then((result) {
-        List<CurrentSession> oSessions = List<CurrentSession>();
-        count = result.length;
-        for (int i = 0; i < count; i++) {
-          oSessions.add(result[i]); //(CurrentSession.fromDb(result[i]));
-          //debugPrint(oSessions[i].department);
-        }
-        setState(() {
-          csessions = oSessions;
-          count = count;
-        });
-      });
-    });
-    return csessions;
-  }
-*/
+  ////////////////////////////////////////////
+//Find sessions for departments allowed
+///////////////////////////////////////
+List<CurrentSession> viewableSessions (){ 
+  List <String> accessGroupes = new List<String>();
+for(int ro = 0;ro< roles.length;ro++)
+{
+Role role = roles[ro];
+if(role.user == this.applicationData.groupId || role.empLid == this.applicationData.groupId){
+  if(!accessGroupes.in)
+}
+}
+}
+
+/////////////////////////////////////////////////////
   // get image info
   Image getImage(CurrentSession _dession) {
     var assetImage = AssetImage("asset/images/cc4.png");

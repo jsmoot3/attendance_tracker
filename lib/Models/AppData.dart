@@ -7,7 +7,7 @@ class AppData {
   String to;
   int rcount;
   String month;
-  String groupNum;
+  String groupId;
   List<CurrentSession> appDataSessions;
   List<Role> appDataroles;
   List<ValidUser> appDataallUsers;
