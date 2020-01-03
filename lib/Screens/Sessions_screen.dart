@@ -10,8 +10,7 @@ import 'Start_screen.dart';
 import 'package:attendance_tracker/Util/dbHelper.dart';
 import 'dart:convert';
 import '../Models/App_Models.dart';
-
-
+import 'package:intl/intl.dart';
 
 /*
 class SessionsScreen extends StatelessWidget {
@@ -40,55 +39,82 @@ class SessionsScreen extends StatelessWidget {
 */
 
 class SessionsScreen extends StatefulWidget {
-   AppData trackerData; 
+  AppData trackerData;
   SessionsScreen({this.trackerData});
 
   @override
   //State<StatefulWidget> createState() {
   //  return _SessionsScreen();
- // }
-   _SessionsScreenState createState() => _SessionsScreenState();
+  // }
+  _SessionsScreenState createState() => _SessionsScreenState();
 }
 
 class _SessionsScreenState extends State<SessionsScreen> {
   List csessions = new List<CurrentSession>();
+  List allSessions = new List<CurrentSession>();
   List roles = new List<Role>();
   List valStudents = new List<ValidUser>();
+  String groupAccessId;
+
   AppData applicationData;
   int count = 0;
   final _biggerFont = const TextStyle(fontSize: 18.0);
   void initState() {
     super.initState();
-    updateUI(widget.trackerData);   
+    updateUI(widget.trackerData);
   }
 
- void updateUI(dynamic tData) {
+  void updateUI(dynamic tData) {
     setState(() {
       if (tData == null) {
         return;
       }
       applicationData = tData;
-      csessions = tData.appDataSessions;
+      allSessions = tData.appDataSessions;
       roles = tData.appDataroles;
       valStudents = tData.appDataallUsers;
+      groupAccessId = tData.groupId;
+
 //if(_appData.appDataSessions == null){
       // _appData.appDataSessions = new
 //}
     });
   }
-  ////////////////////////////////////////////
+
+  ////////////////////////////////////////////   String user;
+  String empLid;
 //Find sessions for departments allowed
 ///////////////////////////////////////
-List<CurrentSession> viewableSessions (){ 
-  List <String> accessGroupes = new List<String>();
-for(int ro = 0;ro< roles.length;ro++)
-{
-Role role = roles[ro];
-if(role.user == this.applicationData.groupId || role.empLid == this.applicationData.groupId){
-  if(!accessGroupes.in)
-}
-}
-}
+  List<CurrentSession> viewableSessions() {
+    List<String> accessGroupes = new List<String>();
+    List csessionsL = new List<CurrentSession>();
+    roles.forEach((r) {
+      if (r.user == groupAccessId) {
+        int count = accessGroupes.where((n) => n == r.rName).toList().length;
+        if (count < 1) {
+          accessGroupes.add(r.rName);
+        }
+        if (r.rName == "FL_Admin") {
+          csessionsL = allSessions;
+        } else if (accessGroupes.where((n) => n != "FL_Admin").toList().length >
+            0) {
+          //now an admin need to find associated events to id
+          allSessions.forEach((sess) {
+            if (accessGroupes
+                    .where(
+                        (n) => n.toUpperCase() == sess.department.toUpperCase())
+                    .toList()
+                    .length >
+                0) {
+              csessionsL.add(sess);
+            }
+          });
+        }
+      }
+      return csessionsL;
+    });
+    return csessionsL;
+  }
 
 /////////////////////////////////////////////////////
   // get image info
@@ -187,19 +213,45 @@ if(role.user == this.applicationData.groupId || role.empLid == this.applicationD
 
   @override
   Widget build(BuildContext context) {
-    // String responseSess = _responseSess.appDataSessions;
-    // print("sess==> 76  " + responseSess.toString());
-    //  var sesDat = json.decode(responseSess);
-    // List<CurrentSession> csessions = sesDat["CurrentSessions"];
-    //   print("sessDat==> 78  " + sesDat["CurrentSessions"].toString());
-    // StoreConnector<int, String>(converter: (store) => store.state.toString());
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Startup Name Generator'),
-      ),
-      // body: _buildSuggestions(),
-      //body: _myListView(context));
-      //body: _myListViewDy(context));
+    //add the acced session to the view
+    csessions = viewableSessions();
+
+    if (csessions == null || csessions.length < 1) {
+      // return: show loading widget
+      print("No sessionss to display");
+      return Scaffold(
+        appBar: AppBar(
+          title: Text('Startup Name Generator'),
+        ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                "There are no current session for this group Id",
+                style: TextStyle(fontSize: 30),
+              ),
+              SizedBox(height: 10),
+              RaisedButton(
+                child: Text("Back to Login", style: TextStyle(fontSize: 42.0)),
+                onPressed: _returnToMain,
+                color: Colors.green,
+                textColor: Colors.yellow,
+                padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                splashColor: Colors.grey,
+              )
+            ],
+          ),
+        ),
+      );
+    } else {
+      return Scaffold(
+          appBar: AppBar(
+            title: Text('Startup Name Generator'),
+          ),
+          // body: _buildSuggestions(),
+          //body: _myListView(context));
+          //body: _myListViewDy(context));
 
 /*
       body: FutureBuilder<List<CurrentSession>>(
@@ -221,33 +273,112 @@ if(role.user == this.applicationData.groupId || role.empLid == this.applicationD
             List<CurrentSession> sessData = snapshot.data ?? [];
 */
 
-            body: ListView.builder(
-              //  padding: const EdgeInsets.all(10.0),
-                itemCount: csessions == null ? 0 : csessions.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Container(
-                    height: 180,
-                    // padding: const EdgeInsets..all(10.0),
+          body: ListView.builder(
+              itemCount: csessions == null ? 0 : csessions.length,
+              itemBuilder: (BuildContext context, int index) {
+                return Container(
+                  height: 125,
+                  // padding: const EdgeInsets..all(10.0),
+                  child: InkWell(
+                    onTap: () {
+                      _noTextAlert("test-" + csessions[index].department);
+                    },
                     child: Card(
-                      elevation: 8.0,
-                      margin: new EdgeInsets.symmetric(
-                          horizontal: 10.0, vertical: 6.0),
+                        elevation: 8.0,
+                        color: Colors.lightBlue,
+                        margin: new EdgeInsets.symmetric(
+                            horizontal: 10.0, vertical: 5.0),
+                        child: Padding(
+                          padding: EdgeInsets.all(5.0),
+                          child: Row(children: <Widget>[
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                getImage(csessions[index]),                               
+                              ],
+                              
+                            ),
+                            Expanded(
+                              child: Column(
+                                //const SizedBox(width: 25), 
+                               // mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [   
+                                const SizedBox(height: 15), 
+                                  Text(
+                                    getHeadtext(csessions[index]),
+                                    style: TextStyle(
+                                      fontSize: 35,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    
+                                  ),
+                                  Text(
+                                    csessions[index].campusLocation,
+                                    style: TextStyle(
+                                      fontSize: 30,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              //  textDirection: TextDirection.rtl,
+                              children: [
+                               
+                                Text(
+                                  //getSubtext(csessions[index]),
+                                  csessions[index].day,
+                                  // textAlign: TextAlign.right,
+                                  style: TextStyle(
+                                    fontSize: 28,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  //getSubtext(csessions[index]),
+                                  csessions[index].timeOfDay,
+                                  textAlign: TextAlign.right,
+                                  style: TextStyle(
+                                    fontSize: 28,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                 Text(
+                                  "Start Date: " +
+                                      DateFormat('MM-dd-yyyy')
+                                          .format(csessions[index].startDate),
+                                  // textAlign: TextAlign.right,
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            )
+                          ]),
+                        )
+
+                        /* 
                       child: Container(
                         //decoration:
                         // BoxDecoration(color: Color.fromRGBO(64, 75, 96, .9)),
                         child: ListTile(
-                          //  contentPadding: EdgeInsets.symmetric(
-                          //      horizontal: 20.0, vertical: 10.0),
+                            //  contentPadding: EdgeInsets.symmetric(
+                            //      horizontal: 20.0, vertical: 10.0),
                             // isThreeLine: true,
                             onLongPress: () {
                               //TODO: do something else
                               _noTextAlert("test");
                             },
                             leading: Container(
-                           //   decoration: new BoxDecoration(
-                            //      border: new Border(
-                           //           right: new BorderSide(
-                           //               width: 1.0, color: Colors.white24))),
+                              //   decoration: new BoxDecoration(
+                              //      border: new Border(
+                              //           right: new BorderSide(
+                              //               width: 1.0, color: Colors.white24))),
                               child: getImage(csessions[index]),
                             ),
                             title: Text(
@@ -261,8 +392,7 @@ if(role.user == this.applicationData.groupId || role.empLid == this.applicationD
                               child: Row(children: [
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     //  mainAxisAlignment: MainAxisAlignment.spaceAround,
                                     children: [
                                       Text(
@@ -287,15 +417,20 @@ if(role.user == this.applicationData.groupId || role.empLid == this.applicationD
                                   ],
                                 ),
                               ]),
-                            )
+                            )),
+                      ),*/
 
-                            ),
-                      ),
-                    ),
-                  );
-                })
- //         }),
-    );
+                        ),
+                  ),
+                );
+              })
+          //         }),
+          );
+    }
+  }
+
+  _returnToMain() {
+    Navigator.pop(context);
   }
 
 /*
@@ -361,7 +496,7 @@ if(role.user == this.applicationData.groupId || role.empLid == this.applicationD
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Not in stock'),
-          content: const Text('This item is no longer available'),
+          content:  Text(mess),
           actions: <Widget>[
             FlatButton(
               child: Text('Ok'),
