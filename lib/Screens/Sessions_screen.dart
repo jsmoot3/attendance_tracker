@@ -1,5 +1,6 @@
 import 'package:attendance_tracker/Screens/Start_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:attendance_tracker/Screens/TakeAttendance_Screen.dart';
 import '../Models/GetApi.dart';
 import '../Models/Session.dart';
 import 'dart:convert';
@@ -11,32 +12,6 @@ import 'package:attendance_tracker/Util/dbHelper.dart';
 import 'dart:convert';
 import '../Models/App_Models.dart';
 import 'package:intl/intl.dart';
-
-/*
-class SessionsScreen extends StatelessWidget {
-  final String text = "";
-
-  AppData trackerData; 
-  SessionsScreen({this.trackerData});
-  
-  
-  @override
-  Widget build(BuildContext context) {
-    return new MaterialApp(
-      title: 'Fetch Data Example',
-      theme: new ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: new Scaffold(
-        appBar: new AppBar(
-          title: Text("List"),
-        ),
-        body: getCurrentSessions(),
-      ),
-    );
-  }
-}
-*/
 
 class SessionsScreen extends StatefulWidget {
   AppData trackerData;
@@ -249,30 +224,6 @@ class _SessionsScreenState extends State<SessionsScreen> {
           appBar: AppBar(
             title: Text('Startup Name Generator'),
           ),
-          // body: _buildSuggestions(),
-          //body: _myListView(context));
-          //body: _myListViewDy(context));
-
-/*
-      body: FutureBuilder<List<CurrentSession>>(
-          future: getAllSessions(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState != ConnectionState.done) {
-              // return: show loading widget
-              print("snapshot has nothing 190");
-              //return new Center(
-             //   child: new CircularProgressIndicator(),
-              //);
-            }
-            if (snapshot.hasError) {
-              print("There was an error");
-              //return new Center(
-              //  child: new CircularProgressIndicator(),
-              //);
-            }
-            List<CurrentSession> sessData = snapshot.data ?? [];
-*/
-
           body: ListView.builder(
               itemCount: csessions == null ? 0 : csessions.length,
               itemBuilder: (BuildContext context, int index) {
@@ -282,6 +233,12 @@ class _SessionsScreenState extends State<SessionsScreen> {
                   child: InkWell(
                     onTap: () {
                       _noTextAlert("test-" + csessions[index].department);
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) {
+                        return TakeAttendance(
+                          sessionData: csessions[index],
+                        );
+                      }));
                     },
                     child: Card(
                         elevation: 8.0,
@@ -294,24 +251,22 @@ class _SessionsScreenState extends State<SessionsScreen> {
                             Column(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
-                                getImage(csessions[index]),                               
+                                getImage(csessions[index]),
                               ],
-                              
                             ),
                             Expanded(
                               child: Column(
-                                //const SizedBox(width: 25), 
-                               // mainAxisAlignment: MainAxisAlignment.start,
+                                //const SizedBox(width: 25),
+                                // mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [   
-                                const SizedBox(height: 15), 
+                                children: [
+                                  const SizedBox(height: 15),
                                   Text(
                                     getHeadtext(csessions[index]),
                                     style: TextStyle(
                                       fontSize: 35,
                                       fontWeight: FontWeight.bold,
                                     ),
-                                    
                                   ),
                                   Text(
                                     csessions[index].campusLocation,
@@ -319,7 +274,6 @@ class _SessionsScreenState extends State<SessionsScreen> {
                                       fontSize: 30,
                                       fontWeight: FontWeight.bold,
                                     ),
-                                    
                                   ),
                                 ],
                               ),
@@ -328,7 +282,6 @@ class _SessionsScreenState extends State<SessionsScreen> {
                               mainAxisAlignment: MainAxisAlignment.end,
                               //  textDirection: TextDirection.rtl,
                               children: [
-                               
                                 Text(
                                   //getSubtext(csessions[index]),
                                   csessions[index].day,
@@ -347,7 +300,7 @@ class _SessionsScreenState extends State<SessionsScreen> {
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                 Text(
+                                Text(
                                   "Start Date: " +
                                       DateFormat('MM-dd-yyyy')
                                           .format(csessions[index].startDate),
@@ -496,7 +449,7 @@ class _SessionsScreenState extends State<SessionsScreen> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Not in stock'),
-          content:  Text(mess),
+          content: Text(mess),
           actions: <Widget>[
             FlatButton(
               child: Text('Ok'),
