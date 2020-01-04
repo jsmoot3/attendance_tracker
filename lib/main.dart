@@ -20,6 +20,7 @@ class MyApp extends StatelessWidget {
   final Store<AppData> store;
   MyApp(this.store);
 
+
   @override
   Widget build(BuildContext context) {
     /*
@@ -39,6 +40,7 @@ class MyApp extends StatelessWidget {
           home: SplashScreen(), // StartScreen(),
         ));
   }
+ 
 }
 
 class SplashScreen extends StatefulWidget {

@@ -76,7 +76,7 @@ class GetApi {
             }
       
             csessions = await _dbHelper.readAllSessions();
-            print("#########- Sessions 74->" + csessions.length.toString());
+           // print("#########- Sessions 74->" + csessions.length.toString());
             tAppData.appDataSessions = csessions;
       
       /*

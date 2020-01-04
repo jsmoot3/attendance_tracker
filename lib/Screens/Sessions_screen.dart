@@ -242,7 +242,7 @@ class _SessionsScreenState extends State<SessionsScreen> {
                     },
                     child: Card(
                         elevation: 8.0,
-                        color: Colors.lightBlue,
+                       // color: Colors.lightBlue,
                         margin: new EdgeInsets.symmetric(
                             horizontal: 10.0, vertical: 5.0),
                         child: Padding(

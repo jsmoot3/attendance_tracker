@@ -44,7 +44,7 @@ class DbHelper {
     // print("----->38 In the initializedDB ");
     Directory dir = await getApplicationDocumentsDirectory();
     dbpath = dir.path + "/trackerDb.db";
-    print("--DBhelp--->45 In the initializedDB the db --> " + dbpath);
+   // print("--DBhelp--->45 In the initializedDB the db --> " + dbpath);
     clearTable("tblSessions");
     var db = await openDatabase(dbpath, version: 2, onCreate: _createDbs);
     return db;
@@ -54,10 +54,10 @@ class DbHelper {
     print("----->47 _createDbs ");
     _createTblSessionsDB(db, version);
     //   _createTblAttendieDB(db, version);
-    //   _createTblRolesDB(db, version);
+       _createTblRolesDB(db, version);
     //   _createTblWaverDB(db, version);
     //   _createTblDeptDB(db, version);
-    //   _createTblValidUserDB(db, version);
+       _createTblValidUserDB(db, version);
   }
 
   //Create the TblSessionsDB.db database
@@ -102,11 +102,21 @@ class DbHelper {
 
   //Create the TblRoles.db database
   void _createTblRolesDB(Database db, int version) async {
-    await db.execute("CREATE TABLE TblRoles(" +
+     clearTable("TblRoles");
+    print("----->106 creatingDB TblRoles ");
+    try{
+    final sTableRoles ="CREATE TABLE TblRoles(" +
         "id INTEGER PRIMARY KEY," +
         "RName TEXT," +
         "Emplid TEXT," +
-        "User TEXT");
+        "User TEXT" );
+    await db.execute(sTableRoles);
+    } catch (e) {
+      debugPrint("insertDocRoles115: " + e.toString());
+      print("There is a problem " + e.toString());
+    }
+  
+  
   }
 
   //Create the TblWaverDB.db database
@@ -193,7 +203,7 @@ class DbHelper {
         // print("No db created");
       }
     } catch (e) {
-      debugPrint("insertDoc: " + e.toString());
+      debugPrint("insertDoc196: " + e.toString());
     }
     return r;
   }
@@ -242,6 +252,8 @@ class DbHelper {
     }
     return r;
   }
+
+
 
 //insert Attendie
   Future<int> insertAttendie(Attendie _attendie) async {
@@ -301,7 +313,7 @@ class DbHelper {
       print("droped table --211 " + tName);
       return res;
       } catch (e) {
-      debugPrint("TblValidUser:" + e.toString());
+      debugPrint("TblValidUser304:" + e.toString());
     }
     return 0;
   }
