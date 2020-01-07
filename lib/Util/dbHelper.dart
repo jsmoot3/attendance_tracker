@@ -57,7 +57,7 @@ class DbHelper {
        _createTblRolesDB(db, version);
     //   _createTblWaverDB(db, version);
     //   _createTblDeptDB(db, version);
-       _createTblValidUserDB(db, version);
+    //   _createTblValidUserDB(db, version);
   }
 
   //Create the TblSessionsDB.db database
@@ -109,7 +109,8 @@ class DbHelper {
         "id INTEGER PRIMARY KEY," +
         "RName TEXT," +
         "Emplid TEXT," +
-        "User TEXT" );
+        "User TEXT" +
+    ")";
     await db.execute(sTableRoles);
     } catch (e) {
       debugPrint("insertDocRoles115: " + e.toString());
