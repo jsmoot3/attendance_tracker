@@ -36,7 +36,6 @@ class DbHelper {
   //  return this.db;
   //}
 
-  
   /////////////////////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////
@@ -44,7 +43,7 @@ class DbHelper {
     // print("----->38 In the initializedDB ");
     Directory dir = await getApplicationDocumentsDirectory();
     dbpath = dir.path + "/trackerDb.db";
-   // print("--DBhelp--->45 In the initializedDB the db --> " + dbpath);
+    // print("--DBhelp--->45 In the initializedDB the db --> " + dbpath);
     clearTable("tblSessions");
     var db = await openDatabase(dbpath, version: 2, onCreate: _createDbs);
     return db;
@@ -54,7 +53,7 @@ class DbHelper {
     print("----->47 _createDbs ");
     _createTblSessionsDB(db, version);
     //   _createTblAttendieDB(db, version);
-       _createTblRolesDB(db, version);
+    _createTblRolesDB(db, version);
     //   _createTblWaverDB(db, version);
     //   _createTblDeptDB(db, version);
     //   _createTblValidUserDB(db, version);
@@ -102,22 +101,20 @@ class DbHelper {
 
   //Create the TblRoles.db database
   void _createTblRolesDB(Database db, int version) async {
-     clearTable("TblRoles");
+    clearTable("TblRoles");
     print("----->106 creatingDB TblRoles ");
-    try{
-    final sTableRoles ="CREATE TABLE TblRoles(" +
-        "id INTEGER PRIMARY KEY," +
-        "RName TEXT," +
-        "Emplid TEXT," +
-        "User TEXT" +
-    ")";
-    await db.execute(sTableRoles);
+    try {
+      final sTableRoles = "CREATE TABLE TblRoles(" +
+          "id INTEGER PRIMARY KEY," +
+          "RName TEXT," +
+          "Emplid TEXT," +
+          "User TEXT" +
+          ")";
+      await db.execute(sTableRoles);
     } catch (e) {
       debugPrint("insertDocRoles115: " + e.toString());
       print("There is a problem " + e.toString());
     }
-  
-  
   }
 
   //Create the TblWaverDB.db database
@@ -254,8 +251,6 @@ class DbHelper {
     return r;
   }
 
-
-
 //insert Attendie
   Future<int> insertAttendie(Attendie _attendie) async {
     var r;
@@ -307,13 +302,13 @@ class DbHelper {
   }
 
 //Drop table
-  Future<int> clearTable(String tName) async {
-     try {
+  Future<dynamic> clearTable(String tName) async {
+    try {
       Database db = await this.database;
       var res = db.execute("DELETE FROM " + tName);
       print("droped table --211 " + tName);
       return res;
-      } catch (e) {
+    } catch (e) {
       debugPrint("TblValidUser304:" + e.toString());
     }
     return 0;

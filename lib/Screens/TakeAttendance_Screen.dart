@@ -14,7 +14,7 @@ class _TakeAttendanceState extends State<TakeAttendance> {
   void initState() {
     super.initState();
     activeSession = new CurrentSession();
-    updateUI(widget.sessionData);
+   updateUI(widget.sessionData);
   }
 
   void updateUI(dynamic tData) {
@@ -58,7 +58,7 @@ class _TakeAttendanceState extends State<TakeAttendance> {
           fontSize: 42.0,
         ),
       ),
-      onPressed: _noTextAlert("Pressed submit"),
+      onPressed:  _noTextAlert("Pressed submit"),
       color: Colors.green,
       textColor: Colors.white,
       padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
@@ -66,7 +66,7 @@ class _TakeAttendanceState extends State<TakeAttendance> {
     );
 
 //reset button
-    final resetButton = RaisedButton(
+    final logButton = RaisedButton(
       child: Text(
         "Submit",
         style: TextStyle(
@@ -85,16 +85,14 @@ class _TakeAttendanceState extends State<TakeAttendance> {
         title: Text('Attrndance Tracker'),
       ),
       resizeToAvoidBottomInset: true,
-      body: Container(
-        child: Padding(
+
+ body: Padding(
           padding: const EdgeInsets.all(30.0),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              SizedBox(
-                height: 155.0,
-              ),
+              
               Expanded(
                 child: Padding(
                   padding: EdgeInsets.symmetric(vertical: 2.0, horizontal: 5),
@@ -103,72 +101,16 @@ class _TakeAttendanceState extends State<TakeAttendance> {
               ),
               Expanded(
                 child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 2.0, horizontal: 5),
-                  // child: subButton,
-                  child: Text("Sessions "),
+                  padding: EdgeInsets.symmetric(vertical: 3.0, horizontal: 5),
+                  child: logButton,
                 ),
               ),
-              /*   Text(
-                activeSession.department,
-                style: TextStyle(
-                  fontSize: 35,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Text(
-                activeSession.campusLocation,
-                style: TextStyle(
-                  fontSize: 30,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Text(
-                activeSession.day,
-                style: TextStyle(
-                  fontSize: 35,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Text(
-                activeSession.timeOfDay,
-                style: TextStyle(
-                  fontSize: 30,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              */
-              /*
-              Row(
-                children: <Widget>[
-                  Expanded(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 2.0, horizontal: 5),
-                     // child: subButton,
-                      child: Text("Sessions " ),
-                    ),
-                  ),
-                 Expanded(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 2.0, horizontal: 5),
-                      child: RaisedButton(
-                        child: Text("Submit", style: TextStyle(fontSize: 42.0)),
-                        onPressed: _noTextAlert("Pressed submit"),
-                        color: Colors.green,
-                        textColor: Colors.yellow,
-                        padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-                        splashColor: Colors.grey,
-                      ),
-                    ),
-                  ),
-                 
-                ],
-              )
-               */
+
             ],
           ),
         ),
-      ),
-    );
+      );
+    
   }
 
   _noTextAlert(String _mess) {

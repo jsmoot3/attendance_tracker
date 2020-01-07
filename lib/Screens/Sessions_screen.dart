@@ -93,87 +93,88 @@ class _SessionsScreenState extends State<SessionsScreen> {
 
 /////////////////////////////////////////////////////
   // get image info
-  Image getImage(CurrentSession _dession) {
-    var assetImage = AssetImage("asset/images/cc4.png");
+  String getImage(CurrentSession _dession) {
+    var assetImage = "asset/images/cc4.png";
     switch (_dession.department) {
       case "HDH":
         {
-          assetImage = AssetImage("asset/images/butFLife.png");
+          assetImage = "asset/images/butFLife.png";
         }
         break;
       case "FM":
         {
-          assetImage = AssetImage("asset/images/AEvent.jpg");
+          assetImage = "asset/images/AEvent.jpg";
         }
         break;
       case "PD":
         {
-          assetImage = AssetImage("asset/images/butPol.png");
+          assetImage = "asset/images/butPol.png";
         }
         break;
       case "HDH-FitLife":
         {
-          assetImage = AssetImage("asset/images/butFLife.png");
+          assetImage = "asset/images/butFLife.png";
         }
         break;
       case "RSCD":
         {
-          assetImage = AssetImage("asset/images/people3.png");
+          assetImage = "asset/images/people3.png";
         }
         break;
       case "TEST":
         {
-          assetImage = AssetImage("asset/images/people3.png");
+          assetImage = "asset/images/people3.png";
         }
         break;
       case "FL":
         {
-          assetImage = AssetImage("asset/images/FLife75.png");
+          assetImage = "asset/images/FLife75.png";
         }
         break;
       case "test2":
         {
-          assetImage = AssetImage("asset/images/people3.png");
+          assetImage = "asset/images/people3.png";
         }
         break;
       case "Theater Department":
         {
-          assetImage = AssetImage("asset/images/people3.png");
+          assetImage = "asset/images/people3.png";
         }
         break;
       case "Recreation":
         {
-          assetImage = AssetImage("asset/images/people3.png");
+          assetImage = "asset/images/people3.png";
         }
         break;
       case "Village":
         {
-          assetImage = AssetImage("asset/images/people3.png");
+          assetImage = "asset/images/people3.png";
         }
         break;
       case "ARV_FM":
         {
-          assetImage = AssetImage("asset/images/people3.png");
+          assetImage = "asset/images/people3.png";
         }
         break;
       case "ARV_HDH-FitLife":
         {
-          assetImage = AssetImage("asset/images/butFLife.png");
+          assetImage = "asset/images/butFLife.png";
         }
         break;
       default:
         {
-          assetImage = AssetImage("asset/images/people3.png");
+          assetImage = "asset/images/people3.png";
         }
     }
     //var assetImage = AssetImage("asset/images/cc4.png");
-    Image newImage = new Image(
+    /* Image newImage = new Image(
       image: assetImage,
       height: 96.0,
       width: 96.0,
       fit: BoxFit.fitWidth,
     );
-    return newImage;
+    */
+    return assetImage;
   }
 
   //geting the title text
@@ -228,21 +229,20 @@ class _SessionsScreenState extends State<SessionsScreen> {
               itemCount: csessions == null ? 0 : csessions.length,
               itemBuilder: (BuildContext context, int index) {
                 return Container(
-                  height: 125,
+                  height: 160,
                   // padding: const EdgeInsets..all(10.0),
                   child: InkWell(
                     onTap: () {
-                      _noTextAlert("test-" + csessions[index].department);
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) {
-                        return TakeAttendance(
-                          sessionData: csessions[index],
-                        );
-                      }));
+                      // _noTextAlert("test-" + csessions[index].department);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => TakeAttendance(
+                                  sessionData: csessions[index])));
                     },
                     child: Card(
                         elevation: 8.0,
-                       // color: Colors.lightBlue,
+                        // color: Colors.lightBlue,
                         margin: new EdgeInsets.symmetric(
                             horizontal: 10.0, vertical: 5.0),
                         child: Padding(
@@ -251,7 +251,15 @@ class _SessionsScreenState extends State<SessionsScreen> {
                             Column(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
-                                getImage(csessions[index]),
+                                Container(
+                                  height: 120,
+                                  width: 120,
+                                  child: new Image.asset(
+                                    getImage(csessions[index]),
+                                    fit: BoxFit.fill,
+                                  ),
+                                  margin: EdgeInsets.only(right: 15.0),
+                                )
                               ],
                             ),
                             Expanded(
@@ -260,7 +268,10 @@ class _SessionsScreenState extends State<SessionsScreen> {
                                 // mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const SizedBox(height: 15),
+                                  const SizedBox(
+                                    height: 15,
+                                    width: 80,
+                                  ),
                                   Text(
                                     getHeadtext(csessions[index]),
                                     style: TextStyle(
@@ -281,33 +292,47 @@ class _SessionsScreenState extends State<SessionsScreen> {
                             Column(
                               mainAxisAlignment: MainAxisAlignment.end,
                               //  textDirection: TextDirection.rtl,
+
                               children: [
-                                Text(
-                                  //getSubtext(csessions[index]),
-                                  csessions[index].day,
-                                  // textAlign: TextAlign.right,
-                                  style: TextStyle(
-                                    fontSize: 28,
-                                    fontWeight: FontWeight.bold,
+                                Padding(
+                                  padding: EdgeInsets.only(right: 30.0),
+                                  child: Text(
+                                    //getSubtext(csessions[index]),
+                                    csessions[index].day,
+                                    // textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 28,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.blue,
+                                    ),
                                   ),
                                 ),
-                                Text(
-                                  //getSubtext(csessions[index]),
-                                  csessions[index].timeOfDay,
-                                  textAlign: TextAlign.right,
-                                  style: TextStyle(
-                                    fontSize: 28,
-                                    fontWeight: FontWeight.bold,
+                                Padding(
+                                  padding: EdgeInsets.only(right: 30.0),
+                                  child: Text(
+                                    //getSubtext(csessions[index]),
+                                    csessions[index].timeOfDay,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 28,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.blue,
+                                    ),
                                   ),
                                 ),
-                                Text(
-                                  "Start Date: " +
-                                      DateFormat('MM-dd-yyyy')
-                                          .format(csessions[index].startDate),
-                                  // textAlign: TextAlign.right,
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold,
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                      right: 30.0, bottom: 35.0),
+                                  child: Text(
+                                    "Start Date: " +
+                                        DateFormat('MM-dd-yyyy')
+                                            .format(csessions[index].startDate),
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.lightBlue,
+                                    ),
                                   ),
                                 ),
                               ],

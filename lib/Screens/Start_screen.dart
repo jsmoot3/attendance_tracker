@@ -119,13 +119,13 @@ class _StartScreenState extends State<StartScreen> {
               ),
               Expanded(
                 child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 2.0,horizontal: 5),
+                  padding: EdgeInsets.symmetric(vertical: 2.0, horizontal: 5),
                   child: nTextField,
                 ),
               ),
               Expanded(
                 child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 3.0,horizontal: 5),
+                  padding: EdgeInsets.symmetric(vertical: 3.0, horizontal: 5),
                   child: logButton,
                 ),
               ),
@@ -163,11 +163,14 @@ class _StartScreenState extends State<StartScreen> {
   }
 
   // handle the button click event
-  _changeText() {  
+  _changeText() {
     String text1 = _textFieldController.text;
     if (text1 != '') {
       // print('Your number was =>$text1');
-      _appData.groupId = text1;
+      setState(() {
+        _appData.groupId = text1;
+      });
+
       Navigator.push(
           context,
           MaterialPageRoute(
