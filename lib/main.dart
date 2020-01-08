@@ -16,10 +16,9 @@ void main() {
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
- 
+
   final Store<AppData> store;
   MyApp(this.store);
-
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +39,6 @@ class MyApp extends StatelessWidget {
           home: SplashScreen(), // StartScreen(),
         ));
   }
- 
 }
 
 class SplashScreen extends StatefulWidget {
@@ -57,13 +55,18 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void getAttendenceData() async {
-    
     tData = await GetApi.checkIfHaveConnectionUpdateDB();
-    Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return StartScreen(
-        trackerData: tData,
-      );
-    }));
+    //TODO: check for a null on tData do a popup
+    if (tData != null) {
+      Navigator.push(context, MaterialPageRoute(builder: (context) {
+        return StartScreen(
+          trackerData: tData,
+        );
+      }));
+    } else {
+      //TODO: need to notify that there is no DB
+      //user needs to find a wifi site and update the application
+    }
   }
 
   @override

@@ -20,10 +20,6 @@ class Role {
     map["RName"] = this.rName;
     map["User"] = this.user;
     map["Emplid"] = this.empLid;
-
-    //if (id != null) {
-    //  map["id"] = id;
-    // }
     return map;
   }
 
@@ -74,7 +70,6 @@ class ValidUser {
 
 class Department {
   String name;
-  int id;
   List<String> departments;
 
   Department({this.name});
@@ -82,18 +77,13 @@ class Department {
   Map<String, dynamic> toMap() {
     var map = Map<String, dynamic>();
     map["Name"] = this.name;
-
-    if (id != null) {
-      map["id"] = id;
-    }
     return map;
   }
 
   Department.fromOject(dynamic input) {
-    // this.id = input["id"];
     this.name = input["Name"];
   }
-   //factory Department.fromJson( dynamic input> json) (
-   //    departments: json["Departments"] == null ? null : List<String>.from(json["Departments"].map((x) => x)),
+  //factory Department.fromJson( dynamic input> json) (
+  //    departments: json["Departments"] == null ? null : List<String>.from(json["Departments"].map((x) => x)),
   // );
 }

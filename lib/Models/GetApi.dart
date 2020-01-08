@@ -21,8 +21,8 @@ class GetApi {
     AppData _AppData = new AppData();
     // print("----> " + Constants.MONTH_SESSIONS);
     try {
-      final result = //await checkForconnection();
-          await InternetAddress.lookup("google.com"); //Constants.MONTH_SESSIONS
+      final result = await InternetAddress.lookup(
+          "google.com333"); //Constants.MONTH_SESSIONS
       if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
         print('----- 25 Api connected');
         //isConnected = true;
@@ -36,13 +36,18 @@ class GetApi {
             _AppData.appDataroles.length.toString());
         print("GetApi length valusrData==> 29  " +
             _AppData.appDataallUsers.length.toString());
-        //return _AppData;
+        return _AppData;
+      } else {
+        _AppData = await fillAppData();
+        if (_AppData == null) return null;
+        return _AppData; //fill the application using the DB
       }
     } on SocketException catch (_) {
       print('----- 21 Api not connected');
+      _AppData = await fillAppData();
       //_noTextAlert(" there is no connection at this time");
     }
-    return _AppData;
+    //return null;
   }
 
   static Future<AppData> fetchSessions() async {
@@ -60,74 +65,68 @@ class GetApi {
       Iterable list = sesDate["CurrentSessions"];
       Iterable listd = sesDate["Departments"];
       csessions = list.map((model) => CurrentSession.fromJson(model)).toList();
-     /// tdepartment = listd.Cast<String>().toList();//.map((model) => model);
-      tdepartment = listd.map((s) => (s as String)).toList();
-  
-//insert departments in to data obj
-            tAppData.appDepartments = tdepartment;
 
-      
+      /// tdepartment = listd.Cast<String>().toList();//.map((model) => model);
+      tdepartment = listd.map((s) => (s as String)).toList();
+
       //insert sessions into data obj
-            if (csessions != null && csessions.length > 0) {
-             await _dbHelper.clearTable("tblSessions");
-              for (var i = 0; i < csessions.length; i++) {
-                _dbHelper.insertSessionRaw(csessions[i]);
-              }
-            }
-      
-            csessions = await _dbHelper.readAllSessions();
-           // print("#########- Sessions 74->" + csessions.length.toString());
-            tAppData.appDataSessions = csessions;
-      
-      /*
+      if (csessions != null && csessions.length > 0) {
+        _dbHelper.insertSessionRaw(csessions);
+      }
+      csessions = await _dbHelper.readAllSessions();
+      // print("#########- Sessions 74->" + csessions.length.toString());
+      tAppData.appDataSessions = csessions;
+
+      //insert departments in to data obj
+      tAppData.appDepartments = tdepartment;
       //insert data into department data
-            if (tdepartment != null && tdepartment.length > 0) {
-              _dbHelper.clearTable("TblDept");
-              for (var i = 0; i < tdepartment.length; i++) {
-                _dbHelper.insertTblDept(tdepartment[i]);
-              }
-            }
-      
-            tdepartment = await _dbHelper.getAllDepartments();
-            print("******* - Departments 86->" + tdepartment.length.toString());
-            tAppData.appDepartments = tdepartment;
-      */
-            return tAppData;
-          } else {
-            throw Exception('Failed to load post');
-          }
-        }
-      
-        static Future<List<Role>> fetchRoles() async {
-          List<Role> roles = new List<Role>();
-          var response = await http.get(Constants.ALL_ROLES);
-          if (response.statusCode == 200) {
-            String rolDat = response.body;
-            // var sesDate = json.decode(sesDat);
-            Iterable list = json.decode(rolDat);
-            roles = list.map((model) => Role.fromJson(model)).toList();
-      
-            for (var i = 0; i < roles.length; i++) {
-              _dbHelper.insertRoles(roles[i]);
-            }
-            print("///// Roles /////> " + roles.length.toString());
-      
-            return roles;
-          }
-        }
-      
-        //////////////////////////////////////
-        //get the valid users to vertifi against
-        //**
-        static Future<List<ValidUser>> fetchValidUsers() async {
-          List<ValidUser> validusers = new List<ValidUser>();
-          var response = await http.get(Constants.VALID_USERS);
-          if (response.statusCode == 200) {
-            String vUsrDat = response.body;
-            // var sesDate = json.decode(sesDat);
-            Iterable list = json.decode(vUsrDat);
-            validusers = list.map((model) => ValidUser.fromJson(model)).toList();
-            /*
+      if (tdepartment != null && tdepartment.length > 0) {
+        _dbHelper.insertTblDept(tdepartment);
+      }
+
+      tdepartment = await _dbHelper.getAllDepartments();
+      print("******* - Departments 86->" + tdepartment.length.toString());
+      tAppData.appDepartments = tdepartment;
+
+      return tAppData;
+    } else {
+      return null;
+      //throw Exception('Failed to load post');
+    }
+  }
+
+  static Future<List<Role>> fetchRoles() async {
+    List<Role> roles = new List<Role>();
+    var response = await http.get(Constants.ALL_ROLES);
+    if (response.statusCode == 200) {
+      String rolDat = response.body;
+      // var sesDate = json.decode(sesDat);
+      Iterable list = json.decode(rolDat);
+      roles = list.map((model) => Role.fromJson(model)).toList();
+
+      //insert roles into the DB
+      //for (var i = 0; i < roles.length; i++) {
+      _dbHelper.insertRoles(roles);
+      // }
+      print("///// Roles /////> " + roles.length.toString());
+
+      return roles;
+    }
+    return null;
+  }
+
+  //////////////////////////////////////
+  //get the valid users to vertifi against
+  //**
+  static Future<List<ValidUser>> fetchValidUsers() async {
+    List<ValidUser> validusers = new List<ValidUser>();
+    var response = await http.get(Constants.VALID_USERS);
+    if (response.statusCode == 200) {
+      String vUsrDat = response.body;
+      // var sesDate = json.decode(sesDat);
+      Iterable list = json.decode(vUsrDat);
+      validusers = list.map((model) => ValidUser.fromJson(model)).toList();
+      /*
             print("////////////////  validusers  ////////////////////////");
             print("GetApi length validusers==> 68  " + validusers.length.toString());
             for (var i = 0; i < validusers.length; i++) {
@@ -135,20 +134,27 @@ class GetApi {
               //print("GetApi sess==> 50  " + roles[i].department);
             }
             print("//////////////////////////////////////////////////////////");
-      
+
              */
-            return validusers;
-          }
-        }
-      /*
-        static Future<List<InternetAddress>> checkForconnection() async {
-          final result =
-              await InternetAddress.lookup("google.com"); //Constants.MONTH_SESSIONS
-          return result;
-        }
-      
-       */
-      }
-      
-      class Cast {
+      return validusers;
+    }
+    return null;
+  }
+
+  static Future<AppData> fillAppData() async {
+    AppData _AppData = new AppData();
+    _AppData.appDataSessions = await _dbHelper.getAlltblSessions();
+    _AppData.appDataallUsers = await _dbHelper.getAllValidUser();
+    _AppData.appDataroles = await _dbHelper.getAllRoles();
+    //_AppData.appDepartments = await _dbHelper.getAllDepartments();
+    //TODO: trying to run multi futures and wait untill finished.
+/*
+    Future.wait([
+    _AppData.appDataSessions = await _dbHelper.getAlltblSessions(),
+    _AppData.appDataallUsers = await _dbHelper.getAllValidUser(),
+    _AppData.appDataroles = await _dbHelper.getAllRoles();
+    ])
+    */
+    return _AppData;
+  }
 }
