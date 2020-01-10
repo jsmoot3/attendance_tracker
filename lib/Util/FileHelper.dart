@@ -13,7 +13,8 @@ class FileHelper {
   //base location of the attendence file location
   Future<String> get BASEPATH async {
     final directory = await getApplicationDocumentsDirectory();
-    return directory.path;
+    String path = directory.path + "/Tracker";
+    return path;
   }
 
 
@@ -23,10 +24,8 @@ class FileHelper {
     String month = DateFormat.MMMM("en_US").format(new DateTime.now());
     String year = DateFormat.y("en_US").format(new DateTime.now());
     final path = await bpath +
-        "/Tracker/Sessions" +
-        "_" +
+        "/AllSessions_" +
         month +
-        "_" +
         year +
         ".csv";
     return File(path);
