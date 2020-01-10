@@ -66,6 +66,7 @@ class _SplashScreenState extends State<SplashScreen> {
     } else {
       //TODO: need to notify that there is no DB
       //user needs to find a wifi site and update the application
+      _noTextAlert("There is no data in system");
     }
   }
 
@@ -126,6 +127,26 @@ class _SplashScreenState extends State<SplashScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  _noTextAlert(String _mess) {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Not in stock'),
+          content: const Text("ewewe"),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Ok'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

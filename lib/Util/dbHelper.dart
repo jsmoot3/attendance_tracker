@@ -51,22 +51,23 @@ class DbHelper {
     return db;
   }
 
-  void _createDbs(Database db, int version) async {
+  Future _createDbs(Database db, int version) async {
+    await Future.wait([
+      _createTblSessionsDB(db, version),
+      _createTblRolesDB(db, version),
+      _createTblValidUserDB(db, version),
+      _createTblDeptDB(db, version),
+      //   _createTblWaverDB(db, version);
+    ]);
     print("----->47 _createDbs ");
-    await _createTblSessionsDB(db, version);
-    //   _createTblAttendieDB(db, version);
-    _createTblRolesDB(db, version);
-    //   _createTblWaverDB(db, version);
-    _createTblDeptDB(db, version);
-    //   _createTblValidUserDB(db, version);
   }
 
   //Create the TblSessionsDB.db database
-  Future<void> _createTblSessionsDB(Database db, int version) async {
-    clearTable("tblSessions");
+  Future _createTblSessionsDB(Database db, int version) async {
+    //clearTable("tblSessions");
     print("----->57 creatingDB tblSessions ");
     try {
-      final sTableSessions = "CREATE TABLE tblSessions" +
+      final sTableSessions = "CREATE TABLE IF NOT EXISTS tblSessions" +
           " ( " +
           " FLEventSessionID INT," +
           " FLeventIDfk INT," +
@@ -92,7 +93,7 @@ class DbHelper {
   //Create the TblAttendieDB.db database
   void _createTblAttendieDB(Database db, int version) async {
     clearTable("tblAttendie");
-    await db.execute("CREATE TABLE tblAttendie(" +
+    await db.execute("CREATE TABLE IF NOT EXISTS tblAttendie(" +
         "id INTEGER PRIMARY KEY," +
         "StudentId TEXT," +
         "EventSessionId_fk TEXT," +
@@ -103,12 +104,11 @@ class DbHelper {
   }
 
   //Create the TblRoles.db database
-  void _createTblRolesDB(Database db, int version) async {
+  Future _createTblRolesDB(Database db, int version) async {
     clearTable("TblRoles");
     print("----->106 creatingDB TblRoles ");
     try {
-      final sTableRoles = "CREATE TABLE TblRoles(" +
-          "id INTEGER PRIMARY KEY," +
+      final sTableRoles = "CREATE TABLE IF NOT EXISTS TblRoles (" +
           "RName TEXT," +
           "Emplid TEXT," +
           "User TEXT" +
@@ -121,8 +121,8 @@ class DbHelper {
   }
 
   //Create the TblWaverDB.db database
-  void _createTblWaverDB(Database db, int version) async {
-    await db.execute("CREATE TABLE TblWaver(" +
+  Future _createTblWaverDB(Database db, int version) async {
+    await db.execute("CREATE TABLE IF NOT EXISTS TblWaver(" +
         "id INTEGER PRIMARY KEY," +
         "Name  TEXT," +
         "Length INTEGER," +
@@ -131,11 +131,11 @@ class DbHelper {
   }
 
   //Create the TblDept.db database
-  void _createTblDeptDB(Database db, int version) async {
+  Future _createTblDeptDB(Database db, int version) async {
     clearTable("TblDept");
     try {
       print("----->133 creatingDB TblDept ");
-      final sql = "CREATE TABLE TblDept(" + "Name TEXT" + ")";
+      final sql = "CREATE TABLE IF NOT EXISTS TblDept(" + "Name TEXT" + ")";
       await db.execute(sql);
     } catch (e) {
       debugPrint("help createTblDeptDB Error 115: " + e.toString());
@@ -143,10 +143,10 @@ class DbHelper {
   }
 
   //Create the TblDept.db database
-  void _createTblValidUserDB(Database db, int version) async {
+  Future _createTblValidUserDB(Database db, int version) async {
     clearTable("TblDept");
     try {
-      final sql = "CREATE TABLE TblValidUser(" +
+      final sql = "CREATE TABLE IF NOT EXISTS TblValidUser (" +
           "Barcode TEXT," +
           "CardId TEXT," +
           "EmpLid TEXT"
@@ -156,7 +156,7 @@ class DbHelper {
       debugPrint("help createTblValidUser Error 152: " + e.toString());
     }
   }
-
+/*
   //insert sessions
   Future<int> insertSession(CurrentSession inPut) async {
     var r;
@@ -173,13 +173,15 @@ class DbHelper {
     }
     return r;
   }
+*/
 
   Future<int> insertSessionRaw(List<CurrentSession> temp) async {
     var r;
     Database db = await this.database;
     try {
       if (db != null) {
-        print("trying to insert into db");
+        print("trying to insert into db Sessions");
+         clearTable("tblSessions");
         for (var i = 0; i < temp.length; i++) {
           CurrentSession inPut = temp[i];
           final isql = "INSERT INTO tblSessions" +
@@ -249,9 +251,9 @@ class DbHelper {
         csess.startDate = list[i]["StartDate"] == null
             ? null
             : DateTime.parse(list[i]["StartDate"]);
-        if (i < 20) {
-          dishes.add(csess);
-        }
+        //if (i < 20) {
+        dishes.add(csess);
+        //}
       }
     } catch (e) {
       debugPrint("help readAllSessions Error 257: " + e.toString());
@@ -269,16 +271,18 @@ class DbHelper {
       // r = await db.insert("TblRoles", _roles.toMap());
       for (var i = 0; i < _roles.length; i++) {
         Role temp = _roles[i];
-        await db.rawInsert("INSERT INTO TblRoles("
-                "RName TEXT," +
-            "Emplid TEXT," +
-            "User TEXT," +
+        final rsql = "INSERT INTO TblRoles " +
+            "( " +
+            " RName," +
+            " Emplid," +
+            " User" +
             " )" +
-            " VALUES( " +
+            " VALUES ( " +
             " '${temp.rName}'," +
             " '${temp.empLid}'," +
-            " '${temp.user}'," +
-            ")");
+            " '${temp.user}'" +
+            ")";
+        r = await db.rawInsert(rsql);
       }
     } catch (e) {
       debugPrint("help insertRoles Error 284:" + e.toString());
@@ -302,8 +306,8 @@ class DbHelper {
   Future<int> insertTblDept(List<String> _dept) async {
     var r;
     Database db = await this.database;
-    clearTable("TblDept");
-    await _createTblDeptDB(db, DATABASE_VERSION);
+   // clearTable("TblDept");
+   // await _createTblDeptDB(db, DATABASE_VERSION);
     try {
       // r = await db.insert("TblDept", _dept.toMap());
       // r = await db.rawInsert("INSERT INTO TblDept (Name) Values ($_dept)");
@@ -318,11 +322,25 @@ class DbHelper {
   }
 
 //ValidUser
-  Future<int> insertTblValidUser(ValidUser _validUser) async {
+  Future<int> insertTblValidUser(List<ValidUser> _validUser) async {
     var r;
     Database db = await this.database;
     try {
-      r = await db.insert("TblValidUser", _validUser.toMap());
+ for (var i = 0; i < _validUser.length; i++) {
+        ValidUser temp = _validUser[i];
+        final vlist = "INSERT INTO TblValidUser " +
+            "( " +
+            " cardId," +
+            " barcode," +
+            " empLid" +
+            " )" +
+            " VALUES ( " +
+            " ${temp.cardId}," +
+            " ${temp.barcode}," +
+            " ${temp.empLid}" +
+            ")";
+        r = await db.rawInsert(vlist);
+      }     
     } catch (e) {
       debugPrint("help TblValidUser289:" + e.toString());
     }
@@ -365,7 +383,7 @@ class DbHelper {
       }
       return todos;
     } catch (e) {
-      debugPrint("TblValidUser:" + e.toString());
+      debugPrint("help getAlltblSessions 368:" + e.toString());
     }
     // return r;
     return null;
@@ -394,10 +412,15 @@ class DbHelper {
       List<Role> todos = List();
       if (db != null) {
         final sql = '''SELECT * FROM TblRoles ''';
-        List<Map> maps = await db.rawQuery(sql);
-        if (maps.length > 0) {
+        // final data = await db.rawQuery(sql);
+        final List<Map<String, dynamic>> maps = await db.query('TblRoles');
+        if (maps.length != null && maps.length > 0) {
           for (int i = 0; i < maps.length; i++) {
-            todos.add(Role.fromOject(maps[i]));
+            Role nrole = new Role();
+            nrole.empLid = maps[i]["Emplid"].toString();
+            nrole.rName = maps[i]["RName"].toString();
+            nrole.user = maps[i]["user"].toString();
+            todos.add(nrole);
           }
         }
         return todos;
@@ -425,7 +448,7 @@ class DbHelper {
       }
       return null;
     } catch (e) {
-      debugPrint("Helper TblValidUser 400 Error:" + e.toString());
+      debugPrint("Helper TblValidUser 428 Error:" + e.toString());
       return null;
     }
   }

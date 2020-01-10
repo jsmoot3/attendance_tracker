@@ -7,6 +7,7 @@ import '../Models/Session.dart';
 import '../Models/AppData.dart';
 import 'dart:io';
 import 'package:attendance_tracker/Util/dbHelper.dart';
+import 'package:connectivity/connectivity.dart';
 
 class GetApi {
   SessionDart sessionDart;
@@ -21,20 +22,27 @@ class GetApi {
     AppData _AppData = new AppData();
     // print("----> " + Constants.MONTH_SESSIONS);
     try {
-      final result = await InternetAddress.lookup(
-          "google.com333"); //Constants.MONTH_SESSIONS
-      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+      //  final result = await InternetAddress.lookup(
+      //      "https://google.com"); //Constants.MONTH_SESSIONS
+      bool haveconnection = false;
+      var connectivityResult = await (Connectivity().checkConnectivity());
+      if (connectivityResult == ConnectivityResult.mobile ||
+          connectivityResult == ConnectivityResult.wifi) {
+        haveconnection = true;
+      }
+      if (haveconnection) {
+        // if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
         print('----- 25 Api connected');
         //isConnected = true;
         _AppData = await fetchSessions();
         _AppData.appDataroles = await fetchRoles();
         _AppData.appDataallUsers = await fetchValidUsers();
 
-        print("GetApi length sesData==> 27  " +
+        print("GetApi length sesData==>   " +
             _AppData.appDataSessions.length.toString());
-        print("GetApi length roleData==> 28  " +
+        print("GetApi length roleData==>   " +
             _AppData.appDataroles.length.toString());
-        print("GetApi length valusrData==> 29  " +
+        print("GetApi length valusrData==>   " +
             _AppData.appDataallUsers.length.toString());
         return _AppData;
       } else {
@@ -46,6 +54,8 @@ class GetApi {
       print('----- 21 Api not connected');
       _AppData = await fillAppData();
       //_noTextAlert(" there is no connection at this time");
+    } catch(e){
+      print('get checkifconn Error 58 ' + e.toString());
     }
     //return null;
   }
@@ -55,7 +65,7 @@ class GetApi {
     AppData tAppData = new AppData();
     List<String> tdepartment = new List<String>();
     var response = await http.get(Constants.MONTH_SESSIONS);
-    if (await response.statusCode == 200) {
+    if (response.statusCode == 200) {
       String sesDat = response.body;
       var sesDate = json.decode(sesDat);
       tAppData.from = sesDate["From"];
@@ -105,9 +115,11 @@ class GetApi {
       roles = list.map((model) => Role.fromJson(model)).toList();
 
       //insert roles into the DB
-      //for (var i = 0; i < roles.length; i++) {
-      _dbHelper.insertRoles(roles);
-      // }
+      if (roles != null && roles.length > 0) {
+       await _dbHelper.insertRoles(roles);
+      }
+
+     roles = await _dbHelper.getAllRoles();
       print("///// Roles /////> " + roles.length.toString());
 
       return roles;
@@ -126,35 +138,28 @@ class GetApi {
       // var sesDate = json.decode(sesDat);
       Iterable list = json.decode(vUsrDat);
       validusers = list.map((model) => ValidUser.fromJson(model)).toList();
-      /*
-            print("////////////////  validusers  ////////////////////////");
-            print("GetApi length validusers==> 68  " + validusers.length.toString());
-            for (var i = 0; i < validusers.length; i++) {
-              //TODO: chang this to store in db
-              //print("GetApi sess==> 50  " + roles[i].department);
-            }
-            print("//////////////////////////////////////////////////////////");
-
-             */
+      //insert validusers into the DB
+    //  if (validusers != null && validusers.length > 0) {
+     //   _dbHelper.insertTblValidUser(validusers);
+    //  }
       return validusers;
     }
     return null;
   }
 
   static Future<AppData> fillAppData() async {
-    AppData _AppData = new AppData();
-    _AppData.appDataSessions = await _dbHelper.getAlltblSessions();
-    _AppData.appDataallUsers = await _dbHelper.getAllValidUser();
-    _AppData.appDataroles = await _dbHelper.getAllRoles();
-    //_AppData.appDepartments = await _dbHelper.getAllDepartments();
-    //TODO: trying to run multi futures and wait untill finished.
-/*
-    Future.wait([
-    _AppData.appDataSessions = await _dbHelper.getAlltblSessions(),
-    _AppData.appDataallUsers = await _dbHelper.getAllValidUser(),
-    _AppData.appDataroles = await _dbHelper.getAllRoles();
-    ])
-    */
-    return _AppData;
+    AppData _appData = new AppData();
+    await Future.wait([
+      _dbHelper.readAllSessions(),
+      _dbHelper.getAllValidUser(),
+      _dbHelper.getAllRoles(),
+      // _dbHelper.getAllDepartments();
+    ]).then((List responses) => {
+          _appData.appDataSessions = responses[0],
+          _appData.appDataallUsers = responses[1],
+          _appData.appDataroles = responses[2],
+          //_AppData.appDepartments = responses[3]
+        });
+    return _appData;
   }
 }

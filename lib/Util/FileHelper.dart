@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:core';
-import 'dart:io' as io;
+import 'dart:io';// as io;
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import '../Models/Session.dart';
@@ -16,20 +16,67 @@ class FileHelper {
     return directory.path;
   }
 
-  Future<String> getAttendenceFilePath() async {
+
+  Future<File> getSessionsFile() async {
     final bpath = await BASEPATH;
     String dept = sessionData.department;
     String month = DateFormat.MMMM("en_US").format(new DateTime.now());
     String year = DateFormat.y("en_US").format(new DateTime.now());
-    String path = bpath +
-        "/Attendence/" +
-        dept +
-        "_Attendence_" +
+    final path = await bpath +
+        "/Tracker/Sessions" +
+        "_" +
         month +
         "_" +
         year +
         ".csv";
-    return path;
+    return File(path);
+  }
+
+  Future<File> getRolesFile() async {
+    final bpath = await BASEPATH;
+    String dept = sessionData.department;
+    String month = DateFormat.MMMM("en_US").format(new DateTime.now());
+    String year = DateFormat.y("en_US").format(new DateTime.now());
+    final path = await bpath +
+        "/Tracker/Roles" +
+        "_" +
+        month +
+        "_" +
+        year +
+        ".csv";
+    return File(path);
+  }
+
+  Future<File> getValidUsersFile() async {
+    final bpath = await BASEPATH;
+    String dept = sessionData.department;
+    String month = DateFormat.MMMM("en_US").format(new DateTime.now());
+    String year = DateFormat.y("en_US").format(new DateTime.now());
+    final path = await bpath +
+        "/Tracker/users" +
+        "_" +
+        month +
+        "_" +
+        year +
+        ".csv";
+    return File(path);
+  }
+
+
+  Future<File> getAttendenceFile() async {
+    final bpath = await BASEPATH;
+    String dept = sessionData.department;
+    String month = DateFormat.MMMM("en_US").format(new DateTime.now());
+    String year = DateFormat.y("en_US").format(new DateTime.now());
+    final path = await bpath +
+        "/Tracker/Atendance/" +
+        dept +
+        "_" +
+        month +
+        "_" +
+        year +
+        ".csv";
+    return File(path);
   }
 
   Future<String> get getAttendenceFileName async {
@@ -46,7 +93,7 @@ class FileHelper {
     List filList = new List();
     final bpath = await BASEPATH + "/Attendence/";
     String lookingName = sessionData.department + "_Attendence";
-    filList = io.Directory(bpath).listSync();
+    filList = Directory(bpath).listSync();
     filList.forEach((item) {
       if (item.Contains(lookingName)) {
         newList.add(item);
@@ -62,7 +109,32 @@ class FileHelper {
     return newFilePath;
   }
 
-  Future<bool> WriteToFile(EventAttendie eventAttendie) async {
+
+  Future<bool> WriteSessionToFile(List<CurrentSession> csess) async {
+    File file = await getSessionsFile();
+    String head = "'flEventSessionId','fLeventIDfk','campusLocation','trainer','timeOfDay','day','department','trainingGroup','weekofClass','divison','requireWaiver','waiverName','startDate'";
+    csess.forEach((r) {
+      var line = r.flEventSessionId,r.fLeventIDfk','$r.campusLocation','$r.trainer','$r.timeOfDay','$r.day','$r.department','$r.trainingGroup','$r.weekofClass','$r.divison','$r.requireWaiver','$r.waiverName','$r.startDate'";
+    })
+
+    /*
+    String flEventSessionId;
+  String fLeventIDfk;
+  String campusLocation;
+  String trainer;
+  String timeOfDay;
+  String day;
+  String department;
+  String trainingGroup;
+  String weekofClass;
+  String divison;
+  String requireWaiver;
+  String waiverName;
+  DateTime startDate;
+     */
+  }
+
+  Future<bool> WriteAttendieToFile(EventAttendie eventAttendie) async {
     String month = DateFormat.MMMM("en_US").format(new DateTime.now());
     String year = DateFormat.y("en_US").format(new DateTime.now());
     String path = await getAttendenceFilePath();

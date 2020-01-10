@@ -26,6 +26,7 @@ dependencies:
   loading: ^1.0.2
   queries: ^0.1.12
   intl: ^0.15.7
+  connectivity: ^0.4.2
 
   # async_loader: ^0.1.2
   # The following adds the Cupertino Icons font to your application.
