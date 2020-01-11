@@ -8,10 +8,12 @@ import '../Models/AppData.dart';
 import 'dart:io';
 import 'package:attendance_tracker/Util/dbHelper.dart';
 import 'package:connectivity/connectivity.dart';
+import 'package:attendance_tracker/Util/FileHelper.dart';
 
 class GetApi {
   SessionDart sessionDart;
   static DbHelper _dbHelper = new DbHelper();
+  static FileHelper _fileHelper = new FileHelper();
 //TODO:if there is a connection write to db
   //TODO: if connected to wifi read and save to db
   //check if there is a connection
@@ -34,16 +36,19 @@ class GetApi {
         // if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
         print('----- 25 Api connected');
         //isConnected = true;
-        _AppData = await fetchSessions();
-        _AppData.appDataroles = await fetchRoles();
-        _AppData.appDataallUsers = await fetchValidUsers();
+        await fetchSessions();
+       // _AppData.appDataroles = await fetchRoles();
+      //  _AppData.appDataallUsers = await fetchValidUsers();
+
+       _AppData = await fillAppData();
 
         print("GetApi length sesData==>   " +
             _AppData.appDataSessions.length.toString());
-        print("GetApi length roleData==>   " +
-            _AppData.appDataroles.length.toString());
-        print("GetApi length valusrData==>   " +
-            _AppData.appDataallUsers.length.toString());
+      //  print("GetApi length roleData==>   " +
+       //     _AppData.appDataroles.length.toString());
+      //  print("GetApi length valusrData==>   " +
+       //     _AppData.appDataallUsers.length.toString());
+       
         return _AppData;
       } else {
         _AppData = await fillAppData();
@@ -60,7 +65,7 @@ class GetApi {
     //return null;
   }
 
-  static Future<AppData> fetchSessions() async {
+  static Future<void> fetchSessions() async {
     List<CurrentSession> csessions = new List<CurrentSession>();
     AppData tAppData = new AppData();
     List<String> tdepartment = new List<String>();
@@ -80,25 +85,32 @@ class GetApi {
       tdepartment = listd.map((s) => (s as String)).toList();
 
       //insert sessions into data obj
+     // if (csessions != null && csessions.length > 0) {
+     //   _dbHelper.insertSessionRaw(csessions);
+    //  }
+
+      //create insert session into file
       if (csessions != null && csessions.length > 0) {
-        _dbHelper.insertSessionRaw(csessions);
+       await _fileHelper.writeEventSessions(csessions);
       }
-      csessions = await _dbHelper.readAllSessions();
+
+
+     // csessions = await _dbHelper.readAllSessions();
       // print("#########- Sessions 74->" + csessions.length.toString());
-      tAppData.appDataSessions = csessions;
+    //  tAppData.appDataSessions = csessions;
 
       //insert departments in to data obj
-      tAppData.appDepartments = tdepartment;
+      //tAppData.appDepartments = tdepartment;
       //insert data into department data
-      if (tdepartment != null && tdepartment.length > 0) {
-        _dbHelper.insertTblDept(tdepartment);
-      }
+   //   if (tdepartment != null && tdepartment.length > 0) {
+     //   _dbHelper.insertTblDept(tdepartment);
+   //   }
 
-      tdepartment = await _dbHelper.getAllDepartments();
-      print("******* - Departments 86->" + tdepartment.length.toString());
-      tAppData.appDepartments = tdepartment;
+    //  tdepartment = await _dbHelper.getAllDepartments();
+    //  print("******* - Departments 86->" + tdepartment.length.toString());
+    //  tAppData.appDepartments = tdepartment;
 
-      return tAppData;
+     /// return ;
     } else {
       return null;
       //throw Exception('Failed to load post');
@@ -149,6 +161,9 @@ class GetApi {
 
   static Future<AppData> fillAppData() async {
     AppData _appData = new AppData();
+    _appData.appDataSessions = await _fileHelper.readSessionsFile();
+
+    /*
     await Future.wait([
       _dbHelper.readAllSessions(),
       _dbHelper.getAllValidUser(),
@@ -160,6 +175,8 @@ class GetApi {
           _appData.appDataroles = responses[2],
           //_AppData.appDepartments = responses[3]
         });
-    return _appData;
+    */
+
+    return await _appData;
   }
 }
