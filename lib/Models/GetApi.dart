@@ -37,18 +37,18 @@ class GetApi {
         print('----- 25 Api connected');
         //isConnected = true;
         await fetchSessions();
-       // _AppData.appDataroles = await fetchRoles();
-      //  _AppData.appDataallUsers = await fetchValidUsers();
+        await fetchRoles();
+        //  _AppData.appDataallUsers = await fetchValidUsers();
 
-       _AppData = await fillAppData();
+        _AppData = await fillAppData();
 
         print("GetApi length sesData==>   " +
             _AppData.appDataSessions.length.toString());
-      //  print("GetApi length roleData==>   " +
-       //     _AppData.appDataroles.length.toString());
-      //  print("GetApi length valusrData==>   " +
-       //     _AppData.appDataallUsers.length.toString());
-       
+        //  print("GetApi length roleData==>   " +
+        //     _AppData.appDataroles.length.toString());
+        //  print("GetApi length valusrData==>   " +
+        //     _AppData.appDataallUsers.length.toString());
+
         return _AppData;
       } else {
         _AppData = await fillAppData();
@@ -59,7 +59,7 @@ class GetApi {
       print('----- 21 Api not connected');
       _AppData = await fillAppData();
       //_noTextAlert(" there is no connection at this time");
-    } catch(e){
+    } catch (e) {
       print('get checkifconn Error 58 ' + e.toString());
     }
     //return null;
@@ -80,37 +80,28 @@ class GetApi {
       Iterable list = sesDate["CurrentSessions"];
       Iterable listd = sesDate["Departments"];
       csessions = list.map((model) => CurrentSession.fromJson(model)).toList();
-
-      /// tdepartment = listd.Cast<String>().toList();//.map((model) => model);
       tdepartment = listd.map((s) => (s as String)).toList();
-
-      //insert sessions into data obj
-     // if (csessions != null && csessions.length > 0) {
-     //   _dbHelper.insertSessionRaw(csessions);
-    //  }
-
       //create insert session into file
       if (csessions != null && csessions.length > 0) {
-       await _fileHelper.writeEventSessions(csessions);
+        await _fileHelper.writeEventSessions(csessions);
       }
 
-
-     // csessions = await _dbHelper.readAllSessions();
+      // csessions = await _dbHelper.readAllSessions();
       // print("#########- Sessions 74->" + csessions.length.toString());
-    //  tAppData.appDataSessions = csessions;
+      //  tAppData.appDataSessions = csessions;
 
       //insert departments in to data obj
       //tAppData.appDepartments = tdepartment;
       //insert data into department data
-   //   if (tdepartment != null && tdepartment.length > 0) {
-     //   _dbHelper.insertTblDept(tdepartment);
-   //   }
+      //   if (tdepartment != null && tdepartment.length > 0) {
+      //   _dbHelper.insertTblDept(tdepartment);
+      //   }
 
-    //  tdepartment = await _dbHelper.getAllDepartments();
-    //  print("******* - Departments 86->" + tdepartment.length.toString());
-    //  tAppData.appDepartments = tdepartment;
+      //  tdepartment = await _dbHelper.getAllDepartments();
+      //  print("******* - Departments 86->" + tdepartment.length.toString());
+      //  tAppData.appDepartments = tdepartment;
 
-     /// return ;
+      /// return ;
     } else {
       return null;
       //throw Exception('Failed to load post');
@@ -127,11 +118,15 @@ class GetApi {
       roles = list.map((model) => Role.fromJson(model)).toList();
 
       //insert roles into the DB
+      //if (roles != null && roles.length > 0) {
+      // await _dbHelper.insertRoles(roles);
+      //}
+
       if (roles != null && roles.length > 0) {
-       await _dbHelper.insertRoles(roles);
+        await _fileHelper.writeRoles(roles);
       }
 
-     roles = await _dbHelper.getAllRoles();
+      roles = await _dbHelper.getAllRoles();
       print("///// Roles /////> " + roles.length.toString());
 
       return roles;
@@ -151,9 +146,9 @@ class GetApi {
       Iterable list = json.decode(vUsrDat);
       validusers = list.map((model) => ValidUser.fromJson(model)).toList();
       //insert validusers into the DB
-    //  if (validusers != null && validusers.length > 0) {
-     //   _dbHelper.insertTblValidUser(validusers);
-    //  }
+      //  if (validusers != null && validusers.length > 0) {
+      //   _dbHelper.insertTblValidUser(validusers);
+      //  }
       return validusers;
     }
     return null;

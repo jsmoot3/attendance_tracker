@@ -2,11 +2,13 @@ import 'dart:async';
 import 'dart:core';
 import 'dart:io'; // as io;
 import 'dart:convert';
+import '../Models/App_Models.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import '../Models/Session.dart';
 import '../Models/EventAttendie.dart';
 import 'package:sprintf/sprintf.dart';
+import 'package:synchronized/synchronized.dart';
 
 class FileHelper {
   CurrentSession sessionData;
@@ -19,6 +21,15 @@ class FileHelper {
     return path;
   }
 
+  //check to see if directory exist if not create it
+  Future<void> checkIfDirectoryExist() async {
+    if (!await Directory(await BASEPATH).exists()) {
+      final directory = await getApplicationDocumentsDirectory();
+      String path = directory.path + "/Tracker";
+      new Directory(path).create();
+    }
+  }
+
   Future<String> getSessionsFilePath() async {
     final bpath = await BASEPATH;
     String month = DateFormat.MMMM("en_US").format(new DateTime.now());
@@ -27,14 +38,13 @@ class FileHelper {
     return path;
   }
 
-  Future<File> getRolesFile() async {
+  Future<String> getRolesFilePath() async {
     final bpath = await BASEPATH;
     String dept = sessionData.department;
     String month = DateFormat.MMMM("en_US").format(new DateTime.now());
     String year = DateFormat.y("en_US").format(new DateTime.now());
-    final path =
-        await bpath + "/Tracker/Roles" + "_" + month + "_" + year + ".csv";
-    return File(path);
+    final path = bpath + "/Roles_" + month + "_" + year + ".csv";
+    return path;
   }
 
   Future<File> getValidUsersFile() async {
@@ -88,16 +98,15 @@ class FileHelper {
   }
 
   Future<bool> writeEventSessions(List<CurrentSession> acsess) async {
-    List<String> allSessions = new List<String>();
+    final lock = new Lock();
+    List<String> allSessions = new List();
     try {
       String filepath = await getSessionsFilePath();
       String head =
-          "'flEventSessionId','fLeventIDfk','campusLocation','trainer','timeOfDay','day','department','trainingGroup','weekofClass','divison','requireWaiver','waiverName','startDate'";
+          'flEventSessionId,fLeventIDfk,campusLocation,trainer,timeOfDay,day,department,trainingGroup,weekofClass,divison,requireWaiver,waiverName,startDate';
 
       for (int row = 0; row < acsess.length; row++) {
-        // CurrentSession r = acsess[s];
-        String line = sprintf('%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,', [
-          // grop.FLEventSessionID, grop.FLeventIDfk, grop.CampusLocation, grop.TimeOfDay, grop.Day, grop.Department, grop.TrainingGroup, grop.WeekofClass, grop.Divison, grop.StartDate, grop.WaiverName ?? "NONE",grop.RequireWaiver);
+        String line = sprintf('%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s', [
           acsess[row].flEventSessionId.toString(),
           acsess[row].fLeventIDfk.toString(),
           acsess[row].campusLocation,
@@ -118,21 +127,28 @@ class FileHelper {
       if (!await Directory(await BASEPATH).exists()) {
         final directory = await getApplicationDocumentsDirectory();
         String path = directory.path + "/Tracker";
-        //var documents = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-        // var directoryname = Path.Combine(documents, "FitLife");
         new Directory(path).create();
       }
+
+      //delete file if exist
       if (await File(filepath).exists()) {
         File(filepath).delete();
-        // File.AppendText()
       }
-      // File newfile = new File(file);
-      new File(filepath).writeAsString("$head");
+      File newfile = new File(filepath);
+      // var logFile = File('log.txt');
+      // var sink = newfile.openWrite();
+      var sink2 = newfile.openWrite(mode: FileMode.append);
+      sink2.write(head + '\n');
       for (int i = 0; i < allSessions.length; i++) {
-        //if (i > 0) {
-          File(filepath).writeAsString(allSessions[i]);
-        //}
+        sink2.write(
+          allSessions[i] + '\n',
+        );
       }
+      // await sink.flush();
+      await sink2.flush();
+      // await sink.close();
+      await sink2.close();
+
       return true;
       //await return true;
     } catch (ex) {
@@ -141,19 +157,29 @@ class FileHelper {
     }
   }
 
+  Future send(File file, String message) async {
+    try {
+      await file.writeAsString(message + '\n',
+          mode: FileMode.append, flush: false);
+    } catch (e) {
+      print("Error: $e");
+    }
+    return await file.length();
+  }
+
   Future<List<CurrentSession>> readSessionsFile() async {
     String file = await getSessionsFilePath();
     List<CurrentSession> allSession = new List<CurrentSession>();
     try {
       if (await File(file).exists()) {
         File newFile = new File(file);
-        String line;
+        //String line;
         List<String> glines = await newFile.readAsLines();
-
-        //newFile..readAsLines().then()
-        glines.forEach((line) {
+        print('The file is ${glines.length} lines long.');
+        /*
+        for (int row = 0; row < glines.length; row++) {
           CurrentSession csess = new CurrentSession();
-          List<String> lineItem = line.split(',');
+          List<String> lineItem = glines[row].split(',');
           csess.flEventSessionId = lineItem[0].trim();
           csess.fLeventIDfk = lineItem[1].trim();
           csess.campusLocation = lineItem[2].trim();
@@ -168,28 +194,87 @@ class FileHelper {
           csess.waiverName = lineItem[10] ?? "";
           csess.startDate = DateTime.parse(lineItem[9]);
           allSession.add(csess);
+        }
+*/
+        await Future.forEach(glines, (str) async {
+          List<String> lineItem = str.split(',');
+          if (lineItem[0] != "flEventSessionId") {
+            CurrentSession csess = new CurrentSession();
+            // List<String> lineItem = glines[row].split(',');
+            csess.flEventSessionId = lineItem[0];
+            csess.fLeventIDfk = lineItem[1];
+            csess.campusLocation = lineItem[2];
+            csess.trainer = lineItem[3];
+            csess.timeOfDay = lineItem[4];
+            csess.day = lineItem[5];
+            csess.department = lineItem[6];
+            csess.trainingGroup = lineItem[7];
+            csess.weekofClass = lineItem[8];
+            csess.divison = lineItem[9] + "-" + lineItem[6];
+            csess.requireWaiver = lineItem[10] == null ? "NO" : "Yes";
+            csess.waiverName = lineItem[11] == null ? "" : lineItem[11];
+            csess.startDate = DateTime.parse(lineItem[12]);
+            allSession.add(csess);
+          }
+          //  'flEventSessionId,fLeventIDfk,campusLocation,trainer,timeOfDay,day,department 6,trainingGroup,weekofClass,divison,requireWaiver,waiverName,startDate';
         });
-
-        /*
-    String flEventSessionId;
-  String fLeventIDfk;
-  String campusLocation;
-  String trainer;
-  String timeOfDay;
-  String day;
-  String department;
-  String trainingGroup;
-  String weekofClass;
-  String divison;
-  String requireWaiver;
-  String waiverName;
-  DateTime startDate;
-
-    */
       }
-      return await allSession;
     } catch (ex) {
-      print("file readSessionsFile 227 :" + ex.Message);
+      print("file readSessionsFile 227 :" + ex.toString());
+    }
+    return allSession;
+  }
+
+  Future<bool> writeRoles(List<Role> roles) async {
+    final lock = new Lock();
+    List<String> allRoles = new List();
+    try {
+      final filepath = await getRolesFilePath();
+      String head = 'rName,user,empLid';
+/*
+      String rName;
+      String user;
+      String empLid;
+ */
+      for (int row = 0; row < roles.length; row++) {
+        String line = sprintf(
+            '%s,%s,%s', [roles[row].rName, roles[row].user, roles[row].empLid]);
+        allRoles.add(line);
+      }
+      /*
+      //check to see if directory exist if not create it
+      if (!await Directory(await BASEPATH).exists()) {
+        final directory = await getApplicationDocumentsDirectory();
+        String path = directory.path + "/Tracker";
+        new Directory(path).create();
+      }
+      */
+
+      //check to see if directory exist if not create it
+      await checkIfDirectoryExist();
+
+      //delete file if exist
+      if (await File(filepath).exists()) {
+        File(filepath).delete();
+      }
+      File newfile = new File(filepath);
+      // var logFile = File('log.txt');
+      // var sink = newfile.openWrite();
+      var sink2 = newfile.openWrite(mode: FileMode.append);
+      sink2.write(head + '\n');
+      for (int i = 0; i < allRoles.length; i++) {
+        sink2.write(allRoles[i] + '\n');
+      }
+      // await sink.flush();
+      await sink2.flush();
+      // await sink.close();
+      await sink2.close();
+
+      return true;
+      //await return true;
+    } catch (ex) {
+      print("file writeRoles 276: " + ex.toString());
+      return false;
     }
   }
 
