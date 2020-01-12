@@ -105,7 +105,7 @@ class _SplashScreenState extends State<SplashScreen> {
                       Container(
                         child: Loading(
                           indicator: BallPulseIndicator(),
-                          size: 120.0,
+                          size: 60.0,
                           color: Colors.yellow,
                         ),
                       ),

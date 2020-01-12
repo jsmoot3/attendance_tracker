@@ -36,22 +36,30 @@ class GetApi {
         // if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
         print('----- 25 Api connected');
         //isConnected = true;
+
+
         await fetchSessions();
         await fetchRoles();
-        //  _AppData.appDataallUsers = await fetchValidUsers();
+        await fetchValidUsers();
+
 
         _AppData = await fillAppData();
+        /*
+        if(_AppData != null) {
 
-        print("GetApi length sesData==>   " +
-            _AppData.appDataSessions.length.toString());
-        //  print("GetApi length roleData==>   " +
-        //     _AppData.appDataroles.length.toString());
-        //  print("GetApi length valusrData==>   " +
-        //     _AppData.appDataallUsers.length.toString());
 
+          print("GetApi length sesData==>   " +
+              _AppData.appDataSessions.length.toString());
+          print("GetApi length roleData==>   " +
+              _AppData.appDataroles.length.toString());
+          print("GetApi length valusrData==>   " +
+              _AppData.appDataallUsers.length.toString());
+        }
+
+         */
         return _AppData;
       } else {
-        _AppData = await fillAppData();
+        //  _AppData = await fillAppData();
         if (_AppData == null) return null;
         return _AppData; //fill the application using the DB
       }
@@ -108,8 +116,9 @@ class GetApi {
     }
   }
 
-  static Future<List<Role>> fetchRoles() async {
+  static Future<bool> fetchRoles() async {
     List<Role> roles = new List<Role>();
+    bool status = false;
     var response = await http.get(Constants.ALL_ROLES);
     if (response.statusCode == 200) {
       String rolDat = response.body;
@@ -123,13 +132,13 @@ class GetApi {
       //}
 
       if (roles != null && roles.length > 0) {
-        await _fileHelper.writeRoles(roles);
+        status = await _fileHelper.writeRoles(roles);
       }
 
-      roles = await _dbHelper.getAllRoles();
-      print("///// Roles /////> " + roles.length.toString());
+      // roles = await _dbHelper.getAllRoles();
+      // print("///// Roles /////> " + roles.length.toString());
 
-      return roles;
+      return status;
     }
     return null;
   }
@@ -137,41 +146,41 @@ class GetApi {
   //////////////////////////////////////
   //get the valid users to vertifi against
   //**
-  static Future<List<ValidUser>> fetchValidUsers() async {
+  static Future<void> fetchValidUsers() async {
     List<ValidUser> validusers = new List<ValidUser>();
+    bool status = false;
     var response = await http.get(Constants.VALID_USERS);
     if (response.statusCode == 200) {
       String vUsrDat = response.body;
       // var sesDate = json.decode(sesDat);
       Iterable list = json.decode(vUsrDat);
       validusers = list.map((model) => ValidUser.fromJson(model)).toList();
-      //insert validusers into the DB
-      //  if (validusers != null && validusers.length > 0) {
-      //   _dbHelper.insertTblValidUser(validusers);
-      //  }
-      return validusers;
+      if (validusers != null && validusers.length > 0) {
+        status = await _fileHelper.writeValidUsers(validusers);
+      }
+      return status;
     }
-    return null;
+    return status;
   }
 
   static Future<AppData> fillAppData() async {
     AppData _appData = new AppData();
-    _appData.appDataSessions = await _fileHelper.readSessionsFile();
 
-    /*
-    await Future.wait([
-      _dbHelper.readAllSessions(),
-      _dbHelper.getAllValidUser(),
-      _dbHelper.getAllRoles(),
-      // _dbHelper.getAllDepartments();
-    ]).then((List responses) => {
-          _appData.appDataSessions = responses[0],
-          _appData.appDataallUsers = responses[1],
-          _appData.appDataroles = responses[2],
-          //_AppData.appDepartments = responses[3]
-        });
+    _appData.appDataSessions = await _fileHelper.readSessionsFile();
+    _appData.appDataroles = await _fileHelper.readRolesFile();
+    _appData.appDataallUsers = await _fileHelper.readValidUsers();
+   /*
+    Future.wait([
+       _fileHelper.readSessionsFile(),
+       _fileHelper.readRolesFile(),
+       _fileHelper.readValidUsers()
+    ]).then((List<dynamic> results) => {
+    _appData.appDataSessions = results[0],
+        _appData.appDataSessions = results[1],
+        _appData.appDataSessions = results[2]
+    });
     */
 
-    return await _appData;
+    return  _appData;
   }
 }

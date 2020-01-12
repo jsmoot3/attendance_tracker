@@ -11,7 +11,10 @@ import 'package:sprintf/sprintf.dart';
 import 'package:synchronized/synchronized.dart';
 
 class FileHelper {
-  CurrentSession sessionData;
+ CurrentSession sessionData;
+ FileHelper ([CurrentSession sess]){
+   sessionData = sess;
+ }
   static FileHelper _FileHelper;
 
   //base location of the attendence file location
@@ -40,21 +43,18 @@ class FileHelper {
 
   Future<String> getRolesFilePath() async {
     final bpath = await BASEPATH;
-    String dept = sessionData.department;
     String month = DateFormat.MMMM("en_US").format(new DateTime.now());
     String year = DateFormat.y("en_US").format(new DateTime.now());
-    final path = bpath + "/Roles_" + month + "_" + year + ".csv";
+    final path = bpath + "/Roles_" + month + year + ".csv";
     return path;
   }
 
-  Future<File> getValidUsersFile() async {
+  Future<String> getValidUsersFilePath() async {
     final bpath = await BASEPATH;
-    String dept = sessionData.department;
     String month = DateFormat.MMMM("en_US").format(new DateTime.now());
     String year = DateFormat.y("en_US").format(new DateTime.now());
-    final path =
-        await bpath + "/Tracker/users" + "_" + month + "_" + year + ".csv";
-    return File(path);
+    final path = await bpath + "/Users" + "_" + month + year + ".csv";
+    return path;
   }
 
   Future<String> getAttendenceFilePath() async {
@@ -176,26 +176,7 @@ class FileHelper {
         //String line;
         List<String> glines = await newFile.readAsLines();
         print('The file is ${glines.length} lines long.');
-        /*
-        for (int row = 0; row < glines.length; row++) {
-          CurrentSession csess = new CurrentSession();
-          List<String> lineItem = glines[row].split(',');
-          csess.flEventSessionId = lineItem[0].trim();
-          csess.fLeventIDfk = lineItem[1].trim();
-          csess.campusLocation = lineItem[2].trim();
-          csess.trainer = lineItem[5].trim();
-          csess.timeOfDay = lineItem[3].trim();
-          csess.day = lineItem[4].trim();
-          csess.department = lineItem[5].trim();
-          csess.trainingGroup = lineItem[6].trim();
-          csess.weekofClass = lineItem[2].trim();
-          csess.divison = lineItem[8].trim() + "-" + lineItem[6].trim();
-          csess.requireWaiver.trim();
-          csess.waiverName = lineItem[10] ?? "";
-          csess.startDate = DateTime.parse(lineItem[9]);
-          allSession.add(csess);
-        }
-*/
+
         await Future.forEach(glines, (str) async {
           List<String> lineItem = str.split(',');
           if (lineItem[0] != "flEventSessionId") {
@@ -227,28 +208,17 @@ class FileHelper {
 
   Future<bool> writeRoles(List<Role> roles) async {
     final lock = new Lock();
+    bool status = false;
     List<String> allRoles = new List();
     try {
       final filepath = await getRolesFilePath();
       String head = 'rName,user,empLid';
-/*
-      String rName;
-      String user;
-      String empLid;
- */
+
       for (int row = 0; row < roles.length; row++) {
         String line = sprintf(
             '%s,%s,%s', [roles[row].rName, roles[row].user, roles[row].empLid]);
         allRoles.add(line);
       }
-      /*
-      //check to see if directory exist if not create it
-      if (!await Directory(await BASEPATH).exists()) {
-        final directory = await getApplicationDocumentsDirectory();
-        String path = directory.path + "/Tracker";
-        new Directory(path).create();
-      }
-      */
 
       //check to see if directory exist if not create it
       await checkIfDirectoryExist();
@@ -276,6 +246,102 @@ class FileHelper {
       print("file writeRoles 276: " + ex.toString());
       return false;
     }
+  }
+
+  Future<List<Role>> readRolesFile() async {
+    String file = await getSessionsFilePath();
+    List<Role> allRoles = new List<Role>();
+    final filepath = await getRolesFilePath();
+    try {
+      if (await File(filepath).exists()) {
+        File newFile = new File(filepath);
+        //String line;
+        List<String> glines = await newFile.readAsLines();
+        print('The Roles file is ${glines.length} lines long.');
+        await Future.forEach(glines, (str) async {
+          List<String> lineItem = str.split(',');
+          if (lineItem[0] != "rName") {
+            Role csess = new Role();
+            // List<String> lineItem = glines[row].split(',');
+            csess.rName = lineItem[0];
+            csess.user = lineItem[1];
+            csess.empLid = lineItem[2];
+            allRoles.add(csess);
+          }
+        });
+      }
+    } catch (ex) {
+      print("file readRolesFile 292 :" + ex.toString());
+    }
+    return allRoles;
+  }
+
+  Future<bool> writeValidUsers(List<ValidUser> validUser) async {
+    bool status = false;
+    List<String> allValidUser = new List();
+    try {
+      final filepath = await getValidUsersFilePath();
+      String head = 'cardId,barcode,empLid';
+      for (int row = 0; row < validUser.length; row++) {
+        String line = sprintf('%s,%s,%s', [
+          validUser[row].cardId,
+          validUser[row].barcode,
+          validUser[row].empLid
+        ]);
+        allValidUser.add(line);
+      }
+
+      //check to see if directory exist if not create it
+      await checkIfDirectoryExist();
+
+      //delete file if exist
+      if (await File(filepath).exists()) {
+        File(filepath).delete();
+      }
+      File newfile = new File(filepath);
+      var sink2 = newfile.openWrite(mode: FileMode.append);
+      sink2.write(head + '\n');
+      for (int i = 0; i < allValidUser.length; i++) {
+        sink2.write(allValidUser[i] + '\n');
+      }
+      // await sink.flush();
+      await sink2.flush();
+      // await sink.close();
+      await sink2.close();
+
+      return true;
+      //await return true;
+    } catch (ex) {
+      print("file writeRoles 276: " + ex.toString());
+      return false;
+    }
+  }
+
+  Future<List<ValidUser>> readValidUsers() async {
+    List<ValidUser> allValidUser = new List<ValidUser>();
+    final filepath = await getValidUsersFilePath();
+    try {
+      if (await File(filepath).exists()) {
+        File newFile = new File(filepath);
+        //String line;
+        List<String> glines = await newFile.readAsLines();
+        print('The ValidUsers file is ${glines.length} lines long.');
+        await Future.forEach(glines, (str) async {
+          List<String> lineItem = str.split(',');
+          if (lineItem[0] != "cardId") {
+            ValidUser csess = new ValidUser();
+            // List<String> lineItem = glines[row].split(',');
+            csess.cardId = lineItem[0];
+            csess.barcode = lineItem[1];
+            csess.empLid = lineItem[2];
+            allValidUser.add(csess);
+          }
+        });
+      }
+    } catch (ex) {
+      print("file readallValidUserFile 358 :" + ex.toString());
+    }
+    return allValidUser;
   }
 
   Future<bool> WriteAttendieToFile(EventAttendie eventAttendie) async {

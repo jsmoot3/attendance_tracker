@@ -146,10 +146,10 @@ class _StartScreenState extends State<StartScreen> {
                     child: Text(
                         "Users " + _appData.appDataallUsers.length.toString()),
                   ),
-                  Expanded(
-                    child: Text("Departments " +
-                        _appData.appDepartments.length.toString()),
-                  ),
+               //   Expanded(
+                //    child: Text("Departments " +
+                //        _appData.appDepartments.length.toString()),
+               //   ),
                 ],
               ),
             ],
