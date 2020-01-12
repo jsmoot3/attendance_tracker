@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import '../constants.dart' as Constants;
 import '../Models/App_Models.dart';
 import '../Models/Session.dart';
@@ -19,7 +20,7 @@ class GetApi {
   //check if there is a connection
 
   static Future<AppData> checkIfHaveConnectionUpdateDB() async {
-    //bool isConnected = false;
+    bool isConnected = false;
     //AppData checkIfHaveConnectionUpdateDB;
     AppData _AppData = new AppData();
     // print("----> " + Constants.MONTH_SESSIONS);
@@ -36,6 +37,9 @@ class GetApi {
         // if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
         print('----- 25 Api connected');
         //isConnected = true;
+
+
+       // await compute (fetchValidUsers, isConnected);
 
 
         await fetchSessions();
@@ -73,7 +77,7 @@ class GetApi {
     //return null;
   }
 
-  static Future<void> fetchSessions() async {
+  static Future<void> fetchSessions(bool temp) async {
     List<CurrentSession> csessions = new List<CurrentSession>();
     AppData tAppData = new AppData();
     List<String> tdepartment = new List<String>();
@@ -146,7 +150,7 @@ class GetApi {
   //////////////////////////////////////
   //get the valid users to vertifi against
   //**
-  static Future<void> fetchValidUsers() async {
+  static Future<bool> fetchValidUsers() async {
     List<ValidUser> validusers = new List<ValidUser>();
     bool status = false;
     var response = await http.get(Constants.VALID_USERS);
