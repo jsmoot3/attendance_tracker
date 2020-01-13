@@ -99,7 +99,12 @@ class _StartScreenState extends State<StartScreen> {
 
       return Scaffold(
         appBar: AppBar(
-          title: Text('Attrndance Tracker'),
+          title: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text('Attrndance Tracker \n'),
+                // Text("$_appData.from - $_appData.to"),
+              ]),
         ),
         resizeToAvoidBottomInset: true,
         body: Padding(
@@ -134,6 +139,10 @@ class _StartScreenState extends State<StartScreen> {
               Row(
                 textDirection: TextDirection.ltr,
                 children: <Widget>[
+                  //   Expanded(
+                  //    child: Text("Departments " +
+                  //        _appData.appDepartments.length.toString()),
+                  //   ),
                   Expanded(
                     child: Text("Sessions " +
                         _appData.appDataSessions.length.toString()),
@@ -146,10 +155,10 @@ class _StartScreenState extends State<StartScreen> {
                     child: Text(
                         "Users " + _appData.appDataallUsers.length.toString()),
                   ),
-               //   Expanded(
-                //    child: Text("Departments " +
-                //        _appData.appDepartments.length.toString()),
-               //   ),
+                  //   Expanded(
+                  //    child: Text("Departments " +
+                  //        _appData.appDepartments.length.toString()),
+                  //   ),
                 ],
               ),
             ],

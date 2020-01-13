@@ -45,7 +45,7 @@ class Role {
 class ValidUser {
   String cardId;
   String barcode;
-  String empLid;
+  String empLid = "";
   ValidUser({this.cardId, this.barcode, this.empLid});
 
   Map<String, dynamic> toMap() {
@@ -62,8 +62,8 @@ class ValidUser {
     this.empLid = input["EmpLid"];
   }
   factory ValidUser.fromJson(Map<String, dynamic> json) => ValidUser(
-        cardId: json["RName"] == null ? null : json["RName"],
-        barcode: json["User"] == null ? null : json["User"],
+        cardId: json["CardId"] == null ? null : json["CardId"],
+        barcode: json["Barcode"] == null ? null : json["Barcode"],
         empLid: json["EmpLid"] == null ? null : json["EmpLid"],
       );
 }

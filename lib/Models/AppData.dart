@@ -4,9 +4,10 @@ import '../Models/Session.dart';
 class AppData {
   String from;
   String to;
-  int rcount;
+  String rcount;
   String month;
   String groupId;
+  String dateSpan;
   List<CurrentSession> appDataSessions;
   List<Role> appDataroles;
   List<ValidUser> appDataallUsers;

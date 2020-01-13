@@ -7,13 +7,13 @@ import '../Models/App_Models.dart';
 import '../Models/Session.dart';
 import '../Models/AppData.dart';
 import 'dart:io';
-import 'package:attendance_tracker/Util/dbHelper.dart';
+//import 'package:attendance_tracker/Util/dbHelper.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:attendance_tracker/Util/FileHelper.dart';
 
 class GetApi {
   SessionDart sessionDart;
-  static DbHelper _dbHelper = new DbHelper();
+  //static DbHelper _dbHelper = new DbHelper();
   static FileHelper _fileHelper = new FileHelper();
 //TODO:if there is a connection write to db
   //TODO: if connected to wifi read and save to db
@@ -38,14 +38,24 @@ class GetApi {
         print('----- 25 Api connected');
         //isConnected = true;
 
+        // await compute (fetchValidUsers, isConnected);
+        try {
+          //await Future.wait([fetchValidUsers(),fetchSessions(),fetchRoles()] );
 
-       // await compute (fetchValidUsers, isConnected);
+          //await
+          await fetchSessions();
+          await fetchRoles();
+          await fetchValidUsers();
+          // var s =
+          // var r =
+          //  await Future.wait([s, r]);
 
-
-        await fetchSessions();
-        await fetchRoles();
-        await fetchValidUsers();
-
+        } catch (e) {
+          print("Api Haveconnectionerror51 " + e.toString());
+        }
+        //  await fetchValidUsers();
+        //  await fetchSessions();
+        //  await fetchRoles();
 
         _AppData = await fillAppData();
         /*
@@ -77,7 +87,7 @@ class GetApi {
     //return null;
   }
 
-  static Future<void> fetchSessions(bool temp) async {
+  static Future<void> fetchSessions() async {
     List<CurrentSession> csessions = new List<CurrentSession>();
     AppData tAppData = new AppData();
     List<String> tdepartment = new List<String>();
@@ -94,8 +104,13 @@ class GetApi {
       csessions = list.map((model) => CurrentSession.fromJson(model)).toList();
       tdepartment = listd.map((s) => (s as String)).toList();
       //create insert session into file
+
+      await _fileHelper.writeDataInfoToFile(tAppData);
       if (csessions != null && csessions.length > 0) {
         await _fileHelper.writeEventSessions(csessions);
+      }
+      if (tdepartment != null && tdepartment.length > 0) {
+        await _fileHelper.writeDepartments(tdepartment);
       }
 
       // csessions = await _dbHelper.readAllSessions();
@@ -118,6 +133,7 @@ class GetApi {
       return null;
       //throw Exception('Failed to load post');
     }
+    return true;
   }
 
   static Future<bool> fetchRoles() async {
@@ -160,7 +176,7 @@ class GetApi {
       Iterable list = json.decode(vUsrDat);
       validusers = list.map((model) => ValidUser.fromJson(model)).toList();
       if (validusers != null && validusers.length > 0) {
-        status = await _fileHelper.writeValidUsers(validusers);
+        await _fileHelper.writeValidUsers(validusers);
       }
       return status;
     }
@@ -169,11 +185,11 @@ class GetApi {
 
   static Future<AppData> fillAppData() async {
     AppData _appData = new AppData();
-
+    _appData = await _fileHelper.readDataInfoFromFile();
     _appData.appDataSessions = await _fileHelper.readSessionsFile();
     _appData.appDataroles = await _fileHelper.readRolesFile();
-    _appData.appDataallUsers = await _fileHelper.readValidUsers();
-   /*
+    //  _appData.appDataallUsers = await _fileHelper.readValidUsers();
+    /*
     Future.wait([
        _fileHelper.readSessionsFile(),
        _fileHelper.readRolesFile(),
@@ -185,6 +201,6 @@ class GetApi {
     });
     */
 
-    return  _appData;
+    return _appData;
   }
 }

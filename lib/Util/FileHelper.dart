@@ -9,12 +9,13 @@ import '../Models/Session.dart';
 import '../Models/EventAttendie.dart';
 import 'package:sprintf/sprintf.dart';
 import 'package:synchronized/synchronized.dart';
+import '../Models/AppData.dart';
 
 class FileHelper {
- CurrentSession sessionData;
- FileHelper ([CurrentSession sess]){
-   sessionData = sess;
- }
+  CurrentSession sessionData;
+  FileHelper([CurrentSession sess]) {
+    sessionData = sess;
+  }
   static FileHelper _FileHelper;
 
   //base location of the attendence file location
@@ -279,13 +280,14 @@ class FileHelper {
   Future<bool> writeValidUsers(List<ValidUser> validUser) async {
     bool status = false;
     List<String> allValidUser = new List();
+    String line = "";
     try {
       final filepath = await getValidUsersFilePath();
       String head = 'cardId,barcode,empLid';
       for (int row = 0; row < validUser.length; row++) {
         String line = sprintf('%s,%s,%s', [
-          validUser[row].cardId,
-          validUser[row].barcode,
+          validUser[row].cardId.toString(),
+          validUser[row].barcode.toString(),
           validUser[row].empLid
         ]);
         allValidUser.add(line);
@@ -304,6 +306,7 @@ class FileHelper {
       for (int i = 0; i < allValidUser.length; i++) {
         sink2.write(allValidUser[i] + '\n');
       }
+
       // await sink.flush();
       await sink2.flush();
       // await sink.close();
@@ -344,7 +347,47 @@ class FileHelper {
     return allValidUser;
   }
 
-  Future<bool> WriteAttendieToFile(EventAttendie eventAttendie) async {
+  Future<bool> writeDepartments(List<String> input) async {
+    bool status = false;
+    List<String> allDepartments = new List();
+    final bpath = await BASEPATH;
+    String filepath = bpath + "/Departments.csv";
+    try {
+      // final filepath = await getValidUsersFilePath();
+      String head = 'Departments';
+      String items = "";
+      for (int row = 0; row < input.length; row++) {
+        String line = input[row];
+        allDepartments.add(line);
+      }
+
+      //check to see if directory exist if not create it
+      await checkIfDirectoryExist();
+
+      //delete file if exist
+      if (await File(filepath).exists()) {
+        File(filepath).delete();
+      }
+      File newfile = new File(filepath);
+      var sink2 = newfile.openWrite(mode: FileMode.append);
+      sink2.write(head + '\n');
+      for (int i = 0; i < allDepartments.length; i++) {
+        sink2.write(allDepartments[i] + '\n');
+      }
+      // await sink.flush();
+      await sink2.flush();
+      // await sink.close();
+      await sink2.close();
+
+      return true;
+      //await return true;
+    } catch (ex) {
+      print("file writeRoles 276: " + ex.toString());
+      return false;
+    }
+  }
+
+  Future<bool> writeAttendieToFile(EventAttendie eventAttendie) async {
     String month = DateFormat.MMMM("en_US").format(new DateTime.now());
     String year = DateFormat.y("en_US").format(new DateTime.now());
     String path = await getAttendenceFilePath();
@@ -367,5 +410,58 @@ class FileHelper {
     //  WriteFile(path, head, data);
 
     return true;
+  }
+
+  Future<bool> writeDataInfoToFile(AppData _appData) async {
+    final bpath = await BASEPATH;
+    String filepath = bpath + "/CurrentDataInfo.csv";
+    try {
+      //check to see if directory exist if not create it
+      await checkIfDirectoryExist();
+
+      //delete file if exist
+      if (await File(filepath).exists()) {
+        File(filepath).delete();
+      }
+      File newfile = new File(filepath);
+      var sink2 = newfile.openWrite(mode: FileMode.append);
+
+      sink2.write("Month: $_appData.Month \n");
+      sink2.write("From: $_appData.from - To: $_appData.to \n");
+      sink2.write("From: $_appData.from \n");
+      sink2.write("To: $_appData.to \n");
+      sink2.write("$_appData.Rcount");
+      // await sink.flush();
+      await sink2.flush();
+      // await sink.close();
+      await sink2.close();
+      return true;
+      //await return true;
+    } catch (ex) {
+      print("file writeRoles 276: " + ex.toString());
+      return false;
+    }
+  }
+
+  Future<AppData> readDataInfoFromFile() async {
+    AppData _appData = new AppData();
+    final bpath = await BASEPATH;
+    String filepath = bpath + "/CurrentDataInfo.csv";
+    try {
+      if (await File(filepath).exists()) {
+        File newFile = new File(filepath);
+        //String line;
+        List<String> glines = await newFile.readAsLines();
+        _appData.month = glines[0];
+        _appData.dateSpan = glines[1];
+        _appData.from = glines[2];
+        _appData.to = glines[3];
+        _appData.rcount = glines[4];
+      }
+    } catch (ex) {
+      print("file readallValidUserFile 358 :" + ex.toString());
+      return null;
+    }
+    return _appData;
   }
 } //end of class
