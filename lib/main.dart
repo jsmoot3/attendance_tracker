@@ -47,7 +47,7 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  AppData tData;
+  // AppData tData;
   @override
   void initState() {
     super.initState();
@@ -55,7 +55,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void getAttendenceData() async {
-    tData = await GetApi.checkIfHaveConnectionUpdateDB();
+    AppData tData = await GetApi.checkIfHaveConnectionUpdateDB();
     //TODO: check for a null on tData do a popup
     if (tData != null) {
       Navigator.push(context, MaterialPageRoute(builder: (context) {

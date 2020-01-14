@@ -14,7 +14,7 @@ class _TakeAttendanceState extends State<TakeAttendance> {
   void initState() {
     super.initState();
     activeSession = new CurrentSession();
-   updateUI(widget.sessionData);
+    updateUI(widget.sessionData);
   }
 
   void updateUI(dynamic tData) {
@@ -58,7 +58,7 @@ class _TakeAttendanceState extends State<TakeAttendance> {
           fontSize: 42.0,
         ),
       ),
-      onPressed:  _noTextAlert("Pressed submit"),
+      onPressed: _noTextAlert("Pressed submit"),
       color: Colors.green,
       textColor: Colors.white,
       padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
@@ -85,32 +85,28 @@ class _TakeAttendanceState extends State<TakeAttendance> {
         title: Text('Attrndance Tracker'),
       ),
       resizeToAvoidBottomInset: true,
-
- body: Padding(
-          padding: const EdgeInsets.all(30.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              
-              Expanded(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 2.0, horizontal: 5),
-                  child: nTextField,
-                ),
+      body: Padding(
+        padding: const EdgeInsets.all(30.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: 2.0, horizontal: 5),
+                child: nTextField,
               ),
-              Expanded(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 3.0, horizontal: 5),
-                  child: logButton,
-                ),
-              ),
-
-            ],
-          ),
+            ),
+            //   Expanded(
+            //     child: Padding(
+            //       padding: EdgeInsets.symmetric(vertical: 3.0, horizontal: 5),
+            //      child: logButton,
+            //   ),
+            // ),
+          ],
         ),
-      );
-    
+      ),
+    );
   }
 
   _noTextAlert(String _mess) {

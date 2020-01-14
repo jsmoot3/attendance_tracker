@@ -43,21 +43,21 @@ class GetApi {
           //await Future.wait([fetchValidUsers(),fetchSessions(),fetchRoles()] );
 
           //await
-          await fetchSessions();
-          await fetchRoles();
-          await fetchValidUsers();
+          //  await fetchSessions();
+          //  await fetchRoles();
+          //  await fetchValidUsers();
           // var s =
           // var r =
           //  await Future.wait([s, r]);
 
+          _AppData = await fillAppData();
         } catch (e) {
-          print("Api Haveconnectionerror51 " + e.toString());
+          print("Api Haveconnection error51 " + e.toString());
         }
         //  await fetchValidUsers();
         //  await fetchSessions();
         //  await fetchRoles();
 
-        _AppData = await fillAppData();
         /*
         if(_AppData != null) {
 
@@ -87,6 +87,28 @@ class GetApi {
     //return null;
   }
 
+  static Future<AppData> fillAppData() async {
+    AppData _appData = new AppData();
+    _appData.appDataCurrentDataInfo = await _fileHelper.readDataInfoFromFile();
+    _appData.appDataSessions = await _fileHelper.readSessionsFile();
+    _appData.appDataroles = await _fileHelper.readRolesFile();
+    _appData.appDataallUsers = await _fileHelper.readValidUsers();
+    _appData.appDepartments = await _fileHelper.readDepartments();
+/*
+    Future.wait([
+      _fileHelper.readSessionsFile(),
+      _fileHelper.readRolesFile(),
+      _fileHelper.readValidUsers()
+    ]).then((List<dynamic> results) => {
+          _appData.appDataSessions = results[0],
+          _appData.appDataSessions = results[1],
+          _appData.appDataSessions = results[2]
+        });
+ */
+
+    return _appData;
+  }
+
   static Future<void> fetchSessions() async {
     List<CurrentSession> csessions = new List<CurrentSession>();
     AppData tAppData = new AppData();
@@ -95,9 +117,13 @@ class GetApi {
     if (response.statusCode == 200) {
       String sesDat = response.body;
       var sesDate = json.decode(sesDat);
-      tAppData.from = sesDate["From"];
-      tAppData.to = sesDate["To"];
-      tAppData.month = sesDate["Month"];
+
+      CurrentDataInfo cDataInfo = new CurrentDataInfo();
+      cDataInfo.from = sesDate["From"];
+      cDataInfo.to = sesDate["To"];
+      cDataInfo.rcount = sesDate["Rcount"].toString();
+      cDataInfo.month = sesDate["Month"];
+      //cDataInfo.dateSpan = sesDate["dateSpan"];
 
       Iterable list = sesDate["CurrentSessions"];
       Iterable listd = sesDate["Departments"];
@@ -105,7 +131,7 @@ class GetApi {
       tdepartment = listd.map((s) => (s as String)).toList();
       //create insert session into file
 
-      await _fileHelper.writeDataInfoToFile(tAppData);
+      await _fileHelper.writeDataInfoToFile(cDataInfo);
       if (csessions != null && csessions.length > 0) {
         await _fileHelper.writeEventSessions(csessions);
       }
@@ -181,26 +207,5 @@ class GetApi {
       return status;
     }
     return status;
-  }
-
-  static Future<AppData> fillAppData() async {
-    AppData _appData = new AppData();
-    _appData = await _fileHelper.readDataInfoFromFile();
-    _appData.appDataSessions = await _fileHelper.readSessionsFile();
-    _appData.appDataroles = await _fileHelper.readRolesFile();
-    //  _appData.appDataallUsers = await _fileHelper.readValidUsers();
-    /*
-    Future.wait([
-       _fileHelper.readSessionsFile(),
-       _fileHelper.readRolesFile(),
-       _fileHelper.readValidUsers()
-    ]).then((List<dynamic> results) => {
-    _appData.appDataSessions = results[0],
-        _appData.appDataSessions = results[1],
-        _appData.appDataSessions = results[2]
-    });
-    */
-
-    return _appData;
   }
 }

@@ -29,6 +29,7 @@ class _SessionsScreenState extends State<SessionsScreen> {
   List allSessions = new List<CurrentSession>();
   List roles = new List<Role>();
   List valStudents = new List<ValidUser>();
+  CurrentDataInfo cDataInfo = new CurrentDataInfo();
   String groupAccessId;
 
   AppData applicationData;
@@ -49,10 +50,6 @@ class _SessionsScreenState extends State<SessionsScreen> {
       roles = tData.appDataroles;
       valStudents = tData.appDataallUsers;
       groupAccessId = tData.groupId;
-
-//if(_appData.appDataSessions == null){
-      // _appData.appDataSessions = new
-//}
     });
   }
 
@@ -89,6 +86,11 @@ class _SessionsScreenState extends State<SessionsScreen> {
       return csessionsL;
     });
     return csessionsL;
+  }
+
+  ///////////////////////////////////////////////////
+  CurrentDataInfo getCurrenInfo() {
+    return cDataInfo;
   }
 
 /////////////////////////////////////////////////////
@@ -191,6 +193,7 @@ class _SessionsScreenState extends State<SessionsScreen> {
   Widget build(BuildContext context) {
     //add the acced session to the view
     csessions = viewableSessions();
+    cDataInfo = applicationData.appDataCurrentDataInfo;
 
     if (csessions == null || csessions.length < 1) {
       // return: show loading widget
@@ -223,7 +226,29 @@ class _SessionsScreenState extends State<SessionsScreen> {
     } else {
       return Scaffold(
           appBar: AppBar(
-            title: Text('Startup Name Generator'),
+            title: Text('Attendance Tracker \n'),
+            elevation: 10,
+            actions: <Widget>[
+              InkWell(
+                child: Icon(Icons.more_vert),
+                onTap: () {
+                  print("click more");
+                },
+              ),
+              SizedBox(width: 20)
+            ],
+            bottom: PreferredSize(
+              child: Container(
+                alignment: Alignment.center,
+                color: Colors.red,
+                constraints: BoxConstraints.expand(height: 70),
+                child: Text(
+                  "$cDataInfo.from",
+                  style: TextStyle(fontSize: 30),
+                ),
+              ),
+              preferredSize: Size(50, 50),
+            ),
           ),
           body: ListView.builder(
               itemCount: csessions == null ? 0 : csessions.length,
@@ -232,14 +257,16 @@ class _SessionsScreenState extends State<SessionsScreen> {
                   height: 160,
                   // padding: const EdgeInsets..all(10.0),
                   child: InkWell(
-                    onTap: () {
-                      // _noTextAlert("test-" + csessions[index].department);
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => TakeAttendance(
-                                  sessionData: csessions[index])));
-                    },
+                    onTap: () =>
+                        // _noTextAlert("test-" + csessions[index].department);
+                        Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) {
+                        return TakeAttendance(
+                          sessionData: csessions[index],
+                        );
+                      }),
+                    ),
                     child: Card(
                         elevation: 8.0,
                         // color: Colors.lightBlue,
@@ -340,7 +367,7 @@ class _SessionsScreenState extends State<SessionsScreen> {
                           ]),
                         )
 
-                        /* 
+                        /*
                       child: Container(
                         //decoration:
                         // BoxDecoration(color: Color.fromRGBO(64, 75, 96, .9)),
@@ -408,7 +435,8 @@ class _SessionsScreenState extends State<SessionsScreen> {
   }
 
   _returnToMain() {
-    Navigator.pop(context);
+    // Navigator.pop(context);
+    print("button clicked Session screen 440");
   }
 
 /*

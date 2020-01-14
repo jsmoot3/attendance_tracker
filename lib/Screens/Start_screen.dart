@@ -3,7 +3,7 @@ import 'Sessions_screen.dart';
 import '../Models/GetApi.dart';
 import '../Models/AppData.dart';
 import '../Models/Session.dart';
-import 'package:attendance_tracker/Util/dbHelper.dart';
+import '../Models/AppData.dart';
 
 //import 'package:sqflite/sqflite.dart';
 //import 'package:path_provider/path_provider.dart';
@@ -23,6 +23,7 @@ class _StartScreenState extends State<StartScreen> {
   TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 10.0);
   TextEditingController _textFieldController = TextEditingController();
   List<CurrentSession> csessions = new List<CurrentSession>();
+  CurrentDataInfo cDataInfo;
   AppData _appData;
 
   void initState() {
@@ -32,26 +33,14 @@ class _StartScreenState extends State<StartScreen> {
 
   void updateUI(dynamic tData) {
     setState(() {
-      if (tData == null) {
-        return;
-      }
+      // if (tData == null) {
+      //   return;
+      // }
       _appData = tData;
+      cDataInfo = tData.appDataCurrentDataInfo;
 //if(_appData.appDataSessions == null){
       // _appData.appDataSessions = new
 //}
-    });
-  }
-
-  Future<List<CurrentSession>> getAllSessions() async {
-    var dbHelper = DbHelper();
-    Future<List<CurrentSession>> dishes = dbHelper.readAllSessions();
-    return dishes;
-  }
-
-  clearTable() {
-    setState(() {
-      var dbHelper = DbHelper();
-      //    dbHelper.clearTable("tblSessions");
     });
   }
 
@@ -64,8 +53,6 @@ class _StartScreenState extends State<StartScreen> {
 
   Widget build(BuildContext context) {
     imageCache.clear();
-
-//TODO:if have a connection update DB
 
     if (_appData != null) {
       // AppData appdata = _appData;
@@ -87,7 +74,7 @@ class _StartScreenState extends State<StartScreen> {
         controller: _textFieldController,
         decoration: InputDecoration(
           //Add th Hint text here.
-          hintText: "Group Number" + _appData.appDataSessions[0].department,
+          hintText: "Group Number " + cDataInfo.from,
           border: OutlineInputBorder(),
         ),
         style: TextStyle(
@@ -103,7 +90,8 @@ class _StartScreenState extends State<StartScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Text('Attrndance Tracker \n'),
-                // Text("$_appData.from - $_appData.to"),
+                //  Text(
+                //    "$_appData.appDataCurrentDataInfo.from - $_appData.appDataCurrentDataInfo.to"),
               ]),
         ),
         resizeToAvoidBottomInset: true,
@@ -143,6 +131,7 @@ class _StartScreenState extends State<StartScreen> {
                   //    child: Text("Departments " +
                   //        _appData.appDepartments.length.toString()),
                   //   ),
+
                   Expanded(
                     child: Text("Sessions " +
                         _appData.appDataSessions.length.toString()),
@@ -155,10 +144,10 @@ class _StartScreenState extends State<StartScreen> {
                     child: Text(
                         "Users " + _appData.appDataallUsers.length.toString()),
                   ),
-                  //   Expanded(
-                  //    child: Text("Departments " +
-                  //        _appData.appDepartments.length.toString()),
-                  //   ),
+                  Expanded(
+                    child: Text("Departments " +
+                        _appData.appDepartments.length.toString()),
+                  ),
                 ],
               ),
             ],

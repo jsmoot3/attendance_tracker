@@ -283,6 +283,13 @@ class FileHelper {
     String line = "";
     try {
       final filepath = await getValidUsersFilePath();
+      if (await File(filepath).exists()) {
+        List<String> glines = await File(filepath).readAsLines();
+        if (validUser.length == glines.length) {
+          return true;
+        }
+        File(filepath).delete();
+      }
       String head = 'cardId,barcode,empLid';
       for (int row = 0; row < validUser.length; row++) {
         String line = sprintf('%s,%s,%s', [
@@ -297,9 +304,16 @@ class FileHelper {
       await checkIfDirectoryExist();
 
       //delete file if exist
+      /*
       if (await File(filepath).exists()) {
+        List<String> glines = await File(filepath).readAsLines();
+        if (validUser.length == glines.length) {
+          return true;
+        }
         File(filepath).delete();
       }
+
+       */
       File newfile = new File(filepath);
       var sink2 = newfile.openWrite(mode: FileMode.append);
       sink2.write(head + '\n');
@@ -340,6 +354,8 @@ class FileHelper {
             allValidUser.add(csess);
           }
         });
+      } else {
+        return null;
       }
     } catch (ex) {
       print("file readallValidUserFile 358 :" + ex.toString());
@@ -360,10 +376,8 @@ class FileHelper {
         String line = input[row];
         allDepartments.add(line);
       }
-
       //check to see if directory exist if not create it
       await checkIfDirectoryExist();
-
       //delete file if exist
       if (await File(filepath).exists()) {
         File(filepath).delete();
@@ -385,6 +399,29 @@ class FileHelper {
       print("file writeRoles 276: " + ex.toString());
       return false;
     }
+  }
+
+  Future<List<String>> readDepartments() async {
+    List<String> allDepartments = new List<String>();
+    final bpath = await BASEPATH;
+    final filepath = bpath + "/Departments.csv";
+    try {
+      if (await File(filepath).exists()) {
+        File newFile = File(filepath);
+        List<String> glines = await newFile.readAsLines();
+        print('The ValidUsers file is ${glines.length} lines long.');
+        await Future.forEach(glines, (str) async {
+          if (str != "Departments") {
+            allDepartments.add(str);
+          }
+        });
+      } else {
+        return null;
+      }
+    } catch (ex) {
+      print("file readallValidUserFile 358 :" + ex.toString());
+    }
+    return allDepartments;
   }
 
   Future<bool> writeAttendieToFile(EventAttendie eventAttendie) async {
@@ -412,7 +449,7 @@ class FileHelper {
     return true;
   }
 
-  Future<bool> writeDataInfoToFile(AppData _appData) async {
+  Future<bool> writeDataInfoToFile(CurrentDataInfo cDataInfo) async {
     final bpath = await BASEPATH;
     String filepath = bpath + "/CurrentDataInfo.csv";
     try {
@@ -426,11 +463,16 @@ class FileHelper {
       File newfile = new File(filepath);
       var sink2 = newfile.openWrite(mode: FileMode.append);
 
-      sink2.write("Month: $_appData.Month \n");
-      sink2.write("From: $_appData.from - To: $_appData.to \n");
-      sink2.write("From: $_appData.from \n");
-      sink2.write("To: $_appData.to \n");
-      sink2.write("$_appData.Rcount");
+      String mon = cDataInfo.month;
+      String from = cDataInfo.from;
+      String to = cDataInfo.to;
+      String count = cDataInfo.rcount;
+
+      sink2.write("Month: $mon \n");
+      sink2.write("From: $from - To: $to \n");
+      sink2.write("From: $from \n");
+      sink2.write("To: $to \n");
+      sink2.write("$count");
       // await sink.flush();
       await sink2.flush();
       // await sink.close();
@@ -443,25 +485,25 @@ class FileHelper {
     }
   }
 
-  Future<AppData> readDataInfoFromFile() async {
-    AppData _appData = new AppData();
+  Future<CurrentDataInfo> readDataInfoFromFile() async {
     final bpath = await BASEPATH;
+    CurrentDataInfo _currentDataInfo = new CurrentDataInfo();
     String filepath = bpath + "/CurrentDataInfo.csv";
     try {
       if (await File(filepath).exists()) {
         File newFile = new File(filepath);
         //String line;
         List<String> glines = await newFile.readAsLines();
-        _appData.month = glines[0];
-        _appData.dateSpan = glines[1];
-        _appData.from = glines[2];
-        _appData.to = glines[3];
-        _appData.rcount = glines[4];
+        _currentDataInfo.month = await new Future.value(glines[0]);
+        _currentDataInfo.dateSpan = await new Future.value(glines[1]);
+        _currentDataInfo.from = await new Future.value(glines[2]);
+        _currentDataInfo.to = await new Future.value(glines[3]);
+        _currentDataInfo.rcount = await new Future.value(glines[4]);
       }
     } catch (ex) {
       print("file readallValidUserFile 358 :" + ex.toString());
       return null;
     }
-    return _appData;
+    return _currentDataInfo;
   }
 } //end of class
