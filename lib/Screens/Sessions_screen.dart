@@ -1,6 +1,6 @@
 import 'package:attendance_tracker/Screens/Start_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:attendance_tracker/Screens/TakeAttendance_Screen.dart';
+import 'TakeAttendance_Screen.dart';
 import '../Models/GetApi.dart';
 import '../Models/Session.dart';
 import 'dart:convert';
@@ -29,6 +29,7 @@ class _SessionsScreenState extends State<SessionsScreen> {
   List allSessions = new List<CurrentSession>();
   List roles = new List<Role>();
   List valStudents = new List<ValidUser>();
+
   CurrentDataInfo cDataInfo = new CurrentDataInfo();
   String groupAccessId;
 
@@ -41,7 +42,7 @@ class _SessionsScreenState extends State<SessionsScreen> {
   }
 
   void updateUI(dynamic tData) {
-    setState(() {
+   // setState(() {
       if (tData == null) {
         return;
       }
@@ -50,7 +51,9 @@ class _SessionsScreenState extends State<SessionsScreen> {
       roles = tData.appDataroles;
       valStudents = tData.appDataallUsers;
       groupAccessId = tData.groupId;
-    });
+      cDataInfo = tData.appDataCurrentDataInfo;
+      //String from = widget.trackerData.appDataCurrentDataInfo.from;
+   // });
   }
 
   ////////////////////////////////////////////   String user;
@@ -193,7 +196,7 @@ class _SessionsScreenState extends State<SessionsScreen> {
   Widget build(BuildContext context) {
     //add the acced session to the view
     csessions = viewableSessions();
-    cDataInfo = applicationData.appDataCurrentDataInfo;
+   // cDataInfo = applicationData.appDataCurrentDataInfo;
 
     if (csessions == null || csessions.length < 1) {
       // return: show loading widget
@@ -228,6 +231,7 @@ class _SessionsScreenState extends State<SessionsScreen> {
           appBar: AppBar(
             title: Text('Attendance Tracker \n'),
             elevation: 10,
+
             actions: <Widget>[
               InkWell(
                 child: Icon(Icons.more_vert),
@@ -235,7 +239,7 @@ class _SessionsScreenState extends State<SessionsScreen> {
                   print("click more");
                 },
               ),
-              SizedBox(width: 20)
+              SizedBox(width: 20,height:60),
             ],
             bottom: PreferredSize(
               child: Container(
@@ -243,7 +247,7 @@ class _SessionsScreenState extends State<SessionsScreen> {
                 color: Colors.red,
                 constraints: BoxConstraints.expand(height: 70),
                 child: Text(
-                  "$cDataInfo.from",
+                  cDataInfo.from,
                   style: TextStyle(fontSize: 30),
                 ),
               ),
@@ -435,7 +439,7 @@ class _SessionsScreenState extends State<SessionsScreen> {
   }
 
   _returnToMain() {
-    // Navigator.pop(context);
+    Navigator.pop(context);
     print("button clicked Session screen 440");
   }
 

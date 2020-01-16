@@ -43,9 +43,9 @@ class GetApi {
           //await Future.wait([fetchValidUsers(),fetchSessions(),fetchRoles()] );
 
           //await
-          //  await fetchSessions();
-          //  await fetchRoles();
-          //  await fetchValidUsers();
+            await fetchSessions();
+            await fetchRoles();
+          var temp =  await compute(fetchValidUsers(),null);
           // var s =
           // var r =
           //  await Future.wait([s, r]);

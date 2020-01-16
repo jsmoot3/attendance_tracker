@@ -10,15 +10,15 @@ import 'package:loading/indicator/ball_pulse_indicator.dart';
 import 'Models/GetApi.dart';
 
 void main() {
-  final Store<AppData> store = Store<AppData>(appDataStore, initialState: null);
-  runApp(MyApp(store));
+  //final Store<AppData> store = Store<AppData>(appDataStore, initialState: null);
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
 
-  final Store<AppData> store;
-  MyApp(this.store);
+ // final Store<AppData> store;
+  //MyApp(this.store);
 
   @override
   Widget build(BuildContext context) {
@@ -32,12 +32,10 @@ class MyApp extends StatelessWidget {
       renderSuccess: ({data}) => new Text(data),
     );
 */
-    return StoreProvider(
-        store: store,
-        child: MaterialApp(
-          title: 'Attendence TrackerV2',
-          home: SplashScreen(), // StartScreen(),
-        ));
+    return MaterialApp(
+      title: 'Attendence TrackerV2',
+      home: SplashScreen(), // StartScreen(),
+    );
   }
 }
 

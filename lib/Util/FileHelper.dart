@@ -494,11 +494,12 @@ class FileHelper {
         File newFile = new File(filepath);
         //String line;
         List<String> glines = await newFile.readAsLines();
-        _currentDataInfo.month = await new Future.value(glines[0]);
-        _currentDataInfo.dateSpan = await new Future.value(glines[1]);
+        _currentDataInfo.month = glines[0];
+        _currentDataInfo.dateSpan = glines[1];
         _currentDataInfo.from = await new Future.value(glines[2]);
         _currentDataInfo.to = await new Future.value(glines[3]);
         _currentDataInfo.rcount = await new Future.value(glines[4]);
+
       }
     } catch (ex) {
       print("file readallValidUserFile 358 :" + ex.toString());

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import '../Models/Session.dart';
 
 class TakeAttendance extends StatefulWidget {
-  CurrentSession sessionData;
-  TakeAttendance({this.sessionData});
+  final CurrentSession sessionData;
+   TakeAttendance({this.sessionData});
   @override
   _TakeAttendanceState createState() => _TakeAttendanceState();
 }
@@ -13,8 +13,8 @@ class _TakeAttendanceState extends State<TakeAttendance> {
   TextEditingController _textFieldController = TextEditingController();
   void initState() {
     super.initState();
-    activeSession = new CurrentSession();
-    updateUI(widget.sessionData);
+ //   activeSession = new CurrentSession();
+  //  updateUI(widget.sessionData);
   }
 
   void updateUI(dynamic tData) {
