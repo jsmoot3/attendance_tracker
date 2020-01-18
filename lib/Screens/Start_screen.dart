@@ -141,8 +141,8 @@ class _StartScreenState extends State<StartScreen> {
                         "Roles " + _appData.appDataroles.length.toString()),
                   ),
                   Expanded(
-                    child: Text(
-                        "Users " + _appData.appDataallUsers.length.toString()),
+                      child: Text(_appData.appDataallUsers == null ? "":
+                              "Users " + _appData.appDataallUsers.length.toString()),
                   ),
                   Expanded(
                     child: Text("Departments " +

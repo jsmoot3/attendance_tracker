@@ -15,15 +15,11 @@ class GetApi {
   SessionDart sessionDart;
   //static DbHelper _dbHelper = new DbHelper();
   static FileHelper _fileHelper = new FileHelper();
-//TODO:if there is a connection write to db
-  //TODO: if connected to wifi read and save to db
+  static AppData _AppData = new AppData();
   //check if there is a connection
 
   static Future<AppData> checkIfHaveConnectionUpdateDB() async {
     bool isConnected = false;
-    //AppData checkIfHaveConnectionUpdateDB;
-    AppData _AppData = new AppData();
-    // print("----> " + Constants.MONTH_SESSIONS);
     try {
       //  final result = await InternetAddress.lookup(
       //      "https://google.com"); //Constants.MONTH_SESSIONS
@@ -43,9 +39,10 @@ class GetApi {
           //await Future.wait([fetchValidUsers(),fetchSessions(),fetchRoles()] );
 
           //await
-            await fetchSessions();
-            await fetchRoles();
-          var temp =  await compute(fetchValidUsers(),null);
+
+          await fetchSessions();
+          await fetchRoles();
+           await fetchValidUsersC();
           // var s =
           // var r =
           //  await Future.wait([s, r]);
@@ -92,8 +89,8 @@ class GetApi {
     _appData.appDataCurrentDataInfo = await _fileHelper.readDataInfoFromFile();
     _appData.appDataSessions = await _fileHelper.readSessionsFile();
     _appData.appDataroles = await _fileHelper.readRolesFile();
-    _appData.appDataallUsers = await _fileHelper.readValidUsers();
     _appData.appDepartments = await _fileHelper.readDepartments();
+    _appData.appDataallUsers = await _fileHelper.readValidUsers();
 /*
     Future.wait([
       _fileHelper.readSessionsFile(),
@@ -138,22 +135,6 @@ class GetApi {
       if (tdepartment != null && tdepartment.length > 0) {
         await _fileHelper.writeDepartments(tdepartment);
       }
-
-      // csessions = await _dbHelper.readAllSessions();
-      // print("#########- Sessions 74->" + csessions.length.toString());
-      //  tAppData.appDataSessions = csessions;
-
-      //insert departments in to data obj
-      //tAppData.appDepartments = tdepartment;
-      //insert data into department data
-      //   if (tdepartment != null && tdepartment.length > 0) {
-      //   _dbHelper.insertTblDept(tdepartment);
-      //   }
-
-      //  tdepartment = await _dbHelper.getAllDepartments();
-      //  print("******* - Departments 86->" + tdepartment.length.toString());
-      //  tAppData.appDepartments = tdepartment;
-
       /// return ;
     } else {
       return null;
@@ -161,6 +142,9 @@ class GetApi {
     }
     return true;
   }
+
+
+
 
   static Future<bool> fetchRoles() async {
     List<Role> roles = new List<Role>();
@@ -207,5 +191,30 @@ class GetApi {
       return status;
     }
     return status;
+  }
+
+  static Future <List<ValidUser>> fetchValidUsersC() async {
+    List<ValidUser> validusers = new List<ValidUser>();
+    print("In fetch user compute");
+    var response = await http.get(Constants.VALID_USERS);
+    if (response.statusCode == 200) {
+      String vUsrDat = response.body;
+      validusers = await compute (getValUsers, vUsrDat);
+    }
+    return validusers;
+  }
+
+
+  static Future <List<ValidUser>> getValUsers(String vUsrDat ) async {
+    print("In fetch user compute getValUsers");
+    List<ValidUser> valusers = new List<ValidUser>();
+      Iterable list = json.decode(vUsrDat);
+    valusers = list.map((model) => ValidUser.fromJson(model)).toList();
+      if (valusers != null && valusers.length > 0) {
+        await _fileHelper.writeValidUsers(valusers);
+      }
+      return valusers;
+
+
   }
 }
