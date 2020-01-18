@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:core';
 import 'dart:io'; // as io;
-import 'dart:convert';
+import 'package:flutter/material.dart';
 import '../Models/App_Models.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
@@ -278,6 +278,7 @@ class FileHelper {
   }
 
   Future<bool> writeValidUsers(List<ValidUser> validUser) async {
+    WidgetsFlutterBinding.ensureInitialized();
     bool status = false;
     List<String> allValidUser = new List();
     String line = "";
@@ -499,7 +500,6 @@ class FileHelper {
         _currentDataInfo.from = await new Future.value(glines[2]);
         _currentDataInfo.to = await new Future.value(glines[3]);
         _currentDataInfo.rcount = await new Future.value(glines[4]);
-
       }
     } catch (ex) {
       print("file readallValidUserFile 358 :" + ex.toString());
