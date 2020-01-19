@@ -217,4 +217,8 @@ class GetApi {
 
 
   }
+
+  static Future<List<>> GetAllWaivers() async{
+    
+  }
 }
