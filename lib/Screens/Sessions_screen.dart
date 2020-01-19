@@ -14,7 +14,7 @@ import '../Models/App_Models.dart';
 import 'package:intl/intl.dart';
 
 class SessionsScreen extends StatefulWidget {
-  AppData trackerData;
+  final AppData trackerData;
   SessionsScreen({this.trackerData});
 
   @override
@@ -42,18 +42,18 @@ class _SessionsScreenState extends State<SessionsScreen> {
   }
 
   void updateUI(dynamic tData) {
-   // setState(() {
-      if (tData == null) {
-        return;
-      }
-      applicationData = tData;
-      allSessions = tData.appDataSessions;
-      roles = tData.appDataroles;
-      valStudents = tData.appDataallUsers;
-      groupAccessId = tData.groupId;
-      cDataInfo = tData.appDataCurrentDataInfo;
-      //String from = widget.trackerData.appDataCurrentDataInfo.from;
-   // });
+    // setState(() {
+    if (tData == null) {
+      return;
+    }
+    applicationData = tData;
+    allSessions = tData.appDataSessions;
+    roles = tData.appDataroles;
+    valStudents = tData.appDataallUsers;
+    groupAccessId = tData.groupId;
+    cDataInfo = tData.appDataCurrentDataInfo;
+    //String from = widget.trackerData.appDataCurrentDataInfo.from;
+    // });
   }
 
   ////////////////////////////////////////////   String user;
@@ -196,7 +196,7 @@ class _SessionsScreenState extends State<SessionsScreen> {
   Widget build(BuildContext context) {
     //add the acced session to the view
     csessions = viewableSessions();
-   // cDataInfo = applicationData.appDataCurrentDataInfo;
+    // cDataInfo = applicationData.appDataCurrentDataInfo;
 
     if (csessions == null || csessions.length < 1) {
       // return: show loading widget
@@ -231,7 +231,6 @@ class _SessionsScreenState extends State<SessionsScreen> {
           appBar: AppBar(
             title: Text('Attendance Tracker \n'),
             elevation: 10,
-
             actions: <Widget>[
               InkWell(
                 child: Icon(Icons.more_vert),
@@ -239,7 +238,7 @@ class _SessionsScreenState extends State<SessionsScreen> {
                   print("click more");
                 },
               ),
-              SizedBox(width: 20,height:60),
+              SizedBox(width: 20, height: 60),
             ],
             bottom: PreferredSize(
               child: Container(

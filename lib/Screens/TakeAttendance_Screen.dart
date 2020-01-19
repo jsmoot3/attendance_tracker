@@ -18,12 +18,12 @@ class _TakeAttendanceState extends State<TakeAttendance> {
   }
 
   void updateUI(dynamic tData) {
-    setState(() {
+  //  setState(() {
       if (tData == null) {
         return;
       }
       activeSession = tData;
-    });
+   // });
   }
 
 /*
@@ -49,7 +49,7 @@ class _TakeAttendanceState extends State<TakeAttendance> {
         height: 1.5,
       ),
     );
-
+/*
     //submit button
     final subButton = RaisedButton(
       child: Text(
@@ -79,7 +79,7 @@ class _TakeAttendanceState extends State<TakeAttendance> {
       padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
       splashColor: Colors.grey,
     );
-
+    */
     return Scaffold(
       appBar: AppBar(
         title: Text('Attrndance Tracker'),
@@ -98,11 +98,11 @@ class _TakeAttendanceState extends State<TakeAttendance> {
               ),
             ),
             //   Expanded(
-            //     child: Padding(
-            //       padding: EdgeInsets.symmetric(vertical: 3.0, horizontal: 5),
+             //    child: Padding(
+             //      padding: EdgeInsets.symmetric(vertical: 3.0, horizontal: 5),
             //      child: logButton,
             //   ),
-            // ),
+           //  ),
           ],
         ),
       ),
