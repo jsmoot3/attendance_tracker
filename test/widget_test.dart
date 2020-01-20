@@ -14,10 +14,9 @@ import 'package:attendance_tracker/main.dart';
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    final Store<AppData> store =
-        Store<AppData>(appDataStore, initialState: null);
+
     // Build our app and trigger a frame.
-    await tester.pumpWidget(MyApp(store));
+    await tester.pumpWidget(MyApp());
 
     // Verify that our counter starts at 0.
     expect(find.text('0'), findsOneWidget);

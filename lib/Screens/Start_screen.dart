@@ -72,6 +72,7 @@ class _StartScreenState extends State<StartScreen> {
 
       final nTextField = TextField(
         controller: _textFieldController,
+        autocorrect: false,
         decoration: InputDecoration(
           //Add th Hint text here.
           hintText: "Group Number " + cDataInfo.from,
@@ -141,8 +142,10 @@ class _StartScreenState extends State<StartScreen> {
                         "Roles " + _appData.appDataroles.length.toString()),
                   ),
                   Expanded(
-                      child: Text(_appData.appDataallUsers == null ? "":
-                              "Users " + _appData.appDataallUsers.length.toString()),
+                    child: Text(_appData.appDataallUsers == null
+                        ? ""
+                        : "Users " +
+                            _appData.appDataallUsers.length.toString()),
                   ),
                   Expanded(
                     child: Text("Departments " +

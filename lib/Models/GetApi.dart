@@ -42,7 +42,7 @@ class GetApi {
 
           await fetchSessions();
           await fetchRoles();
-           await fetchValidUsersC();
+           await fetchValidUsers();
           // var s =
           // var r =
           //  await Future.wait([s, r]);
@@ -216,5 +216,9 @@ class GetApi {
       return valusers;
 
 
+  }
+
+  static Future<List<>> GetAllWaivers() async{
+    
   }
 }
