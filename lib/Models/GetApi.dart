@@ -42,7 +42,7 @@ class GetApi {
           await fetchAllWaivers();
           await fetchSessions();
           await fetchRoles();
-           await fetchValidUsers();
+          await fetchValidUsers();
 
           // var s =
           // var r =
@@ -136,6 +136,7 @@ class GetApi {
       if (tdepartment != null && tdepartment.length > 0) {
         await _fileHelper.writeDepartments(tdepartment);
       }
+
       /// return ;
     } else {
       return null;
@@ -143,9 +144,6 @@ class GetApi {
     }
     return true;
   }
-
-
-
 
   static Future<bool> fetchRoles() async {
     List<Role> roles = new List<Role>();
@@ -194,45 +192,47 @@ class GetApi {
     return status;
   }
 
-  static Future <List<ValidUser>> fetchValidUsersC() async {
+  static Future<List<ValidUser>> fetchValidUsersC() async {
     List<ValidUser> validusers = new List<ValidUser>();
     print("In fetch user compute");
     var response = await http.get(Constants.VALID_USERS);
     if (response.statusCode == 200) {
       String vUsrDat = response.body;
-      validusers = await compute (getValUsers, vUsrDat);
+      validusers = await compute(getValUsers, vUsrDat);
     }
     return validusers;
   }
 
-
-  static Future <List<ValidUser>> getValUsers(String vUsrDat ) async {
+  static Future<List<ValidUser>> getValUsers(String vUsrDat) async {
     print("In fetch user compute getValUsers");
     List<ValidUser> valusers = new List<ValidUser>();
-      Iterable list = json.decode(vUsrDat);
+    Iterable list = json.decode(vUsrDat);
     valusers = list.map((model) => ValidUser.fromJson(model)).toList();
-      if (valusers != null && valusers.length > 0) {
-        await _fileHelper.writeValidUsers(valusers);
-      }
-      return valusers;
-
-
+    if (valusers != null && valusers.length > 0) {
+      await _fileHelper.writeValidUsers(valusers);
+    }
+    return valusers;
   }
 
-  static Future<void> fetchAllWaivers() async{
+  static Future<void> fetchAllWaivers() async {
     List<WaverObj> waverObjs = new List<WaverObj>();
     bool status = false;
-    var response = await http.get(Constants.WAVERS_API);
-    if (response.statusCode == 200) {
-      String vWavDat = response.body;
-      // var sesDate = json.decode(sesDat);
-      Iterable list = json.decode(vWavDat);
-      waverObjs = list.map((model) => WaverObj.fromJson(model)).toList();
-      if (waverObjs != null && waverObjs.length > 0) {
-        await _fileHelper.writewaverObjs(waverObjs);
+
+    try {
+      var response = await http.get(Constants.WAVERS_API);
+      if (response.statusCode == 200) {
+        String vWavDat = response.body;
+        // var sesDate = json.decode(sesDat);
+        Iterable list = json.decode(vWavDat);
+        // final list = json.decode(vWavDat);
+        waverObjs = list.map((model) => WaverObj.fromJson(model)).toList();
+
+        if (waverObjs != null && waverObjs.length > 0) {
+          await _fileHelper.writewaverObjs(waverObjs);
+        }
       }
-
+    } catch (ex) {
+      print('get fetchAllWaivers Error 232 ' + ex.toString());
     }
-
   }
 }

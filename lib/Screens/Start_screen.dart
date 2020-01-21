@@ -75,7 +75,7 @@ class _StartScreenState extends State<StartScreen> {
         autocorrect: false,
         decoration: InputDecoration(
           //Add th Hint text here.
-          hintText: "Group Number " + cDataInfo.from,
+          hintText: "Group Number ",
           border: OutlineInputBorder(),
         ),
         style: TextStyle(

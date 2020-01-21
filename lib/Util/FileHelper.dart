@@ -12,6 +12,7 @@ import 'package:sprintf/sprintf.dart';
 import 'package:synchronized/synchronized.dart';
 import '../Models/AppData.dart';
 import '../Models/WaverObj.dart';
+import 'dart:typed_data';
 
 class FileHelper {
   CurrentSession sessionData;
@@ -518,14 +519,22 @@ class FileHelper {
 
   Future<void> writewaverObjs(List<WaverObj> waverObj) async {
     //final bpath = await BASEPATH + ;
-    final bpath = getWaiverDirectory().toString();
+    final bpath = await getWaiverDirectory();
+    if (!await Directory(bpath).exists()) {
+      final directory = await getApplicationDocumentsDirectory();
+      String path = directory.path + "/Tracker/Waivers";
+      new Directory(path).create();
+    }
     try {
       for (int i = 0; i < waverObj.length; i++) {
         String path = bpath + "/" + waverObj[i].name;
-        ByteData bData = waverObj[i].doc;
-        final buffer = bData.buffer;
+        // ByteData bData = waverObj[i].doc;
+        List<int> bData = waverObj[i].doc;
+        Uint8List bytes = Uint8List.fromList(bData);
+
+        final buffer = bytes.buffer;
         new File(path).writeAsBytes(
-            buffer.asUint8List(bData.offsetInBytes, bData.lengthInBytes));
+            buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes));
       }
     } catch (ex) {
       print("file writewaverObjs 531 :" + ex.toString());

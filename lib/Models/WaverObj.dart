@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:convert';
 
 import 'package:flutter/services.dart';
 
@@ -6,7 +7,7 @@ class WaverObj {
   String name;
   int length;
   String docType;
-  ByteData doc;
+  List<int> doc;
 
   WaverObj({this.name, this.length, this.docType, this.doc});
 
@@ -20,9 +21,9 @@ class WaverObj {
   }
 
   factory WaverObj.fromJson(Map<String, dynamic> json) => WaverObj(
-    name: json["Name"] == null ? null : json["Name"],
-    length: json["Length"] == null ? null : json["Length"],
-    docType: json["DocType"] == null ? null : json["DocType"],
-    doc: json["Doc"] == null ? null : json["Doc"],
-  );
+        name: json["Name"] == null ? null : json["Name"],
+        length: json["Length"] == null ? null : json["Length"],
+        docType: json["DocType"] == null ? null : json["DocType"],
+        doc: json["Doc"] == null ? null : utf8.encode(json["Doc"]),
+      );
 }
