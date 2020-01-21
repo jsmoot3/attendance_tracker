@@ -7,7 +7,7 @@ import '../Models/App_Models.dart';
 import '../Models/Session.dart';
 import '../Models/AppData.dart';
 import 'dart:io';
-//import 'package:attendance_tracker/Util/dbHelper.dart';
+import 'package:attendance_tracker/Models/WaverObj.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:attendance_tracker/Util/FileHelper.dart';
 
@@ -39,10 +39,11 @@ class GetApi {
           //await Future.wait([fetchValidUsers(),fetchSessions(),fetchRoles()] );
 
           //await
-
+          await fetchAllWaivers();
           await fetchSessions();
           await fetchRoles();
            await fetchValidUsers();
+
           // var s =
           // var r =
           //  await Future.wait([s, r]);
@@ -218,7 +219,20 @@ class GetApi {
 
   }
 
-  static Future<List<>> GetAllWaivers() async{
-    
+  static Future<void> fetchAllWaivers() async{
+    List<WaverObj> waverObjs = new List<WaverObj>();
+    bool status = false;
+    var response = await http.get(Constants.WAVERS_API);
+    if (response.statusCode == 200) {
+      String vWavDat = response.body;
+      // var sesDate = json.decode(sesDat);
+      Iterable list = json.decode(vWavDat);
+      waverObjs = list.map((model) => WaverObj.fromJson(model)).toList();
+      if (waverObjs != null && waverObjs.length > 0) {
+        await _fileHelper.writewaverObjs(waverObjs);
+      }
+
+    }
+
   }
 }

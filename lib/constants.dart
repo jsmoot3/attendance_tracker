@@ -12,6 +12,6 @@ const String VALID_USERS =
     "https://hdh2.ucsd.edu/FitLifeService/api/FitLifeUpdate/GetValidUsers";
 
 
-const String WALVERS =
+const String WAVERS_API =
     "https://hdh2.ucsd.edu/FitLifeService/api/FitLifeUpdate/getwaivers";
     

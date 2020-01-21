@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:core';
 import 'dart:io'; // as io;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../Models/App_Models.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
@@ -10,6 +11,7 @@ import '../Models/EventAttendie.dart';
 import 'package:sprintf/sprintf.dart';
 import 'package:synchronized/synchronized.dart';
 import '../Models/AppData.dart';
+import '../Models/WaverObj.dart';
 
 class FileHelper {
   CurrentSession sessionData;
@@ -32,6 +34,12 @@ class FileHelper {
       String path = directory.path + "/Tracker";
       new Directory(path).create();
     }
+  }
+
+  Future<String> getWaiverDirectory() async {
+    final bpath = await BASEPATH;
+    String fPath = bpath + "/Waivers";
+    return fPath;
   }
 
   Future<String> getSessionsFilePath() async {
@@ -506,5 +514,22 @@ class FileHelper {
       return null;
     }
     return _currentDataInfo;
+  }
+
+  Future<void> writewaverObjs(List<WaverObj> waverObj) async {
+    //final bpath = await BASEPATH + ;
+    final bpath = getWaiverDirectory().toString();
+    try {
+      for (int i = 0; i < waverObj.length; i++) {
+        String path = bpath + "/" + waverObj[i].name;
+        ByteData bData = waverObj[i].doc;
+        final buffer = bData.buffer;
+        new File(path).writeAsBytes(
+            buffer.asUint8List(bData.offsetInBytes, bData.lengthInBytes));
+      }
+    } catch (ex) {
+      print("file writewaverObjs 531 :" + ex.toString());
+      return null;
+    }
   }
 } //end of class
