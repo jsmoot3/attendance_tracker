@@ -29,7 +29,7 @@ class GetApi {
           connectivityResult == ConnectivityResult.wifi) {
         haveconnection = true;
       }
-      if (haveconnection) {
+      if (haveconnection && false) {
         // if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
         print('----- 25 Api connected');
         //isConnected = true;
@@ -39,10 +39,11 @@ class GetApi {
           //await Future.wait([fetchValidUsers(),fetchSessions(),fetchRoles()] );
 
           //await
+
           await fetchAllWaivers();
           await fetchSessions();
           await fetchRoles();
-          await fetchValidUsers();
+          //     await fetchValidUsers();
 
           // var s =
           // var r =
@@ -71,7 +72,7 @@ class GetApi {
          */
         return _AppData;
       } else {
-        //  _AppData = await fillAppData();
+        _AppData = await fillAppData();
         if (_AppData == null) return null;
         return _AppData; //fill the application using the DB
       }
@@ -91,7 +92,7 @@ class GetApi {
     _appData.appDataSessions = await _fileHelper.readSessionsFile();
     _appData.appDataroles = await _fileHelper.readRolesFile();
     _appData.appDepartments = await _fileHelper.readDepartments();
-    _appData.appDataallUsers = await _fileHelper.readValidUsers();
+    // _appData.appDataallUsers = await _fileHelper.readValidUsers();
 /*
     Future.wait([
       _fileHelper.readSessionsFile(),

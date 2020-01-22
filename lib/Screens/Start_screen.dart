@@ -128,11 +128,10 @@ class _StartScreenState extends State<StartScreen> {
               Row(
                 textDirection: TextDirection.ltr,
                 children: <Widget>[
-                  //   Expanded(
-                  //    child: Text("Departments " +
-                  //        _appData.appDepartments.length.toString()),
-                  //   ),
-
+                  Expanded(
+                    child: Text("Departments " +
+                        _appData.appDepartments.length.toString()),
+                  ),
                   Expanded(
                     child: Text("Sessions " +
                         _appData.appDataSessions.length.toString()),
@@ -142,15 +141,21 @@ class _StartScreenState extends State<StartScreen> {
                         "Roles " + _appData.appDataroles.length.toString()),
                   ),
                   Expanded(
-                    child: Text(_appData.appDataallUsers == null
-                        ? ""
-                        : "Users " +
-                            _appData.appDataallUsers.length.toString()),
-                  ),
-                  Expanded(
                     child: Text("Departments " +
                         _appData.appDepartments.length.toString()),
                   ),
+/*
+                //  Expanded(
+                //    child: Text(_appData.appDataallUsers == null
+                 //       ? ""
+                 //       : "Users " +
+                 //           _appData.appDataallUsers.length.toString()),
+               //   ),
+                
+
+
+
+                  */
                 ],
               ),
             ],

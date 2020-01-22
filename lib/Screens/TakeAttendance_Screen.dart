@@ -3,7 +3,7 @@ import '../Models/Session.dart';
 
 class TakeAttendance extends StatefulWidget {
   final CurrentSession sessionData;
-   TakeAttendance({this.sessionData});
+  TakeAttendance({this.sessionData});
   @override
   _TakeAttendanceState createState() => _TakeAttendanceState();
 }
@@ -13,17 +13,17 @@ class _TakeAttendanceState extends State<TakeAttendance> {
   TextEditingController _textFieldController = TextEditingController();
   void initState() {
     super.initState();
- //   activeSession = new CurrentSession();
-  //  updateUI(widget.sessionData);
+    //   activeSession = new CurrentSession();
+    updateUI(widget.sessionData);
   }
 
   void updateUI(dynamic tData) {
-  //  setState(() {
+    setState(() {
       if (tData == null) {
         return;
       }
       activeSession = tData;
-   // });
+    });
   }
 
 /*
@@ -83,6 +83,18 @@ class _TakeAttendanceState extends State<TakeAttendance> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Attrndance Tracker'),
+        bottom: PreferredSize(
+          child: Container(
+            alignment: Alignment.center,
+            color: Colors.blueGrey,
+            constraints: BoxConstraints.expand(height: 70),
+            child: Text(
+              activeSession.trainingGroup,
+              style: TextStyle(fontSize: 30),
+            ),
+          ),
+          preferredSize: Size(50, 50),
+        ),
       ),
       resizeToAvoidBottomInset: true,
       body: Padding(
@@ -98,11 +110,11 @@ class _TakeAttendanceState extends State<TakeAttendance> {
               ),
             ),
             //   Expanded(
-             //    child: Padding(
-             //      padding: EdgeInsets.symmetric(vertical: 3.0, horizontal: 5),
+            //    child: Padding(
+            //      padding: EdgeInsets.symmetric(vertical: 3.0, horizontal: 5),
             //      child: logButton,
             //   ),
-           //  ),
+            //  ),
           ],
         ),
       ),
