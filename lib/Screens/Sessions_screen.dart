@@ -264,11 +264,10 @@ class _SessionsScreenState extends State<SessionsScreen> {
                         // _noTextAlert("test-" + csessions[index].department);
                         Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) {
-                        return TakeAttendance(
-                          sessionData: csessions[index],
-                        );
-                      }),
+                      MaterialPageRoute(
+                          builder: (context) => TakeAttendance(
+                                sessionData: csessions[index],
+                              )),
                     ),
                     child: Card(
                         elevation: 8.0,
