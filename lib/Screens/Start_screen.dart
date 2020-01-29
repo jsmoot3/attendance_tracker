@@ -128,6 +128,7 @@ class _StartScreenState extends State<StartScreen> {
               Row(
                 textDirection: TextDirection.ltr,
                 children: <Widget>[
+                  ////////////////////////////////////////////
                   Expanded(
                     child: Text("Departments " +
                         _appData.appDepartments.length.toString()),
@@ -144,18 +145,13 @@ class _StartScreenState extends State<StartScreen> {
                     child: Text("Departments " +
                         _appData.appDepartments.length.toString()),
                   ),
-/*
-                //  Expanded(
-                //    child: Text(_appData.appDataallUsers == null
-                 //       ? ""
-                 //       : "Users " +
-                 //           _appData.appDataallUsers.length.toString()),
-               //   ),
-                
-
-
-
-                  */
+/////////////////////////////////////////////////////////
+                  //  Expanded(
+                  //    child: Text(_appData.appDataallUsers == null
+                  //       ? ""
+                  //       : "Users " +
+                  //           _appData.appDataallUsers.length.toString()),
+                  //   ),
                 ],
               ),
             ],

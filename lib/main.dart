@@ -17,7 +17,7 @@ void main() {
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
 
- // final Store<AppData> store;
+  // final Store<AppData> store;
   //MyApp(this.store);
 
   @override
@@ -45,18 +45,21 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  // AppData tData;
+  AppData tData;
+  AppData cData;
+  bool _loadingInProgress;
   @override
   void initState() {
     super.initState();
+    _loadingInProgress = true;
     getAttendenceData();
   }
 
-  void getAttendenceData() async {
-    AppData tData = await GetApi.checkIfHaveConnectionUpdateDB();
+  Future getAttendenceData() async {
+    cData = await GetApi.checkIfHaveConnectionUpdateDB();
     //TODO: check for a null on tData do a popup
-    if (tData != null) {
-      Navigator.push(context, MaterialPageRoute(builder: (context) {
+    if (tData.appDataSessions != null) {
+      /* Navigator.push(context, MaterialPageRoute(builder: (context) {
         return StartScreen(
           trackerData: tData,
         );
@@ -66,66 +69,80 @@ class _SplashScreenState extends State<SplashScreen> {
       //user needs to find a wifi site and update the application
       _noTextAlert("There is no data in system");
     }
+      */
+      setState(() {
+        _loadingInProgress = false;
+        tData = cData;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        fit: StackFit.expand,
-        children: <Widget>[
-          Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('asset/images/triton-5k-hr.jpg'),
-                fit: BoxFit.cover,
+    if (_loadingInProgress) {
+      return Scaffold(
+        body: Stack(
+          fit: StackFit.expand,
+          children: <Widget>[
+            Container(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('asset/images/triton-5k-hr.jpg'),
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
-          ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              Expanded(
-                flex: 4,
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Image(
-                    image: AssetImage('asset/images/TrackerLogoT.png'),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                Expanded(
+                  flex: 4,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Image(
+                      image: AssetImage('asset/images/TrackerLogoT.png'),
+                    ),
                   ),
                 ),
-              ),
-              Expanded(
-                flex: 2,
-                child: Container(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Container(
-                        child: Loading(
-                          indicator: BallPulseIndicator(),
-                          size: 60.0,
-                          color: Colors.yellow,
+                Expanded(
+                  flex: 2,
+                  child: Container(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Container(
+                          child: Loading(
+                            indicator: BallPulseIndicator(),
+                            size: 60.0,
+                            color: Colors.yellow,
+                          ),
                         ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(top: 10.0),
-                      ),
-                      Text(
-                        "Loading Application",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 40.0,
+                        Padding(
+                          padding: EdgeInsets.only(top: 10.0),
                         ),
-                      ),
-                    ],
+                        Text(
+                          "Loading Application",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 40.0,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
+              ],
+            ),
+          ],
+        ),
+      );
+    } else {
+      Navigator.push(context, MaterialPageRoute(builder: (context) {
+        return StartScreen(
+          trackerData: tData,
+        );
+      }));
+    }
   }
 
   _noTextAlert(String _mess) {
