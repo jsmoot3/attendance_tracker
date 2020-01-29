@@ -316,6 +316,8 @@ class FileHelper {
         }
         File(filepath).delete();
       }
+
+      /*
       String head = 'cardId,barcode,empLid';
       for (int row = 0; row < validUser.length; row++) {
         String line = sprintf('%s,%s,%s', [
@@ -325,7 +327,7 @@ class FileHelper {
         ]);
         allValidUser.add(line);
       }
-
+*/
       //check to see if directory exist if not create it
       await checkIfDirectoryExist();
 
@@ -342,13 +344,19 @@ class FileHelper {
        */
       File newfile = new File(filepath);
       var sink2 = newfile.openWrite(mode: FileMode.append);
+      String head = 'cardId,barcode,empLid';
       sink2.write(head + '\n');
-      for (int i = 0; i < allValidUser.length; i++) {
-        sink2.write(allValidUser[i] + '\n');
+      for (int row = 0; row < allValidUser.length; row++) {
+        String line = sprintf('%s,%s,%s', [
+          validUser[row].cardId.toString(),
+          validUser[row].barcode.toString(),
+          validUser[row].empLid
+        ]);
+        sink2.write(line + '\n');
       }
 
       // await sink.flush();
-      await sink2.flush();
+     // await sink2.flush();
       // await sink.close();
       await sink2.close();
 
