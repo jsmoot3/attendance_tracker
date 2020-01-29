@@ -109,12 +109,12 @@ class FileHelper {
 
   Future<bool> writeEventSessions(List<CurrentSession> acsess) async {
     final lock = new Lock();
-    List<String> allSessions = new List();
+    //List<String> allSessions = new List();
     try {
       String filepath = await getSessionsFilePath();
       String head =
           'flEventSessionId,fLeventIDfk,campusLocation,trainer,timeOfDay,day,department,trainingGroup,weekofClass,divison,requireWaiver,waiverName,startDate';
-
+/*
       for (int row = 0; row < acsess.length; row++) {
         String line = sprintf('%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s', [
           acsess[row].flEventSessionId.toString(),
@@ -133,6 +133,7 @@ class FileHelper {
         ]);
         allSessions.add(line);
       }
+      */
       //check to see if directory exist if not create it
       if (!await Directory(await BASEPATH).exists()) {
         final directory = await getApplicationDocumentsDirectory();
@@ -149,15 +150,30 @@ class FileHelper {
       // var sink = newfile.openWrite();
       var sink2 = newfile.openWrite(mode: FileMode.append);
       sink2.write(head + '\n');
-      for (int i = 0; i < allSessions.length; i++) {
+      for (int row = 0; row < acsess.length; row++) {
+        String line = sprintf('%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s', [
+          acsess[row].flEventSessionId.toString(),
+          acsess[row].fLeventIDfk.toString(),
+          acsess[row].campusLocation,
+          acsess[row].trainer,
+          acsess[row].timeOfDay,
+          acsess[row].day,
+          acsess[row].department,
+          acsess[row].trainingGroup,
+          acsess[row].weekofClass,
+          acsess[row].divison,
+          acsess[row].requireWaiver,
+          acsess[row].waiverName == "" ? "NONE" : acsess[row].waiverName,
+          acsess[row].startDate
+        ]);
         sink2.write(
-          allSessions[i] + '\n',
+          line + '\n',
         );
       }
       // await sink.flush();
-      await sink2.flush();
+      sink2.flush();
       // await sink.close();
-      await sink2.close();
+      sink2.close();
 
       return true;
       //await return true;
@@ -380,12 +396,12 @@ class FileHelper {
     String filepath = bpath + "/Departments.csv";
     try {
       // final filepath = await getValidUsersFilePath();
-      String head = 'Departments';
-      String items = "";
-      for (int row = 0; row < input.length; row++) {
-        String line = input[row];
-        allDepartments.add(line);
-      }
+      // String head = 'Departments';
+      // String items = "";
+      //  for (int row = 0; row < input.length; row++) {
+      //    String line = input[row];
+      //    allDepartments.add(line);
+      // }
       //check to see if directory exist if not create it
       await checkIfDirectoryExist();
       //delete file if exist
@@ -394,14 +410,14 @@ class FileHelper {
       }
       File newfile = new File(filepath);
       var sink2 = newfile.openWrite(mode: FileMode.append);
-      sink2.write(head + '\n');
-      for (int i = 0; i < allDepartments.length; i++) {
-        sink2.write(allDepartments[i] + '\n');
+      sink2.write('Departments\n');
+      for (int i = 0; i < input.length; i++) {
+        sink2.write(input[i] + '\n');
       }
       // await sink.flush();
-      await sink2.flush();
+      sink2.flush();
       // await sink.close();
-      await sink2.close();
+      sink2.close();
 
       return true;
       //await return true;
@@ -484,9 +500,9 @@ class FileHelper {
       sink2.write("To: $to \n");
       sink2.write("$count");
       // await sink.flush();
-      await sink2.flush();
+      //sink2.flush();
       // await sink.close();
-      await sink2.close();
+      sink2.close();
       return true;
       //await return true;
     } catch (ex) {

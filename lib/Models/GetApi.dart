@@ -29,7 +29,7 @@ class GetApi {
       if (connectivityResult == ConnectivityResult.mobile ||
           connectivityResult == ConnectivityResult.wifi) {
         print('----- 25 Api connected');
-        _saveDataToFile();
+        await _saveDataToFile();
       }
       _AppData = await fillAppData();
     } on SocketException catch (_) {
@@ -43,18 +43,23 @@ class GetApi {
   }
 
   static Future _saveDataToFile() async {
-    await fetchAllWaivers();
     await fetchSessions();
     await fetchRoles();
     await fetchValidUsers();
+//    await fetchAllWaivers();
   }
 
   static Future<AppData> fillAppData() async {
     AppData _appData = new AppData();
+
+    CurrentSession cSess = new CurrentSession();
     _appData.appDataCurrentDataInfo = await _fileHelper.readDataInfoFromFile();
-    _appData.appDataSessions = await _fileHelper.readSessionsFile();
-    _appData.appDataroles = await _fileHelper.readRolesFile();
+
+   // _appData.appDataSessions = new List<CurrentSession>();
+    _appData.appDataSessions =  await _fileHelper.readSessionsFile();
     _appData.appDepartments = await _fileHelper.readDepartments();
+    _appData.appDataroles = await _fileHelper.readRolesFile();
+
     // _appData.appDataallUsers = await _fileHelper.readValidUsers();
 /*
     Future.wait([
@@ -71,44 +76,51 @@ class GetApi {
     return _appData;
   }
 
-  static Future<AppData> fetchSessions([AppData _appData]) async {
+
+
+  static Future<AppData> fetchSessions() async {
     List<CurrentSession> csessions = new List<CurrentSession>();
-    // AppData tAppData = new AppData();
-    List<String> tdepartment = new List<String>();
-    var response = await http.get(Constants.MONTH_SESSIONS);
-    if (response.statusCode == 200) {
-      String sesDat = response.body;
-      var sesDate = json.decode(sesDat);
+    AppData _appData = new AppData();
+    try {
+      List<String> tdepartment = new List<String>();
+      var response = await http.get(Constants.MONTH_SESSIONS);
+      if (response.statusCode == 200) {
+        String sesDat = response.body;
+        var sesDate = json.decode(sesDat);
 
-      CurrentDataInfo cDataInfo = new CurrentDataInfo();
-      cDataInfo.from = sesDate["From"];
-      cDataInfo.to = sesDate["To"];
-      cDataInfo.rcount = sesDate["Rcount"].toString();
-      cDataInfo.month = sesDate["Month"];
-      _appData.appDataCurrentDataInfo = cDataInfo;
+        CurrentDataInfo cDataInfo = new CurrentDataInfo();
+        cDataInfo.from = sesDate["From"];
+        cDataInfo.to = sesDate["To"];
+        cDataInfo.rcount = sesDate["Rcount"].toString();
+        cDataInfo.month = sesDate["Month"];
+        _appData.appDataCurrentDataInfo = cDataInfo;
 
-      Iterable list = sesDate["CurrentSessions"];
-      Iterable listd = sesDate["Departments"];
-      csessions = list.map((model) => CurrentSession.fromJson(model)).toList();
-      tdepartment = listd.map((s) => (s as String)).toList();
-      //create insert session into file
+        Iterable list = sesDate["CurrentSessions"];
+        Iterable listd = sesDate["Departments"];
+        csessions =
+            list.map((model) => CurrentSession.fromJson(model)).toList();
+        tdepartment = listd.map((s) => (s as String)).toList();
+        //create insert session into file
 
-      await _fileHelper.writeDataInfoToFile(cDataInfo);
-      if (csessions != null && csessions.length > 0) {
-        await _fileHelper.writeEventSessions(csessions);
-        //  _appData.appDataSessions.addAll(csessions);
+        await _fileHelper.writeDataInfoToFile(cDataInfo);
+        if (csessions != null && csessions.length > 0) {
+          await _fileHelper.writeEventSessions(csessions);
+          //  _appData.appDataSessions.addAll(csessions);
+        }
+        if (tdepartment != null && tdepartment.length > 0) {
+          await _fileHelper.writeDepartments(tdepartment);
+          //  for (int d = 0; d < tdepartment.length; d++) {
+          //    _appData.appDepartments.add(tdepartment[d]);
+          //  }
+        }
+
+        return _appData;
+      } else {
+        return null;
+        //throw Exception('Failed to load post');
       }
-      if (tdepartment != null && tdepartment.length > 0) {
-        await _fileHelper.writeDepartments(tdepartment);
-        //  for (int d = 0; d < tdepartment.length; d++) {
-        //    _appData.appDepartments.add(tdepartment[d]);
-        //  }
-      }
-
-      return _appData;
-    } else {
-      return null;
-      //throw Exception('Failed to load post');
+    }catch(ex){
+      print("Error get118 " + ex);
     }
   }
 
@@ -129,7 +141,7 @@ class GetApi {
 
       if (roles != null && roles.length > 0) {
         status = await _fileHelper.writeRoles(roles);
-        _appData.appDataroles.addAll(roles);
+        //_appData.appDataroles.addAll(roles);
       }
 
       // roles = await _dbHelper.getAllRoles();
@@ -154,7 +166,7 @@ class GetApi {
       validusers = list.map((model) => ValidUser.fromJson(model)).toList();
       if (validusers != null && validusers.length > 0) {
         await _fileHelper.writeValidUsers(validusers);
-        _appData.appDataallUsers.addAll(validusers);
+        //_appData.appDataallUsers.addAll(validusers);
       }
     }
     return _appData;

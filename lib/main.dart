@@ -51,29 +51,19 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    _loadingInProgress = true;
+  //  _loadingInProgress = true;
     getAttendenceData();
   }
 
   Future getAttendenceData() async {
     cData = await GetApi.checkIfHaveConnectionUpdateDB();
     //TODO: check for a null on tData do a popup
-    if (tData.appDataSessions != null) {
-      /* Navigator.push(context, MaterialPageRoute(builder: (context) {
+    if (cData.appDataSessions != null) {
+      Navigator.push(context, MaterialPageRoute(builder: (context) {
         return StartScreen(
-          trackerData: tData,
+          trackerData: cData,
         );
       }));
-    } else {
-      //TODO: need to notify that there is no DB
-      //user needs to find a wifi site and update the application
-      _noTextAlert("There is no data in system");
-    }
-      */
-      setState(() {
-        _loadingInProgress = false;
-        tData = cData;
-      });
     }
   }
 

@@ -257,7 +257,7 @@ class _SessionsScreenState extends State<SessionsScreen> {
               itemCount: csessions == null ? 0 : csessions.length,
               itemBuilder: (BuildContext context, int index) {
                 return Container(
-                  height: 160,
+                  height: 140,
                   // padding: const EdgeInsets..all(10.0),
                   child: InkWell(
                     onTap: () =>
@@ -304,15 +304,15 @@ class _SessionsScreenState extends State<SessionsScreen> {
                                   Text(
                                     getHeadtext(csessions[index]),
                                     style: TextStyle(
-                                      fontSize: 35,
+                                      fontSize: 26,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                   Text(
                                     csessions[index].campusLocation,
                                     style: TextStyle(
-                                      fontSize: 30,
-                                      fontWeight: FontWeight.bold,
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.normal,
                                     ),
                                   ),
                                 ],
@@ -330,7 +330,7 @@ class _SessionsScreenState extends State<SessionsScreen> {
                                     csessions[index].day,
                                     // textAlign: TextAlign.center,
                                     style: TextStyle(
-                                      fontSize: 28,
+                                      fontSize: 23,
                                       fontWeight: FontWeight.bold,
                                       color: Colors.blue,
                                     ),
@@ -343,7 +343,7 @@ class _SessionsScreenState extends State<SessionsScreen> {
                                     csessions[index].timeOfDay,
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
-                                      fontSize: 28,
+                                      fontSize: 23,
                                       fontWeight: FontWeight.bold,
                                       color: Colors.blue,
                                     ),
