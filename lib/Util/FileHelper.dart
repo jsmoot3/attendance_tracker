@@ -171,9 +171,9 @@ class FileHelper {
         );
       }
       // await sink.flush();
-      sink2.flush();
+     // sink2.flush();
       // await sink.close();
-      sink2.close();
+      await sink2.close();
 
       return true;
       //await return true;
@@ -262,7 +262,7 @@ class FileHelper {
         sink2.write(allRoles[i] + '\n');
       }
       // await sink.flush();
-      await sink2.flush();
+      //await sink2.flush();
       // await sink.close();
       await sink2.close();
 
@@ -309,44 +309,15 @@ class FileHelper {
     String line = "";
     try {
       final filepath = await getValidUsersFilePath();
-      if (await File(filepath).exists()) {
-        List<String> glines = await File(filepath).readAsLines();
-        if (validUser.length == glines.length) {
-          return true;
-        }
-        File(filepath).delete();
-      }
-
-      /*
-      String head = 'cardId,barcode,empLid';
-      for (int row = 0; row < validUser.length; row++) {
-        String line = sprintf('%s,%s,%s', [
-          validUser[row].cardId.toString(),
-          validUser[row].barcode.toString(),
-          validUser[row].empLid
-        ]);
-        allValidUser.add(line);
-      }
-*/
-      //check to see if directory exist if not create it
       await checkIfDirectoryExist();
-
-      //delete file if exist
-      /*
       if (await File(filepath).exists()) {
-        List<String> glines = await File(filepath).readAsLines();
-        if (validUser.length == glines.length) {
-          return true;
-        }
         File(filepath).delete();
       }
-
-       */
       File newfile = new File(filepath);
       var sink2 = newfile.openWrite(mode: FileMode.append);
       String head = 'cardId,barcode,empLid';
       sink2.write(head + '\n');
-      for (int row = 0; row < allValidUser.length; row++) {
+      for (int row = 0; row < validUser.length; row++) {
         String line = sprintf('%s,%s,%s', [
           validUser[row].cardId.toString(),
           validUser[row].barcode.toString(),
@@ -354,11 +325,10 @@ class FileHelper {
         ]);
         sink2.write(line + '\n');
       }
-
       // await sink.flush();
-     // await sink2.flush();
+      //sink2.flush();
       // await sink.close();
-      await sink2.close();
+      sink2.close();
 
       return true;
       //await return true;
@@ -377,7 +347,7 @@ class FileHelper {
         //String line;
         List<String> glines = await newFile.readAsLines();
         print('The ValidUsers file is ${glines.length} lines long.');
-        await Future.forEach(glines, (str) async {
+        await Future.forEach(glines, (str)  {
           List<String> lineItem = str.split(',');
           if (lineItem[0] != "cardId") {
             ValidUser csess = new ValidUser();
@@ -394,7 +364,7 @@ class FileHelper {
     } catch (ex) {
       print("file readallValidUserFile 358 :" + ex.toString());
     }
-    return allValidUser;
+    return await allValidUser;
   }
 
   Future<bool> writeDepartments(List<String> input) async {

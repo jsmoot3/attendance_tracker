@@ -46,7 +46,7 @@ class GetApi {
     await fetchSessions();
     await fetchRoles();
     await fetchValidUsers();
-//    await fetchAllWaivers();
+//    await fetchAllWaivers();m
   }
 
   static Future<AppData> fillAppData() async {
@@ -55,12 +55,11 @@ class GetApi {
     CurrentSession cSess = new CurrentSession();
     _appData.appDataCurrentDataInfo = await _fileHelper.readDataInfoFromFile();
 
-   // _appData.appDataSessions = new List<CurrentSession>();
-    _appData.appDataSessions =  await _fileHelper.readSessionsFile();
+    // _appData.appDataSessions = new List<CurrentSession>();
+    _appData.appDataSessions = await _fileHelper.readSessionsFile();
     _appData.appDepartments = await _fileHelper.readDepartments();
     _appData.appDataroles = await _fileHelper.readRolesFile();
-
-    // _appData.appDataallUsers = await _fileHelper.readValidUsers();
+    _appData.appDataallUsers = await _fileHelper.readValidUsers();
 /*
     Future.wait([
       _fileHelper.readSessionsFile(),
@@ -75,8 +74,6 @@ class GetApi {
 
     return _appData;
   }
-
-
 
   static Future<AppData> fetchSessions() async {
     List<CurrentSession> csessions = new List<CurrentSession>();
@@ -119,7 +116,7 @@ class GetApi {
         return null;
         //throw Exception('Failed to load post');
       }
-    }catch(ex){
+    } catch (ex) {
       print("Error get118 " + ex);
     }
   }
