@@ -27,7 +27,7 @@ class GetApi {
       bool haveconnection = false;
       var connectivityResult = await (Connectivity().checkConnectivity());
       if (connectivityResult == ConnectivityResult.mobile ||
-          connectivityResult == ConnectivityResult.wifi) {
+          connectivityResult == ConnectivityResult.wifi && false) {
         print('----- 25 Api connected');
         await _saveDataToFile();
       }

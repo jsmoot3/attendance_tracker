@@ -313,6 +313,8 @@ class FileHelper {
       if (await File(filepath).exists()) {
         File(filepath).delete();
       }
+      await doUserFile(filepath, validUser);
+      /*
       File newfile = new File(filepath);
       var sink2 = newfile.openWrite(mode: FileMode.append);
       String head = 'cardId,barcode,empLid';
@@ -330,12 +332,30 @@ class FileHelper {
       // await sink.close();
       sink2.close();
 
+       */
+
       return true;
       //await return true;
     } catch (ex) {
       print("file writeRoles 276: " + ex.toString());
       return false;
     }
+  }
+
+  Future<void> doUserFile(String filepath, List<ValidUser> validUser) async{
+    File newfile = new File(filepath);
+    var sink2 = await newfile.openWrite(mode: FileMode.append);
+    String head = 'cardId,barcode,empLid';
+    sink2.write(head + '\n');
+    for (int row = 0; row < validUser.length; row++) {
+      String line = sprintf('%s,%s,%s', [
+        validUser[row].cardId.toString(),
+        validUser[row].barcode.toString(),
+        validUser[row].empLid
+      ]);
+      sink2.write(line + '\n');
+    }
+    sink2.close();
   }
 
   Future<List<ValidUser>> readValidUsers() async {
@@ -347,7 +367,7 @@ class FileHelper {
         //String line;
         List<String> glines = await newFile.readAsLines();
         print('The ValidUsers file is ${glines.length} lines long.');
-        await Future.forEach(glines, (str)  {
+         Future.forEach(glines, (str)  {
           List<String> lineItem = str.split(',');
           if (lineItem[0] != "cardId") {
             ValidUser csess = new ValidUser();
