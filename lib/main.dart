@@ -69,7 +69,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (_loadingInProgress) {
+   // if (_loadingInProgress) {
       return Scaffold(
         body: Stack(
           fit: StackFit.expand,
@@ -126,15 +126,18 @@ class _SplashScreenState extends State<SplashScreen> {
           ],
         ),
       );
-    } else {
+    }
+    /*else {
       Navigator.push(context, MaterialPageRoute(builder: (context) {
         return StartScreen(
           trackerData: tData,
         );
       }));
     }
-  }
 
+     */
+  }
+/*
   _noTextAlert(String _mess) {
     return showDialog<void>(
       context: context,
@@ -155,7 +158,7 @@ class _SplashScreenState extends State<SplashScreen> {
     );
   }
 }
-
+*/
 /*
 //remove after prof of concept
 const TIMEOUT = const Duration(seconds: 15);

@@ -367,7 +367,7 @@ class FileHelper {
         //String line;
         List<String> glines = await newFile.readAsLines();
         print('The ValidUsers file is ${glines.length} lines long.');
-         Future.forEach(glines, (str)  {
+         await Future.forEach(glines, (str)  {
           List<String> lineItem = str.split(',');
           if (lineItem[0] != "cardId") {
             ValidUser csess = new ValidUser();
